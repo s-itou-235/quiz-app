@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="utf-8">
+    <title>入口</title>
+    <link rel="stylesheet" href="css/entrancestyle.css">
+</head>
+
+<body>
+
+    <header>
+
+        <div class="info__monitor">
+            <p>ようこそ！</p>
+            <p>好きな番号を選んでください</p>
+        </div>
+
+    </header>
+
+
+    <maim>
+    <!-- 大きな画面風にようこそ〇〇へ -->
+    
+
+    <!-- 解答者として参加ボタン -->
+    <!-- パスワード一致で解答者ページへ飛ぶ -->
+    <!-- パスワードはサーバー経由でジャッジ -->
+    <button class="entry__btn" id="player_entry_btn">解答者として参加</button>
+
+    <!-- ランプ番号の一覧を作って -->
+    <!-- 好きな番号を選ばせる方式にすると -->
+    <!-- id割り当てを考える手間が少なくて良い面はある -->
+
+    <div class="entry_lamp">
+        <button class="entry__num" id="entry_1">1</button>
+        <button class="entry__num" id="entry_2">2</button>
+        <button class="entry__num" id="entry_3">3</button>
+        <button class="entry__num" id="entry_4">4</button>
+        <button class="entry__num" id="entry_5">5</button>
+        <button class="entry__num" id="entry_6">6</button>
+        <button class="entry__num" id="entry_7">7</button>
+        <button class="entry__num" id="entry_8">8</button>
+        <button class="entry__num" id="entry_9">9</button>
+        <button class="entry__num" id="entry_10">10</button>
+    </div>
+    
+    <div class="entry_lamp">
+        <button class="entry__num" id="entry_11">11</button>
+        <button class="entry__num" id="entry_12">12</button>
+        <button class="entry__num" id="entry_13">13</button>
+        <button class="entry__num" id="entry_14">14</button>
+        <button class="entry__num" id="entry_15">15</button>
+        <button class="entry__num" id="entry_16">16</button>
+        <button class="entry__num" id="entry_17">17</button>
+        <button class="entry__num" id="entry_18">18</button>
+        <button class="entry__num" id="entry_19">19</button>
+        <button class="entry__num" id="entry_20">20</button>
+    </div>
+
+    <div class="entry_lamp">
+        <button class="entry__num" id="entry_21">21</button>
+        <button class="entry__num" id="entry_22">22</button>
+        <button class="entry__num" id="entry_23">23</button>
+        <button class="entry__num" id="entry_24">24</button>
+        <button class="entry__num" id="entry_25">25</button>
+        <button class="entry__num" id="entry_26">26</button>
+        <button class="entry__num" id="entry_27">27</button>
+        <button class="entry__num" id="entry_28">28</button>
+        <button class="entry__num" id="entry_29">29</button>
+        <button class="entry__num" id="entry_30">30</button>
+    </div>
+
+
+    
+
+
+
+    
+
+    <!-- 管理者として参加ボタン -->
+    <!-- パスワード一致で管理者ページへ飛ぶ -->
+    <!-- パスワードはサーバー経由でジャッジ -->
+    <button class="entry__btn" id="admin_entry_btn">管理者として参加</button>
+
+
+    <!-- パスワードなど入力フォーム -->
+    <section class="pass__form">
+
+        <input id="pass_text" type="text" value="0">
+        <button id="pass_close">✕</button>
+        
+        <div>
+            <button class="pass__num" id="pass_1">１</button>
+            <button class="pass__num" id="pass_2">２</button>
+            <button class="pass__num" id="pass_3">３</button>
+            <button class="pass__num" id="pass_4">４</button>
+            <button class="pass__num" id="pass_5">５</button>
+        </div>
+        <div>
+            <button class="pass__num" id="pass_6">６</button>
+            <button class="pass__num" id="pass_7">７</button>
+            <button class="pass__num" id="pass_8">８</button>
+            <button class="pass__num" id="pass_9">９</button>
+            <button class="pass__num" id="pass_0">０</button>
+        </div>
+        <div>
+            <button class="pass__btn" id="pass_enter">決定</button>
+            <button class="pass__btn" id="pass_again">やり直し</button>
+        </div>
+
+
+    </section>
+
+
+    </maim>
+
+    <footer>
+
+
+    </footer>
+
+<script src="js/main.js"></script>
+</body>

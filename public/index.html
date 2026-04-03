@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>キーパッド</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+    <header>
+        <!--ヘッダー左側の配置 -->
+        <div class="header__left">
+            <div class="entry__date">
+                <p>あなたの登録名</p>
+                <span id="user_name">未登録</span>
+            </div>
+            <input type="text" id="name_input" placeholder="名前を入力" maxlength="10">
+            <button id="name_update_btn">名前登録/更新</button>
+        </div>
+
+
+        <!-- ヘッダー中央の表示 -->
+        <div class="header__center">
+            <!-- 〇✕などの有無 -->
+            <p id="monitor_title">あなたの成績</p>
+            
+            <div class="monitor__score">
+            <span>合計正解数： </span><span id="monitor_correct_total">0</span><span> 問</span>
+            </div>
+            
+            <div class="monitor__score">
+            <span>合計タイム： </span><span id="monitor_time_total">0</span><span> 秒</span>
+            </div>
+
+            <p id="monitor_result">？？？</p>
+
+
+        </div>
+
+        <!--ヘッダー右側の配置 -->
+        <div class="header__right">
+            <!-- 解答権利有無表示　-->
+            <div id="answer_lamp" class="answer__lamp">
+                <p id="answer_lamp_num"></p>     
+            </div>
+        </div>
+    </header>
+
+
+
+    <maim>
+        
+        <!-- 解答画面 -->
+
+        
+
+            <!-- 問題文出力 -->
+            <section class="question_area" id ="question_area">
+
+                <div class="fix__text__Q">Q.</div>
+        
+                <div id="question_form">
+                    <p id="question_text"></p>
+                </div>
+                <!-- 制限時間 -->
+                <div id="time_limit">
+                    <span id="time_limit_count"></span>
+                </div>
+            </section> 
+        
+        <!-- 出題待機中のもの -->
+        <div class="question__default">
+            <p>出題までしばらくお待ちください。</p>
+        </div>
+
+        <!-- テキスト問題 4択テキスト選択肢モード -->
+        <div class="question question__text__4text">  
+            <div class="select_button_area">
+
+                <!--選択肢１-->
+                <form action="" method="post" class="choice-form">
+                    <div class="fix__text__No">1</div><button class="select__button select__button__1" type="button" value="1"></button>
+                    <div class="answer__sum answer__sum__1"></div>
+                </form>
+                
+                <!--選択肢２-->
+                <form action="" method="post" class="choice-form">
+                    <div class="fix__text__No">2</div><button class="select__button select__button__2" type="button" value="2"></button>
+                    <div class="answer__sum answer__sum__2"></div>
+                </form>
+
+                <!--選択肢３-->
+                <form action="" method="post" class="choice-form">
+                    <div class="fix__text__No">3</div><button class="select__button select__button__3" type="button" value="3"></button>
+                    <div class="answer__sum answer__sum__3"></div>
+                </form>
+
+                <!--選択肢４-->
+                <form action="" method="post" class="choice-form">
+                    <div class="fix__text__No">4</div><button class="select__button select__button__4" type="button" value="4"></button>
+                    <div class="answer__sum answer__sum__4"></div>
+                </form>
+            </div>
+        </div>
+
+        <!-- テキスト問題 3択テキスト選択肢モード -->
+        <div class="question question__text__3text">
+            <div class="select_button_area">
+
+                <!--選択肢１-->
+                <form action="" method="post" class="choice-form">
+                    <div class="fix__text__No">1</div><button class="select__button select__button__1" type="button" value="1"></button>
+                    <div class="answer__sum answer__sum__1"></div>
+                </form>
+                
+                <!--選択肢２-->
+                <form action="" method="post" class="choice-form">
+                    <div class="fix__text__No">2</div><button class="select__button select__button__2" type="button" value="2"></button>
+                    <div class="answer__sum answer__sum__2"></div>
+                </form>
+
+                <!--選択肢３-->
+                <form action="" method="post" class="choice-form">
+                    <div class="fix__text__No">3</div><button class="select__button select__button__3" type="button" value="3"></button>
+                    <div class="answer__sum answer__sum__3"></div>
+                </form>       
+            </div>
+        </div>
+
+        <!-- テキスト問題 2択テキスト選択肢モード -->
+        <div class="question question__text__2text">
+          
+            <div class="select_button_area">
+                <!--選択肢１-->
+                <form action="" method="post" class="choice-form">
+                    <div class="fix__text__No">1</div><button class="select__button select__button__1"  type="button" value="1"></button>
+                    <div class="answer__sum answer__sum__1"></div>
+                </form>
+                
+                <!--選択肢２-->
+                <form action="" method="post" class="choice-form">
+                    <div class="fix__text__No">2</div><button class="select__button select__button__2" type="button" value="2"></button>
+                    <div class="answer__sum answer__sum__2"></div>
+                </form>
+            </div>
+        </div>
+
+    </maim>
+
+
+    
+    <footer>    
+    <!-- ランキング表示画面 -->
+    <div class="ranking_area" id="ranking_area">
+        <pre id="index_ranking_area"></pre>
+    </div>
+       
+    </footer>
+
+    
+    <!-- socket.io -->
+    <script src="/socket.io/socket.io.js"></script>
+    <!-- 既存 -->
+    <script src="/js/main.js"></script>
+</body>
+</html>

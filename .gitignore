@@ -1,0 +1,5 @@
+# GitHubなどサーバー上に上げないもの
+# Node.jsでのフォルダ
+node_modules
+# ↓管理者パスワードのファイル
+.env

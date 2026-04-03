@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <link rel="stylesheet" href="css/adminstyle.css">
+  <title>管理者画面</title>
+</head>
+<body>
+
+<div id="login_screen">
+  <h2>管理者認証</h2>
+  <input type="password" id="admin_pw">
+  <button id="login_btn">ログイン</button>
+</div>
+
+
+<div id="admin_panel" style="display:none;">
+<!-- 聖域 -->
+
+
+  <div class="control-wrapper">
+
+    <!-- 出題制御 -->
+    <div class="control-block">
+      <h3>出題制御</h3>
+      <div class="control-row">
+        <label>問題番号</label>
+        <input id="question_num" type="number" value="0">
+       
+      </div>
+
+      <div class="control-row buttons">
+        <div>
+          <button id="question_standby" type="button">① 出題準備</button>
+          <button id="question_start" type="button">② 出題開始</button>
+          <button id="question_delete" type="button">出題取消</button>
+          <button id="phase_reset" type="button">フェーズを準備中へ強制変更</button>
+        </div>
+      </div>
+      <div>
+        <pre class="system_log" id="question_info"></pre>
+      </div>
+    </div>
+
+    <!-- 解答制御 -->
+    <div class="control-block">
+      <h3>解答制御</h3>
+      <div class="control-row">
+        <label>正解変更</label>
+        <!-- 多数決アンケートなど正解を後付けするなどのときに使用 -->
+        <input id="answer_num" type="number" value="" min="0" max="10">
+        <button id="answer_num_set" type="button">変更</button>
+      </div>
+
+      <div class="control-row buttons">
+        <button id="answer_check_btn" type="button">③ アンサーチェック</button>
+        <button id="question_result" type="button">④ 正解発表</button>
+      </div>
+      <div>
+        <!-- ここに正解情報を記載 -->
+        <pre class="system_log" id="answer_info"></pre>
+      </div>
+
+    </div>
+
+
+
+    <!-- 解答制御 -->
+    <div class="control-block">
+      <h3>選択肢と解答状況 (Q.<span class="now_Qid">-</span>)</h3>
+        <div id="answerStats">
+          <div id="answer_counts"></div>
+        </div>
+    </div>
+
+  </div>
+
+  <!-- ログ表示 -->
+  <div class="log-block">
+    <h3>システムログ</h3>
+    <pre class="system_log" id="system_log_phase"></pre>
+    <pre class="system_log" id="system_log_message"></pre>
+    <pre class="system_log" id="system_log_info"></pre>
+  </div>
+
+
+  <div class="admin-ranking-wrapper">
+
+    <div class="ranking-box">
+      <h3>総合成績</h3>
+      <pre id="admin_total_ranking"></pre>
+      
+    </div>
+
+    <div class="ranking-box">
+      <h3>この問題の解答一覧(Q.<span class="now_Qid">-</span>)</h3>
+      <pre id="admin_question_all"></pre>
+      
+    </div>
+
+    <div class="ranking-box">
+      <h3>この問題の正解者(Q.<span class="now_Qid">-</span>)</h3>
+      <pre id="admin_question_correct"></pre>
+      
+    </div>
+
+  </div>
+
+  <h3>ランキング表示</h3>
+  <div class="ranking-controls">
+    <!-- 早押しランキング反映ボタン -->
+    <button id="total_ranking_btn" type="button">総合成績発表</button>
+    <button id="correct_best_btn" type="button">⑤ 早押しベスト４</button>
+    <button id="correct_worst_btn" type="button">⑤ 早押しワースト４</button>
+    <button id="ranking_none_btn" type="button">⑥ 表示終了</button>
+    <button id="hybrid_worst_btn" type="button">⑤ 早押しワースト４（ハイブリッドルール・最下位ポイント没収）</button>
+  </div>
+
+
+
+  <h2>問題登録</h2>
+
+  <div id="registerForm">
+
+    <!-- 1行目：QID / カテゴリ / メモ -->
+    <div class="form-row triple">
+      <div class="form-group">
+        <label>Qid *</label>
+        <input type="number" id="qid">
+      </div>
+
+      <div class="form-group">
+        <label>問題カテゴリ *</label>
+        <select id="category">
+          <option value="normal">normal</option>
+          <!-- アンケートやギャンブルタイム -->
+          <option value="event">event</option>
+        </select>
+      </div>
+
+    </div>
+    <!-- メモ -->
+    <div class="form-group">
+      <label>メモ（前フリなど）</label>
+      <input type="text" id="memo">
+    </div>
+    <!-- 問題文 -->
+    <div class="form-group full">
+      <label>問題文 *</label>
+      <input type="text" id="questionText">
+    </div>
+
+    <!-- 制限時間 / 正解番号 / ポイント -->
+    <div class="form-row quadruple">
+      <div class="form-group">
+        <label>制限時間 *</label>
+        <input type="number" id="timeLimitSec">
+      </div>
+
+      <div class="form-group">
+        <label>正解の選択肢 *</label>
+        <input type="number" id="correctIndex" min="1" max="4">
+      </div>
+
+      <div class="form-group">
+        <label>正解ポイント *</label>
+        <input type="number" id="pointCorrect">
+      </div>
+
+      <div class="form-group">
+        <label>不正解ポイント</label>
+        <input type="number" id="pointWrong">
+      </div>
+    </div>
+
+    <!-- 選択肢 -->
+    <div class="choices-block">
+      <div class="form-group">
+        <label>選択肢1 *</label>
+        <input type="text" id="choice1">
+      </div>
+
+      <div class="form-group">
+        <label>選択肢2 *</label>
+        <input type="text" id="choice2">
+      </div>
+
+      <div class="form-group">
+        <label>選択肢3</label>
+        <input type="text" id="choice3">
+      </div>
+
+      <div class="form-group">
+        <label>選択肢4</label>
+        <input type="text" id="choice4">
+      </div>
+    </div>
+
+    <!-- 解説 -->
+    <div class="form-group full">
+      <label>問題の解説</label>
+      <input type="text" id="explanation">
+    </div>
+
+    <!-- ボタン -->
+
+    <div class="form-submit">
+      <button id="excelDeleteBtn">全削除</button>
+      <button id="registerBtn">追加/修正反映</button>
+    </div>
+
+  </div>
+
+
+
+  <h2>Excel一括貼り付け</h2>
+  <div class="excel-area">
+  <textarea id="bulkInput" rows="5" cols="120"
+    placeholder="Excelからコピーしてここに貼り付け"></textarea>
+  </div>
+  <button id="bulkPreviewBtn">登録確認（先頭を反映）</button>
+
+
+  <h2>登録済み問題一覧</h2>
+
+  <table id="questionList">
+    <thead>
+      <tr>
+        <th>出題</th>
+        <th>修正</th>
+        <th>削除</th>
+        <th>確認</th>
+        <th>Qid</th>
+        <th>カテゴリ</th>
+        <th>メモ</th>
+        <th>問題文</th>
+        <th>制限時間</th>
+        <th>選択肢1</th>
+        <th>選択肢2</th>
+        <th>選択肢3</th>
+        <th>選択肢4</th>
+        <th>正解</th>
+        <th>正解P</th>
+        <th>不正解P</th>
+        <th>解説</th>
+      </tr>
+    </thead>
+    <tbody id="questionListBody"></tbody>
+  </table>
+
+
+
+  <script src="/socket.io/socket.io.js"></script>
+  <script src="/js/admin.js"></script>
+
+<!-- 聖域 -->
+</div>
+
+</body>
+</html>

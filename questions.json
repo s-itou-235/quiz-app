@@ -1,0 +1,128 @@
+[
+  {
+    "id": 1,
+    "category": "normal",
+    "memo": "デバッグ",
+    "questionText": "デバッグ３択",
+    "timeLimitSec": 5,
+    "choices": [
+      "デバッグ選択１",
+      "デバッグ選択２",
+      "デバッグ選択３"
+    ],
+    "correctIndex": 1,
+    "explanation": "選択肢３択で３Pのようなもの",
+    "point": {
+      "correct": 3,
+      "wrong": 0
+    }
+  },
+  {
+    "id": 1000,
+    "category": "event",
+    "memo": "デバッグアンケート",
+    "questionText": "次回開催は？",
+    "timeLimitSec": 5,
+    "choices": [
+      "やりたい",
+      "やりたくない"
+    ],
+    "correctIndex": -1,
+    "explanation": "スコア加算などなしのシンプルなアンケート",
+    "point": {
+      "correct": 0,
+      "wrong": 0
+    }
+  },
+  {
+    "id": 1001,
+    "category": "event",
+    "memo": "デバッグイベント募集",
+    "questionText": "ダーツ対決参加する？",
+    "timeLimitSec": 5,
+    "choices": [
+      "参加する（先着4人）",
+      "参加しない"
+    ],
+    "correctIndex": 0,
+    "explanation": "正解設定はするがアンケート目的なのでポイント０",
+    "point": {
+      "correct": 0,
+      "wrong": 0
+    }
+  },
+  {
+    "id": 1002,
+    "category": "event",
+    "memo": "デバッグイベント予想",
+    "questionText": "ダーツ対決に勝つのは？",
+    "timeLimitSec": 5,
+    "choices": [
+      "Aさん",
+      "Bさん",
+      "Cさん",
+      "Dさん"
+    ],
+    "correctIndex": -1,
+    "explanation": "０→正解無しの意味。正解選択肢を後で設定する予想的中で1ポイント",
+    "point": {
+      "correct": 1,
+      "wrong": 0
+    }
+  },
+  {
+    "id": 0,
+    "category": "normal",
+    "memo": "デバッグ",
+    "questionText": "デバッグ２択",
+    "timeLimitSec": 5,
+    "choices": [
+      "デバッグ選択１",
+      "デバッグ選択２"
+    ],
+    "correctIndex": 1,
+    "explanation": "選択肢２択で２Pのようなもの",
+    "point": {
+      "correct": 2,
+      "wrong": 0
+    }
+  },
+  {
+    "id": 2,
+    "category": "normal",
+    "memo": "デバッグ",
+    "questionText": "デバッグ４択",
+    "timeLimitSec": 5,
+    "choices": [
+      "デバッグ選択１",
+      "デバッグ選択２",
+      "デバッグ選択３",
+      "デバッグ選択４"
+    ],
+    "correctIndex": 1,
+    "explanation": "選択肢３択で４Pのようなもの",
+    "point": {
+      "correct": 4,
+      "wrong": 0
+    }
+  },
+  {
+    "id": 3,
+    "category": "normal",
+    "memo": "本番想定",
+    "questionText": "日本最南端の地がある都道府県は？",
+    "timeLimitSec": 15,
+    "choices": [
+      "北海道",
+      "東京都",
+      "鹿児島県",
+      "沖縄県"
+    ],
+    "correctIndex": 1,
+    "explanation": "東京都の沖ノ鳥島が、沖縄県より南にある",
+    "point": {
+      "correct": 1,
+      "wrong": 0
+    }
+  }
+]

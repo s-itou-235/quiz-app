@@ -1,0 +1,613 @@
+/* =========================================
+   全体
+========================================= */
+
+body {
+  font-family: Arial, sans-serif;
+  background: #f4f6f9;
+  margin: 20px;
+  min-width: 720px;
+}
+
+/* body {
+  font-family: 'Consolas', monospace;
+  background: #0b1118;
+  color: #cde7ff;
+  margin: 20px;
+} */
+
+h2 {
+  margin-bottom: 15px;
+}
+
+/* ======================================
+   コントロール全体
+====================================== */
+
+.control-wrapper {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin: 20px 0;
+}
+
+.control-block {
+  background: linear-gradient(#535353, #727272);
+  border: 1px solid #222;
+  padding: 8px;
+  width: 30%;
+  border-radius: 8px;
+
+}
+
+.control-block h3 {
+  color: #39ff75;
+  font-size: 20px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  border-bottom: 1px solid #2a2a2a;
+  padding-bottom: 6px;
+}
+
+
+/* 行レイアウト */
+.control-row {
+  margin-top: 10px;
+}
+
+.control-row label {
+  display: inline-block;
+  font-size: 14px;
+  margin-bottom: 6px;
+  font-weight: bold;
+  color: #ddd;
+  padding: 4px 8px;
+}
+
+
+/* 数値入力 */
+#question_num,
+#answer_num {
+  width: 80px;
+  padding: 6px 8px;
+  background: #111;
+  color: #00ff66;
+  font-family: 'Consolas', monospace;
+  font-size: 16px;
+  border: 1px solid #222;
+  border-radius: 4px;
+
+}
+
+#question_num:focus,
+#answer_num:focus {
+  outline: none;
+  box-shadow:
+    inset 0 0 10px rgba(0,255,100,0.7);
+}
+
+/* ボタン行 */
+.control-row.buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  
+}
+
+/* =============================
+   ボタンデザイン
+============================= */
+
+button {
+  padding: 10px 14px;
+  border-radius: 6px;
+  border: 1px solid #1a1a1a;
+  background: linear-gradient(#5a5a5a, #3c3c3c);
+  color: #f0f0f0;
+  font-size: 13px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.1s ease;
+  box-shadow:
+    0 3px 0 #222,
+    inset 0 1px 2px rgba(255,255,255,0.15);
+  margin-top: 5px;
+}
+
+button:active {
+  transform: translateY(2px);
+  box-shadow:
+    0 1px 0 #222,
+    inset 0 1px 4px rgba(0,0,0,0.6);
+}
+
+
+/* 出題準備 */
+#question_standby {
+  border-color: #4da6ff;
+  color: #4da6ff;
+  border: 1px solid #4da6ff;
+}
+
+#question_standby:hover {
+  background: #002b44;
+  box-shadow: 0 0 8px #4da6ff;
+}
+
+/* 出題開始 */
+#question_start {
+  border-color: #00ff88;
+  color: #00ff88;
+  border: 1px solid #00cc66;
+}
+
+#question_start:hover {
+  box-shadow:
+    0 0 6px rgba(0,255,100,0.7),
+    0 3px 0 #222;
+}
+
+#question_start:hover {
+  background: #003322;
+  box-shadow: 0 0 8px #00ff88;
+}
+
+/* 出題取消（危険操作） */
+#question_delete,
+#hybrid_worst_btn,
+#phase_reset {
+  border-color: #ff4d4d;
+  color: #ff4d4d;
+  border: 1px solid #cc3333;
+}
+
+#question_delete:hover,
+#hybrid_worst_btn:hover,
+#phase_reset:hover {
+  background: #330000;
+  box-shadow: 0 0 10px #ff0000;
+}
+
+/* 再取得（補助） */
+#refresh {
+  background: #6c757d;
+  color: white;
+}
+
+#refresh:hover {
+  background: #5a6268;
+  box-shadow: 0 0 8px #6c757d;
+}
+
+/* アンサーチェック */
+#answer_check_btn {
+  border-color: #1fe1ff;
+  color: #1fe1ff;
+}
+
+#answer_check_btn:hover {
+  background: #332800;
+  box-shadow: 0 0 8px #1fe1ff;
+}
+
+
+/* 正解発表 */
+#question_result {
+  border-color: #ffcc00;
+  color: #ffcc00;
+}
+
+#question_result:hover {
+  background: #332800;
+  box-shadow: 0 0 8px #ffcc00;
+}
+
+
+#answerStats{
+  color: #ffffff;
+  font-size: 18px;
+}
+
+/* ======================================
+   ログ表示
+====================================== */
+
+.log-block {
+  margin-top: 20px;
+  background: #1e1e1e;
+  padding: 10px;
+  border-radius: 6px;
+}
+
+.log-block h3 {
+  color: #ffffff;
+  margin-top: 0;
+  font-size: 15px;
+}
+
+.system_log {
+  color: #00ff99;
+  font-family: Consolas, monospace;
+  font-size: 13px;
+  white-space: pre-wrap;
+  max-height: 200px;
+  overflow-y: auto;
+}
+
+
+/* ==============================
+   ランキング表示
+============================== */
+
+.ranking-box {
+  flex: 1;
+  border: 2px solid #000;
+  padding: 10px;
+  background: #f5f5f5;
+  white-space: pre-wrap;
+}
+
+
+/* ランキング全体レイアウト */
+.admin-ranking-wrapper {
+  display: flex;
+  gap: 5px;
+  padding: 5px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+
+/* 各ランキングボックス*/
+.ranking-box {
+  background-color: #111821;
+  border: 1px solid #00ff88;
+  box-shadow: 
+    0 0 8px rgba(0,255,136,0.4),
+    inset 0 0 8px rgba(0,255,136,0.1);
+  padding: 5px;
+  width: 30%;
+  min-height: 300px;
+  border-radius: 6px;
+}
+
+/* ==============================
+   ランキング発表ボタン
+============================== */
+.ranking-controls {
+  margin-top: 15px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+
+/* ==============================
+   見出し
+============================== */
+
+
+.ranking-box h3 {
+  margin-top: 0;
+  margin-bottom: 1px;
+  font-size: 18px;
+  color: #00ffcc;
+  border-bottom: 1px solid #00ff88;
+  padding-bottom: 1px;
+  letter-spacing: 1px;
+}
+
+
+/* ==============================
+   ランキング本文
+============================== */
+
+.ranking-box pre {
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.8;
+  white-space: pre-wrap;
+  color: #00ff88;
+}
+
+
+/* ==============================
+   ちょい発光アニメ（任意）
+============================== */
+
+@keyframes flicker {
+  0% { opacity: 1; }
+  50% { opacity: 0.95; }
+  100% { opacity: 1; }
+}
+
+.ranking-box {
+  animation: flicker 3s infinite;
+}
+
+
+
+/* =========================================
+   フォームコンテナ
+========================================= */
+
+#registerForm {
+  background: #ffffff;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+}
+
+
+
+/* =========================================
+   共通フォーム部品
+========================================= */
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 12px;
+}
+
+.form-group label {
+  font-size: 13px;
+  font-weight: bold;
+  margin-bottom: 4px;
+  color: #333;
+}
+
+.form-group input,
+.form-group select {
+  padding: 6px 8px;
+  font-size: 14px;
+  border: 1px solid #c9d2e3;
+  border-radius: 4px;
+  box-sizing: border-box;
+}
+
+.form-group input:focus,
+.form-group select:focus {
+  outline: none;
+  border-color: #4a6cd4;
+  box-shadow: 0 0 4px rgba(74,108,212,0.3);
+}
+
+
+
+/* =========================================
+   横並び行
+========================================= */
+
+.form-row {
+  display: flex;
+  gap: 15px;
+  margin-bottom: 10px;
+}
+
+.form-row.triple .form-group {
+  flex: 1;
+}
+
+.form-row.quadruple .form-group {
+  flex: 1;
+}
+
+/* 横いっぱい */
+.full {
+  width: 100%;
+}
+
+/* =========================================
+   選択肢ブロック
+========================================= */
+
+.choices-block {
+  margin-top: 10px;
+  padding-top: 10px;
+  border-top: 2px solid #e3e8f2;
+}
+
+/* =========================================
+   ボタン
+========================================= */
+
+.form-submit {
+  margin-top: 15px;
+  text-align: right;
+}
+
+#registerBtn {
+  padding: 8px 16px;
+  font-size: 14px;
+  background: #4a6cd4;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+#registerBtn:hover {
+  background: #3a58b0;
+}
+
+
+
+
+
+
+
+/* =========================================
+   登録済み問題一覧
+========================================= */
+
+#questionList {
+  width: 100%;
+  border-collapse: collapse;
+  table-layout: auto;
+  font-size: 13px;
+  background: #ffffff;
+  margin-top: 15px;
+
+  display: block;
+  overflow-x: auto; /* 横スクロール許容 */
+}
+
+/* ヘッダー */
+#questionList thead th {
+  position: sticky;
+  top: 0;
+  background: #e8eef7;
+  border: 1px solid #c9d2e3;
+  padding: 6px 8px;
+  font-weight: bold;
+  text-align: center;
+  white-space: nowrap;
+  z-index: 2;
+}
+
+/* セル共通 */
+#questionList td {
+  border: 1px solid #d6dbe6;
+  padding: 5px 6px;
+  vertical-align: top;
+  word-break: break-word;
+}
+
+/* 偶数行背景 */
+#questionList tbody tr:nth-child(even) {
+  background: #f8fbff;
+}
+
+/* ホバー */
+#questionList tbody tr:hover {
+  background: #e3efff;
+  transition: 0.15s;
+}
+
+/* ==============================
+   操作列
+================================= */
+
+#questionList td:nth-child(1),
+#questionList td:nth-child(2),
+#questionList td:nth-child(3),
+#questionList td:nth-child(4) {
+  text-align: center;
+  white-space: nowrap;
+}
+
+/* ボタン共通 */
+#questionList button {
+  padding: 3px 8px;
+  font-size: 12px;
+  border-radius: 4px;
+  border: none;
+  cursor: pointer;
+}
+
+/* 出題 */
+.issue-btn {
+  background: #4a6cd4;
+  color: white;
+}
+
+.issue-btn:hover {
+  background: #3a58b0;
+}
+
+/* 修正 */
+.edit-btn {
+  background: #ffaa00;
+  color: white;
+}
+
+.edit-btn:hover {
+  background: #e69500;
+}
+
+/* 削除 */
+.delete-btn {
+  background: #d9534f;
+  color: white;
+}
+
+.delete-btn:hover {
+  background: #b52b27;
+}
+
+/* ==============================
+   エラー表示
+================================= */
+
+.error-cell {
+  color: #d9534f;
+  font-weight: bold;
+  background: #ffecec;
+  text-align: center;
+}
+
+/* ==============================
+   数値列中央寄せ
+   Qid / 制限時間 / 正解 / 正解P/ 不正解P 
+================================= */
+
+#questionList td:nth-child(5),
+#questionList td:nth-child(9),
+#questionList td:nth-child(14),
+#questionList td:nth-child(15),
+#questionList td:nth-child(16) {
+  text-align: center;
+  white-space: nowrap;
+}
+
+/* ==============================
+   長文列制御
+   メモ /問題文 / 解説
+================================= */
+
+#questionList td:nth-child(7),
+#questionList td:nth-child(8),
+#questionList td:nth-child(17) {
+  min-width: 200px;
+  max-width: 400px;
+}
+
+/* ==============================
+   長文列制御
+   選択肢内容一覧
+================================= */
+
+#questionList td:nth-child(10),
+#questionList td:nth-child(11),
+#questionList td:nth-child(12),
+#questionList td:nth-child(13) {
+  min-width: 150px;
+  max-width: 300px;
+}
+
+/* ==============================
+   コンパクト表示調整
+================================= */
+
+#questionList th,
+#questionList td {
+  line-height: 1.4;
+}
+
+/* スクロールバー視認性向上（任意） */
+#questionList::-webkit-scrollbar {
+  height: 8px;
+}
+
+#questionList::-webkit-scrollbar-thumb {
+  background: #b8c7e6;
+  border-radius: 4px;
+}
+
+
+/* JS追加用 */
+.phase-active{
+  border:3px solid #ff3333 !important;
+  font-weight:bold;
+}

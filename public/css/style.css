@@ -1,0 +1,731 @@
+
+/* 全体の背景デザイン（リモコン風） */
+body {
+  background-color: #747474;
+  font-family: 'Arial', sans-serif;
+}
+
+
+
+
+/* 登録画面（仮） */
+
+/* ヘッダー部分の設定 */
+header {
+  display: flex; 
+  justify-content: space-between; /* 子要素である左右のブロックをヘッダーの両端に配置 */
+  align-items: top; 
+  padding: 10px 10px; /* ヘッダーの内側の余白を設定 */
+
+}
+
+
+
+
+
+
+.header__left {
+  display: flex; /* 左側のブロックをFlexコンテナにし、その中の要素を制御 */
+  flex-direction: column; /* 左側のブロックの子要素（タイトルロゴと登録名）を縦方向に並べる */
+  justify-content: flex-start; /* 縦方向の並び順で、上端に揃える */
+  /* align-items: flex-start; もしくは stretch (デフォルト) で左揃え */
+
+  align-items: center;   /* （横中央揃え） */
+
+  width: 30%;
+  border: 10px solid #ffffff;
+  border-radius: 3px;
+  background-color: aqua;
+  padding: 5px;
+
+}
+
+.entry__date {
+  text-align: center;   /* ★ 中央揃え */
+  margin-bottom: 15px;
+}
+
+.entry__date p {
+  margin: 0; /* pタグのデフォルトのマージンをリセット */
+  font-size: 20px;
+  color: #000000;
+  margin-top: 5px;
+  text-decoration: underline;
+}
+
+
+#user_name {
+  display: inline-block;
+  margin-top: 5px;
+  border: solid 2px #000000;
+  padding: 5px 15px;
+  font-size: 14px;
+  width: 80%;
+}
+
+
+#name_input {
+  width: 80%;
+  height: 35px;
+  margin-bottom: 2px;
+  text-align: center;
+  background-color: aqua;
+  border: 2px solid #000;
+  font-size: 14px;
+}
+
+#name_update_btn {
+  width: 75%;
+  height: 40px;
+  border: 3px solid #000000;
+  background-color: aqua;
+  cursor: pointer;
+}
+
+#name_update_btn:hover {
+  background-color: #ffffff;
+}
+
+/* 解答席モニター */
+
+.header__center{
+  margin-left: 3%;
+  width: 40%;
+  border: 10px solid #ffffff;
+  border-radius: 3px;
+  background-color: aqua;
+  padding: 5px;
+
+}
+
+#monitor_title{
+  font-size: 25px;
+  margin-top: 3px;
+  margin-bottom: 3px;
+  
+  text-align: center;
+  text-decoration: underline;
+}
+
+.monitor__score{
+  font-size: 22px;
+  margin-top: 3px;
+  margin-bottom: 3px;
+}
+
+#monitor_result{
+  margin-top: 10px;
+  margin-bottom: 5px;
+  font-size: 30px;
+  text-align: center;
+}
+
+
+/* 解答ランプ */
+
+.header__right{
+  width: 100px;
+  margin-left: 3%;
+
+}
+
+
+.answer__lamp {
+  margin-right: 5px;
+  margin-left: 3px;
+  border-radius: 10px;
+  /* ランプそのものの枠線 */
+  border: 2px solid #ffffff; 
+ 
+  
+  
+  text-align: center; 
+  width: 80%;
+  height: 200px;
+
+  /* 背景色を少し明るい黄色に */
+  background-color: #ffeb3b; /* より明るい黄色 */
+
+  box-shadow:
+    /* 外枠の外枠用 */
+    -7px -7px rgb(0, 0, 0),
+    7px -7px rgb(0, 0, 0),
+    7px 7px rgb(0, 0, 0),
+    -7px 7px rgb(0, 0, 0),
+    /* 光の表現用 */
+    0 0 20px 5px rgba(255, 255, 0, 0.7), /* ぼんやりと広がる黄色い光 */
+    inset 0 0 10px 2px rgba(255, 255, 200, 0.9); /* 内側の明るい光 */
+}
+
+
+.answer__lamp #answer_lamp_num {
+  margin-bottom: 3px;
+  font-size: 60px;
+  font-weight: bold;
+}
+
+.answer__lamp #answer_lamp_info {
+  margin: 0; /* pタグのデフォルトマージンをリセット */
+  margin-top: 30px;
+  font-size: 14px;
+  color: #000000;
+}
+
+
+
+
+/* 出題画面（背景） */
+
+
+
+
+
+/* 出題画面（問題文） */
+
+
+
+.question__default{
+
+  background-color: #a4a4a4;
+  border: 3px solid #000000;
+  padding: 5px;
+  font-size: 40px;
+  text-align: center;
+}
+
+.question__text__4text{
+  background-color: #a4a4a4;
+  border: 3px solid #000000;
+  padding: 5px;
+  /* デフォルトは非表示 */
+  /* display: none; */
+}
+
+.question__text__3text{
+  background-color: #a4a4a4;
+  border: 3px solid #000000;
+  padding: 5px;
+  /* デフォルトは非表示 */
+  /* display: none; */
+}
+
+.question__text__2text{
+  background-color: #a4a4a4;
+  border: 3px solid #000000;
+  padding: 5px;
+  /* デフォルトは非表示 */
+  /* display: none; */
+}
+
+
+
+
+.question_area {
+    display: flex;
+    align-items: center;
+    margin-bottom: 25px;
+    margin-top: 25px; 
+       
+}
+
+.fix__text__Q{
+  width: 5%;
+  color: #ffffff;
+  font-size: 45px;
+  text-align: left;
+}
+
+#question_form {
+    width: 72%;
+    height: 160px;
+    
+    display: flex;
+    align-items: center;  
+    justify-content: flex-start; 
+    padding: 0 20px; 
+     
+    /*ボタン風デザイン  */
+    /* 背景色を設定 */
+    background: #ffffff;
+    /* 角を丸く設定 */
+    border-radius: 30px;
+    /* 設定した背景色よりちょっと濃い色を設定 */
+    border-bottom: solid 10px #bbbbbb;
+    
+    color: #000000;
+    text-shadow: 0 1px 0 #333, 0 3px 0 #333, 0 4px 10px rgba(0, 0, 0, 0.5);
+
+    box-shadow:
+        -3px -3px rgb(0, 0, 0),
+        3px -3px rgb(0, 0, 0),
+        3px 3px rgb(0, 0, 0),
+        -3px 3px rgb(0, 0, 0);
+    ;
+}
+
+#question_text{
+  font-size: clamp(24px, 8vw, 40px);
+  word-break: break-word;
+  vertical-align: middle;
+}
+
+
+
+
+
+#time_limit {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    width: 160px;
+    height: 160px;
+
+    margin-left: 3%;
+
+    text-align: center;
+    border-radius: 50%;
+
+    /*ボタン風デザイン  */
+    /* 背景色を設定 */
+    background: #999999;
+    /* 角を丸く設定 */
+    border-radius: 50%;
+    /* 設定した背景色よりちょっと濃い色を設定 */
+    border-bottom: solid 10px #666666;
+
+    
+    text-shadow: 0 1px 0 #ccc, 0 3px 0 #ccc, 0 4px 10px rgba(0, 0, 0, 0.5);
+
+    /* リモコン風デザイン兼枠線変化用 */
+    box-shadow:
+        -3px -3px rgb(0, 0, 0),
+        3px -3px rgb(0, 0, 0),
+        3px 3px rgb(0, 0, 0),
+        -3px 3px rgb(0, 0, 0);
+    ;
+}
+
+#time_limit_count {
+    font-size: 800%;
+    color: #FFFFFF;
+}
+
+
+
+
+
+/* 出題画面（選択肢） */
+
+.choice-form {
+    display: flex;
+    align-items: center;
+}
+
+
+/* 選択肢番号の部分 */
+/* 開発メモ 立体文字は解除してもいいかもしれない */
+.fix__text__No{
+  width: 5%;
+  color: #ffffff;
+  
+  font-size: 50px;
+  text-align: left;
+}
+
+
+
+
+.select__button {
+  /* ボタンの大きさ関連 */
+    width: 72%;
+    border-radius: 15px;
+    margin-bottom: 20px;
+
+    /*ボタンの文字関連  */
+    text-align: left;
+    white-space: normal;
+    font-size: clamp(24px, 10vw, 40px);
+    word-break: break-word;
+    
+    /* 文字色（立体表示） */
+    color: #ffffff;
+    text-shadow: 0 1px 0 #ccc, 0 3px 0 #ccc, 0 4px 10px rgba(0, 0, 0, 0.5);
+
+    
+
+
+    /* リモコン風デザイン兼枠線変化用 */
+   box-shadow:
+        -3px -3px rgb(0, 0, 0),
+        3px -3px rgb(0, 0, 0),
+        3px 3px rgb(0, 0, 0),
+        -3px 3px rgb(0, 0, 0);
+    ;
+}
+
+.question__text__4text .select__button {
+  height: 80px;
+}
+
+.question__text__3text .select__button {
+  height: 105px;
+}
+
+.question__text__2text .select__button {
+  height: 160px;
+}
+
+
+
+
+
+/* 作成メモ 文字を見やすくするための色調整はする */
+/* ただしベースの青赤緑黄という配色は変えない */
+.select__button__1 {
+    background: #0000FF;
+    /* 下枠線設定した背景色よりちょっと濃い色を設定 */
+    border-bottom: solid 10px #0000BB;
+}
+.select__button__2 {
+    background: #FF0000;
+    /* 下枠線設定した背景色よりちょっと濃い色を設定 */
+    border-bottom: solid 10px #BB0000;
+}
+
+.select__button__3 {
+    background: #00FF00;
+    /* 下枠線設定した背景色よりちょっと濃い色を設定 */
+    border-bottom: solid 10px #00BB00;
+}
+
+.select__button__4 {  
+    background: #EEEE00;
+    /* 下枠線設定した背景色よりちょっと濃い色を設定 */
+    border-bottom: solid 10px #BBBB00;
+}
+
+
+
+
+
+.answer__sum {
+    width: 20%;
+    height: 70px;
+
+    margin-left: 3%;
+    margin-bottom: 10px;
+    
+    display:flex;
+    justify-content:center;
+    align-items:center;
+
+    text-align: center;
+    font-size: 40px;
+
+    border-radius: 15px;
+
+    /*ボタン風デザイン  */
+    /* 背景色を設定 */
+    background: #FFFFFF;
+    /* 角を丸く設定 */
+    border-radius: 15px;
+    /* 設定した背景色よりちょっと濃い色を設定 */
+    border-bottom: solid 10px #bbbbbb;
+
+    /* リモコン風デザイン兼枠線変化用 */
+    box-shadow:
+        -3px -3px rgb(0, 0, 0),
+        3px -3px rgb(0, 0, 0),
+        3px 3px rgb(0, 0, 0),
+        -3px 3px rgb(0, 0, 0);
+    ;
+} 
+
+.question__text__4text .answer__sum {
+  height: 70px;
+  font-size: 40px;
+}
+
+.question__text__3text .answer__sum {
+  height: 90px;
+  font-size: 55px;
+}
+
+.question__text__2text .answer__sum {
+  height: 140px;
+  font-size: 70px;
+}
+
+
+
+
+.ranking_block {
+  text-align: center;
+  margin-right: 5px;
+}
+
+.ranking_table {
+  margin: 0 auto;
+  border-collapse: collapse;
+  font-size: 20px;
+  background-color: rgb(87, 221, 255); 
+}
+
+.ranking_table th,
+.ranking_table td {
+  border: 1px solid #333;
+  padding: 8px 16px;
+}
+
+.ranking_table th {
+  background-color: #eee;
+}
+
+.ranking_table td:nth-child(3) {
+  background-color: yellow; /* 正解数列 */
+}
+
+
+
+
+/* スマホ表示 */
+@media (max-width: 428px){
+
+ body{
+    margin:0;
+    padding:0;
+    width:100%;
+  }
+
+  /* ヘッダー縦並び */
+  /* header全体 */
+  header{
+    display:grid;
+    grid-template-columns: 7fr 3fr;
+    grid-template-areas:
+      "left left"
+      "center right";
+    gap:8px;
+    padding:8px;
+  }
+
+  /* 名前登録 */
+  .header__left{
+    grid-area:left;
+    display:inline-block;
+    width: 90%;
+    height: 50%;
+    margin-bottom: 5px;
+  }
+
+  .entry__date{
+    margin-bottom:5px;
+  }
+
+  #name_input{
+    width:60%;
+    min-height: 60px;
+  }
+
+  #name_update_btn{
+    width:35%;
+    min-height: 60px;
+  }
+
+  /* 成績 */
+  .header__center{
+    grid-area:center;
+    width: 80%;
+    margin-top:5px;
+  }
+
+  .monitor__score{
+    text-align: left;
+    font-size:clamp(16px,2vw,28px);
+  }
+  #monitor_result{
+    font-size:clamp(24px,2vw,40px);
+  }
+
+  /* ランプ */
+  .header__right{
+    display:flex;
+    justify-content:center;
+    align-items:stretch;
+    
+  }
+  
+  #answer_lamp{
+    width: 100%;
+    min-height: 80px;
+    height: 180px;
+  }
+
+  /* 共通 */
+  .header__left,
+  .header__center,
+  .header__right{
+    text-align:center;
+    height: 80%;
+    margin-top: 2px;
+  }
+
+  
+  .question_area{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+
+    /* ← これが本質 */
+    margin: 12px 8px;   /* 外側余白 */
+    padding: 5px;      /* 内側余白 */
+
+
+  }
+ 
+
+
+  /* 問題文 */
+ .fix__text__Q{
+   display: none;
+ }
+
+  #question_text{
+    font-size:clamp(18px,8vw,26px);
+    word-break:break-word;
+    margin:8px;
+    padding:12px;
+  }
+
+  /* タイマー */
+  /* レイアウトごと変更も可 */
+  /* 縦長（PCレイアウトのランプ的表示にしたい */
+  #time_limit {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 25%;
+    height: 150px;
+    /* 角を丸く設定 */
+    border-radius: 30%;
+  }
+
+  #time_limit_count {
+      font-size:clamp(28px,20vw,60px);
+      color: #FFFFFF;
+  }
+
+  /* 選択肢エリア */
+  .fix__text__No{
+    display: none;
+  }
+  
+  .select_button_area{
+    display:flex;
+    flex-direction:column;
+    gap:5px;
+    padding:5px;
+  }
+
+  /* 選択肢ボタン */
+  .select__button{
+    width:80%;
+    min-height:60px;
+    font-size:clamp(16px,8vw,24px);
+    padding:5px;
+    white-space:normal;
+    word-break:break-word;
+  }
+
+  .question__text__4text .answer__sum,
+  .question__text__3text .answer__sum,
+  .question__text__2text .answer__sum{
+
+    display:flex;
+    justify-content:center;
+    align-items:center;
+
+    font-size:clamp(35px,6vw,70px);
+    /* 12pxなどの場合極端に小さくなりすぎるため */
+    word-break:break-word;
+    min-height:60px;
+    /* 縦方向に中央に配置をしたい*/
+    
+  }
+
+
+  .ranking_block {
+    width: 100%;
+  }
+
+  .ranking_table {
+    font-size: clamp(8px,3vw,18px);
+    background-color: rgb(87, 221, 255); 
+  }
+/* 聖域 */
+}
+
+
+
+
+/* JS追加用 */
+
+.none {
+  display: none;
+}
+
+
+/* 解答選択 */
+.user-ans{
+  box-shadow:
+        -7px -7px orange,
+        7px -7px orange,
+        7px 7px orange,
+        -7px 7px orange;
+    ;
+}
+.correct{
+  background-color: rgb(255, 191, 72);
+  border-bottom: 10px solid rgb(200, 150, 58);
+}
+
+/* ランプ */
+.lamp-on{
+  /* 背景色を少し明るい黄色に */
+  background-color: #ffeb3b; /* より明るい黄色 */
+
+  box-shadow:
+    /* 外枠の外枠用 */
+    -7px -7px rgb(0, 0, 0),
+    7px -7px rgb(0, 0, 0),
+    7px 7px rgb(0, 0, 0),
+    -7px 7px rgb(0, 0, 0),
+    /* 光の表現用 */
+    0 0 20px 5px rgba(255, 255, 0, 0.7), /* ぼんやりと広がる黄色い光 */
+    inset 0 0 10px 2px rgba(255, 255, 200, 0.9); /* 内側の明るい光 */
+}
+
+.lamp-off{
+  background-color: #aaaaaa; 
+  /* 光る影を消し、枠線用だけにする */
+    box-shadow:
+    -7px -7px rgb(0, 0, 0),
+    7px -7px rgb(0, 0, 0),
+    7px 7px rgb(0, 0, 0),
+    -7px 7px rgb(0, 0, 0);
+}
+
+/* タイマー */
+/* タイマーが動いているときは赤 */
+#time_limit.time__limit__active{
+  
+  /*ボタン風デザイン  */
+    /* 背景色を設定 */
+    background: #FF0000;
+
+    /* 設定した背景色よりちょっと濃い色を設定 */
+    border-bottom: solid 10px #bb0000;
+
+}
+
