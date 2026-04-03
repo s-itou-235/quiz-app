@@ -544,6 +544,7 @@ function resetGameState() {
   gameState.scores = {};
   gameState.playerNames = {};
   gameState.questionResults = {};
+  gameState.askedQuestionIds = {};
 }
 
 
@@ -553,7 +554,7 @@ function resetGameState() {
 
 // ===== 問題設定（★サーバーが唯一保持）=====
 // 不変
-const ANSWER_BUFFER_MS = 2000; // 出題～解答開始まで
+const ANSWER_BUFFER_MS = 5000; // 出題～解答開始まで
 
 
 
@@ -698,9 +699,7 @@ io.on("connection", (socket) => {
     gameState.correctAnswer = questionBank[questionId]?.correctIndex ?? undefined;
 
     emitAdminState();
-    // おそらくここで送信しているのが間違い
-    // emitAdminErrorはリロードで残したいものには使わない
-    // emitAdminError("[サーバー側最新]セットされた問題番号 → qid", gameState.questionId);
+    
 
     console.log("[ADMIN] qid set", gameState.questionId);
 
@@ -841,7 +840,7 @@ io.on("connection", (socket) => {
 
     
   // RTTがない or 異常値ならフォールバック
-  const MAX_RTT = 2000; // 2秒以上は異常
+  const MAX_RTT = 5000; // 5秒以上は異常
   const safeRtt = (rtt && rtt > 0 && rtt < MAX_RTT) ? rtt : null;
 
   // ① サーバー基準（絶対安全）

@@ -525,12 +525,12 @@ header {
 
   #name_input{
     width:60%;
-    min-height: 60px;
+    min-height: 40px;
   }
 
   #name_update_btn{
     width:35%;
-    min-height: 60px;
+    min-height: 40px;
   }
 
   /* 成績 */

@@ -218,6 +218,8 @@ for (let i = 0; i < 5; i++) {
 
 
 
+
+
 // ===============================
 // 状態管理
 // ===============================
@@ -281,6 +283,17 @@ function scrollToRanking() {
 // ・ページ読み込み時に /api/state を取得
 // ・サーバーの現在状態を見て画面を復元する
 window.addEventListener("load", async () => {
+  await syncState();
+});
+
+socket.on("connect", async () => {
+  console.log("[CLIENT] reconnected");
+
+  await syncState();
+});
+
+
+async function syncState() {
   const state = await fetch("/api/state").then(r => r.json());
   latestState = state;
   console.log("[CLIENT] load state", state);
@@ -333,7 +346,7 @@ window.addEventListener("load", async () => {
         /// 解答時の処理
         const myAnswer = state.answers?.[clientId];
         // シンプルにタイムオーバー（answer: 'over'） or 途中参加で解答無し
-        if(myAnswer.answer === "over" || !myAnswer){
+        if(!myAnswer || myAnswer.answer === "over"  ){
             
             // 0表示 タイマー背景灰色 時間切れ ランプ消灯
             time_limit_count.innerHTML = "0";
@@ -372,7 +385,7 @@ window.addEventListener("load", async () => {
         /// 解答時の処理
         const myAnswer = state.answers?.[clientId];
         // シンプルにタイムオーバー（answer: 'over'） or 途中参加で解答無し
-        if(myAnswer.answer === "over" || !myAnswer){
+        if(!myAnswer || myAnswer.answer === "over" ){
             
             // 0表示 タイマー背景灰色 時間切れ ランプ消灯（不正解確定のため）
             time_limit_count.innerHTML = "0";
@@ -421,7 +434,7 @@ window.addEventListener("load", async () => {
         scrollToQuestion();
 
         // タイムオーバー（answer: 'over'） or 途中参加で解答無し
-        if(myAnswer.answer === "over" || !myAnswer){
+        if(!myAnswer || myAnswer.answer === "over" ){
             // 0表示 タイマー背景灰色  
             time_limit_count.innerHTML = "0";
             time_limit.classList.remove("time__limit__active");
@@ -434,7 +447,7 @@ window.addEventListener("load", async () => {
             return;
         }
     }
-});
+};
 
 
 // ===============================
