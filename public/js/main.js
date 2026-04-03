@@ -1281,3 +1281,10 @@ socket.on("pointUpdateInfo", () => {
   time_limit.classList.remove("time__limit__active");
 
 });
+
+// ゲームリセット
+socket.on("game:reset", () => {
+  console.log("[RESET RECEIVED]");
+
+  location.reload(); // 一番確実
+});

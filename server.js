@@ -11,7 +11,7 @@ const app = express();
 
 app.use(cors({
   // このURLからだけアクセス許可
-  origin: ["http://localhost:3000"],
+  origin: ["http://localhost:3000","https://mou-fan-zu-feng-kuizutsuru.onrender.com/"],
   // HTTPメソッド制限
   methods: ["GET", "POST", "DELETE"],
   // Cookieや認証情報を許可
@@ -27,6 +27,8 @@ const apiLimiter = rateLimit({
 app.use(express.json());
 app.use(express.static("public"));
 app.use("/api", apiLimiter);
+
+
 
 
 const gameState = require("./gameState");
@@ -291,6 +293,24 @@ app.get("/api/state", (req, res) => {
   });
 });
 
+// ゲームリセット処理
+app.post("/api/admin/reset", (req, res) => {
+
+  // 🔒 簡易認証
+  if (req.query.password !== ADMIN_PASSWORD) {
+    return res.status(403).json({ error: "Forbidden" });
+  }
+
+  resetGameState();
+
+  // 🔥 全員に通知（重要）
+  io.emit("game:reset");
+
+  console.log("[RESET] game state reset");
+
+  res.json({ status: "reset done" });
+});
+
 
 const http = require("http");
 const { Server } = require("socket.io");
@@ -299,7 +319,7 @@ const server = http.createServer(app);
 const io = new Server(server, {
   cors: {
     // このURLのみ許可
-    origin: ["http://localhost:3000"],
+    origin: ["http://localhost:3000","https://mou-fan-zu-feng-kuizutsuru.onrender.com/"],
     // HTTPメソッド制限
     methods: ["GET", "POST"]
   }
@@ -514,6 +534,18 @@ function emitAdminError(message, detail = "") {
     detail
   });
 }
+
+// ゲームリセット
+function resetGameState() {
+  gameState.phase = "idle";
+  gameState.questionId = 0;
+  gameState.answersByClientId = {};
+  gameState.answerCounts = {};
+  gameState.scores = {};
+  gameState.playerNames = {};
+  gameState.questionResults = {};
+}
+
 
 // ===============================
 // 接続と同時に行うものなど

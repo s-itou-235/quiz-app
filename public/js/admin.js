@@ -1048,3 +1048,19 @@ socket.on("admin:correctAnswerInfo", (data) => {
   ${correctAnswer + 1} 「${choiceText}」
   （正解無しにする場合は正解を0に変更）`;
 });
+
+// ゲームリセット
+document.getElementById("reset_btn").onclick = async () => {
+  try {
+    const res = await fetch("/api/admin/reset?password=123456", {
+      method: "POST"
+    });
+
+    const data = await res.json();
+    alert("リセット完了");
+
+  } catch (err) {
+    console.error(err);
+    alert("リセット失敗");
+  }
+};
