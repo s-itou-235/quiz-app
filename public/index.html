@@ -42,7 +42,19 @@
         <div class="header__right">
             <!-- 解答権利有無表示　-->
             <div id="answer_lamp" class="answer__lamp">
-                <p id="answer_lamp_num"></p>     
+                <p id="answer_lamp_num"></p> 
+                <!-- この辺に時刻表示 -->
+                <!-- デバッグ用などではなく本実装にも反映する？ -->
+                <!-- 「〇〇さんランプの下の時刻どうなってます？」的な -->
+                <div id="debug_time">
+                    <!-- 本実装でもそのまま表示 -->
+                    <p id="client_time"></p>
+                    <!-- デバッグ用 -->
+                    <p id="server_time"></p>
+                    <p id="offset_time"></p>
+                    <p id="offsetEl"></p>
+                </div>
+
             </div>
         </div>
     </header>

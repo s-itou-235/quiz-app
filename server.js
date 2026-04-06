@@ -276,6 +276,10 @@ app.get("/api/state", (req, res) => {
   res.json({
     phase: gameState.phase,
     questionId: qid,
+    
+    // サーバーで取得した絶対的な時刻
+    // →main.jsでの const timeOffset = state.serverNow - Date.now();（〇〇行目あたり）参照
+    serverNow: Date.now(),
 
     // ===== 問題データ =====
     questionText: question?.questionText ?? "",
@@ -554,7 +558,7 @@ function resetGameState() {
 
 // ===== 問題設定（★サーバーが唯一保持）=====
 // 不変
-const ANSWER_BUFFER_MS = 5000; // 出題～解答開始まで
+const ANSWER_BUFFER_MS = 2000; // 出題～解答開始まで
 
 
 
@@ -846,22 +850,64 @@ io.on("connection", (socket) => {
   // ① サーバー基準（絶対安全）
   const serverElapsed = serverNow - gameState.answerOpenAt;
 
-  // ② RTT補正（レベル）
+  // ② RTT補正
   let correctedElapsed = serverElapsed;
-  if (safeRtt) {
+  if (safeRtt && safeRtt < 2000) {
     correctedElapsed = serverElapsed - (safeRtt / 2);
   }
 
-  // ③ クライアント時刻からの推定（③レベル）
+  // ③ クライアント時刻からの推定
   let clientElapsed = null;
-  if (clientSendTime) {
+  if (Number.isFinite(clientSendTime)) {
     clientElapsed = clientSendTime - gameState.answerOpenAt;
   }
 
-   // =========================
+  // 異常値チェック
+  // 通信ラグを考慮しつつチート検知
+  if (clientElapsed !== null) {
+    
+    // 問題の制限時間
+    const limitMs = gameState.answerCloseAt - gameState.answerOpenAt;
+
+    if (
+      clientElapsed < -1000 || // フライングしすぎ(開始前１秒以上)
+      clientElapsed > limitMs + 1000  // 制限時間超えすぎ（時間後１秒以上）
+    ) {
+      console.warn("[CHEAT DETECTED] clientElapsed invalid:", clientElapsed);
+      clientElapsed = null;
+    }
+  }
+
+  // サーバーとの時差検証
+  // サーバーとのラグが常識的な範囲か検証
+  if (clientElapsed !== null) {
+    
+    // サーバーとの差(ズル防止)
+    const diffFromServer = Math.abs(clientElapsed - serverElapsed);
+
+    // 通信ラグ（RTTベース）で１秒　か 0.3秒までは許す
+    const MAX_DIFF = Math.max(300, Math.min(safeRtt || 0, 1000));
+    
+    // サーバーとの差が規定値（概念的には非常識）かどうかチェック
+    if (diffFromServer > MAX_DIFF) {
+      // ↓アウトの場合↓
+      // タイム集計をそのまま反映
+      console.warn("[CLIENT TIME REJECTED]", {
+        clientElapsed,
+        serverElapsed,
+        diffFromServer
+      });
+
+    // クライアント側のタイムを信用しない
+    // （結果的にサーバー側のタイムで集計）
+    clientElapsed = null;
+    }
+  }
+
+  // =========================
   // ▼ 判定ロジック（改善版）
   // =========================
-  const ALLOW_ERROR_MS = 200;
+  const ALLOW_ERROR_MS = Math.max(300, safeRtt ? safeRtt * 0.5 : 300);
 
   let finalElapsed = serverElapsed; // ★ デフォルトを「生」に
   let source = "SERVER_RAW";
@@ -874,10 +920,11 @@ io.on("connection", (socket) => {
     diffClientServer = Math.abs(clientElapsed - serverElapsed);
 
     if (diffClientServer < ALLOW_ERROR_MS) {
-      // ✔ クライアントとサーバーが一致 → client採用
+      // クライアントとサーバーが一致 → client採用
+      // 上記の「clientElapsed 異常値チェック」「サーバーとの時差検証」をクリア
       finalElapsed = clientElapsed;
       source = "CLIENT";
-    } else if (safeRtt) {
+    } else if (safeRtt && safeRtt < 2000) {
 
       diffClientCorrected = Math.abs(clientElapsed - correctedElapsed);
 
@@ -891,6 +938,13 @@ io.on("connection", (socket) => {
 
   // フライング防止
   if (finalElapsed < 0) finalElapsed = 0;
+
+  // 最終防御
+  // NaN / Infinity などの防止
+  if (!Number.isFinite(finalElapsed)) {
+    finalElapsed = serverElapsed;
+    source = "FALLBACK_INVALID";
+  }
 
 
 
@@ -951,7 +1005,10 @@ io.on("connection", (socket) => {
 
   console.log("[FINAL]", {
     finalElapsed,
-    source
+    source,
+    serverElapsed,
+    clientElapsed,
+    correctedElapsed
   });
 
   console.log("======================");

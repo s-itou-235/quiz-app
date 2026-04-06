@@ -918,7 +918,7 @@ function startLogCountdown(sec){
   }
 
   // ＋２は 出題から受付までのラグ
-  let remain = sec + 5;
+  let remain = sec + 2;
 
   infoEl.textContent = `解答受付 残り ${remain} 秒（目安）`;
 

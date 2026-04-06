@@ -1,6 +1,5 @@
 const gameState = {
 
-  
   playerNames: {},
 
   // フェーズ制御

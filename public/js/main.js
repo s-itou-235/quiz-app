@@ -247,8 +247,83 @@ let questionRendered = false;
 let answeredChoiceRendered = false;
 
 
-// 自動スクロール
+// 時間ずれの取得
+let timeOffset = 0;
 
+// サーバー時刻との差分を更新
+function updateOffset(serverNow) {
+  // ① serverNowが不正なら即終了
+  if (!Number.isFinite(serverNow)) {
+    console.warn("[OFFSET] serverNow invalid:", serverNow);
+    return;
+  }
+
+  const newOffset = serverNow - Date.now();
+
+  // ② newOffsetがNaN/Infinityなら終了
+  if (!Number.isFinite(newOffset)) {
+    console.warn("[OFFSET] newOffset invalid:", newOffset);
+    return;
+  }
+
+  // ③ 異常値カット
+  if (Math.abs(newOffset) > 10000) {
+    console.warn("[OFFSET] abnormal:", newOffset);
+    return;
+  }
+
+  if (timeOffset === 0) {
+    // 初回は即反映
+    timeOffset = newOffset;
+  } else {
+    // スムージング（ブレ防止）
+    // 例えば５秒ズレたら ０．２５秒で１秒ずつ調整し急激に変化させない（概念的部分）
+    timeOffset = timeOffset * 0.8 + newOffset * 0.2;
+  }
+  
+}
+
+// 時間ずれを考慮したうえで
+// 全員が基準とする共通タイム生成
+function getNow() {
+  if (!Number.isFinite(timeOffset)) {
+    return Date.now(); // フォールバック
+  }
+  return Date.now() + timeOffset;
+}
+
+
+// 時刻更新
+setInterval(() => {
+  const clientNow = Date.now();
+  const syncedNow = getNow();
+
+  const clientEl = document.getElementById("client_time");
+  const serverEl = document.getElementById("server_time");
+  const offsetEl = document.getElementById("offset_time");
+
+  if (!clientEl || !serverEl || !offsetEl) return;
+
+  clientEl.textContent = new Date(clientNow).toLocaleTimeString('ja-JP', {
+    hour12: false,
+    minute: '2-digit',
+    second: '2-digit'
+  });
+  serverEl.textContent = new Date(syncedNow).toLocaleTimeString('ja-JP', {
+    hour12: false,
+    minute: '2-digit',
+    second: '2-digit'
+  });
+
+  offsetEl.textContent = Number.isFinite(timeOffset)
+    ? `${Math.round(timeOffset)} ms`
+    : "OFFSET_ERR";
+
+}, 250);
+
+
+
+// 自動スクロール
 
 // 問題文～選択肢まで
 function scrollToQuestion() {
@@ -282,21 +357,31 @@ function scrollToRanking() {
 // ===============================
 // ・ページ読み込み時に /api/state を取得
 // ・サーバーの現在状態を見て画面を復元する
+
 window.addEventListener("load", async () => {
   await syncState();
 });
 
 socket.on("connect", async () => {
   console.log("[CLIENT] reconnected");
-
   await syncState();
 });
+
+setInterval(async () => {
+  try {
+    const res = await fetch("/api/state");
+    const state = await res.json();
+    updateOffset(state.serverNow);
+  } catch {}
+}, 5000);
 
 
 async function syncState() {
   const state = await fetch("/api/state").then(r => r.json());
   latestState = state;
   console.log("[CLIENT] load state", state);
+  // タイマー再取得
+  updateOffset(state.serverNow); 
 
     // 共通の復元処理
     // スコア反映など
@@ -621,7 +706,7 @@ function startStableTimer(state) {
   timerEndAt = state.answerCloseAt;
 
   stableTimer = setInterval(() => {
-    const now = Date.now();
+    const now = getNow();
     const remainingMs = timerEndAt - now;
 
     // ===== 時間切れ =====
@@ -676,7 +761,8 @@ function startStableTimer(state) {
     };
 
     // ===== 出題中（解答可能）=====
-        const remainingSec = Math.ceil(remainingMs / 1000);
+        // 最大が０までなので、マイナス表示防止
+       const remainingSec = Math.max(0, Math.ceil(remainingMs / 1000));
         time_limit_count.innerHTML = remainingSec;
         time_limit.classList.add("time__limit__active");
         answer_lamp.classList.add("lamp-on");
@@ -775,7 +861,7 @@ function handleAnswer(event) {
 
   const selectedIndex = Number(event.currentTarget.value);
 
-  const clientSendTime = Date.now();
+  const clientSendTime = getNow();
 
   socket.emit("client:answer", {
     clientId,
