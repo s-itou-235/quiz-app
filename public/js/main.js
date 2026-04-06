@@ -767,6 +767,15 @@ function startStableTimer(state) {
         time_limit.classList.add("time__limit__active");
         answer_lamp.classList.add("lamp-on");
         answer_lamp.classList.remove("lamp-off");
+
+        const msEl = document.getElementById("time_limit_count_millisec_debug");
+
+        if (msEl) {
+          const sec = Math.floor(remainingMs / 1000);
+          const ms = Math.floor(remainingMs % 1000);
+
+          msEl.textContent = `${Math.max(0, sec)}.${ms.toString().padStart(3, "0")}s`;
+        }
         
         // 1回だけ問題表示
         if (!questionRendered) {

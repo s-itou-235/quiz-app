@@ -836,8 +836,8 @@ io.on("connection", (socket) => {
     if (gameState.phase !== "question") return;
     // 解答有効時間前（フライング）
     if (serverNow < gameState.answerOpenAt) return;
-    // 解答有効時間後（通信ラグを考慮してタイムオーバー0.3秒まで処理受付）
-    const ANSWER_GRACE_MS = 300;
+    // 解答有効時間後（通信ラグを考慮してタイムオーバー0.5秒まで処理受付）
+    const ANSWER_GRACE_MS = 500;
     if (serverNow > gameState.answerCloseAt + ANSWER_GRACE_MS) return;
     // 解答済み
     if (gameState.answersByClientId[clientId]) return;
