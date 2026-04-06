@@ -836,12 +836,9 @@ io.on("connection", (socket) => {
     if (gameState.phase !== "question") return;
     // 解答有効時間前（フライング）
     if (serverNow < gameState.answerOpenAt) return;
-    // 解答有効時間後（通信ラグを考慮してタイムオーバー0.5秒まで処理受付）
-    const ANSWER_GRACE_MS = 500;
-    if (serverNow > gameState.answerCloseAt + ANSWER_GRACE_MS) return;
+  
     // 解答済み
     if (gameState.answersByClientId[clientId]) return;
-
     
   // RTTがない or 異常値ならフォールバック
   const MAX_RTT = 5000; // 5秒以上は異常
@@ -1500,75 +1497,53 @@ io.on("connection", (socket) => {
 // タイムアップ時に自動で解答集計
 // answer_check_ready（集計完了）フェーズ移行
 // ★ 自動 answer_check 準備（集計のみ）
+
+// ブザービートとして許容するタイム（目安0.5秒）
+const COLLECT_GRACE_MS = 500;
+
 setInterval(() => {
   if (gameState.phase !== "question") return;
-  if (Date.now() < gameState.answerCloseAt) return;
- 
+
+  if (Date.now() < gameState.answerCloseAt + COLLECT_GRACE_MS) return;
 
   console.log("[AUTO] Time up detected");
-  console.log("playerNames（参加者全員）:", Object.keys(gameState.playerNames));
-  console.log("answers（解答出来た人）:", Object.keys(gameState.answersByClientId));
 
+  // 二重防止
+  if (gameState.phase !== "question") return;
 
-  // ===============================
-  // 未回答者を over(タイムオーバー) として補完
-  // 基準は必ず playerNames（＝参加者）
-  // ===============================
+  // 未回答補完
   for (const clientId in gameState.playerNames) {
-
     if (gameState.answersByClientId[clientId]) continue;
 
     gameState.answersByClientId[clientId] = {
       answer: "over",
-      answeredAt: null,
-      elapsedMs: null,
-      elapsedSecRaw: null,
-      elapsedSecFixed: null,
-      time: null,
       result: "over"
     };
   }
 
-  // ===============================
-  // 解答数カウント
-  // ===============================
   const counts = {};
-
   for (const clientId in gameState.answersByClientId) {
-    const ans = gameState.answersByClientId[clientId];
-    const key = ans.answer ?? "over";
-
+    const key = gameState.answersByClientId[clientId].answer ?? "over";
     counts[key] = (counts[key] ?? 0) + 1;
   }
 
-  // ===============================
-  // 解答データ取得
-  // ===============================
   const qid = gameState.questionId;
   if (qid == null) return;
 
-  // 🔥 既に作成済みなら何もしない（二重作成防止）
   if (!gameState.questionResults[qid]) {
 
     const question = questionBank[qid];
-
     const correct = question.correctIndex;
 
     const tempAnswers = {};
 
     for (const clientId in gameState.answersByClientId) {
-
       const src = gameState.answersByClientId[clientId];
 
       let result;
-
-      if (src.answer === "over") {
-        result = "over";
-      } else if (src.answer === correct) {
-        result = "correct";
-      } else {
-        result = "wrong";
-      }
+      if (src.answer === "over") result = "over";
+      else if (src.answer === correct) result = "correct";
+      else result = "wrong";
 
       tempAnswers[clientId] = {
         answer: src.answer,
@@ -1577,17 +1552,18 @@ setInterval(() => {
       };
     }
 
+    gameState.questionResults[qid] = {
+      correctAnswer: correct,
+      answers: tempAnswers
+    };
   }
 
-  
   gameState.answerCounts = counts;
   gameState.phase = "answer_check_ready";
 
   emitAdminState();
 
-  console.log("[AUTO] answer_check_ready:", counts);
-
-}, 200);
+}, 300);
 
 
 
