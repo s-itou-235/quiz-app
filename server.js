@@ -548,7 +548,7 @@ function resetGameState() {
   gameState.scores = {};
   gameState.playerNames = {};
   gameState.questionResults = {};
-  gameState.askedQuestionIds = {};
+  gameState.askedQuestionIds = [];
 }
 
 
