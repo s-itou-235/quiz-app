@@ -20,16 +20,15 @@ app.use(cors({
 
 const apiLimiter = rateLimit({
   windowMs: 60 * 1000, // 1分
-  max: 60, // 60回まで
+  max: 100, // 100回まで
   message: "ログイン試行が多すぎます。少し待ってください"
 });
 
 app.use(express.json());
 app.use(express.static("public"));
-app.use("/api", apiLimiter);
 
-
-
+// ログイン系だけ制限
+app.use("/api/admin", apiLimiter);
 
 const gameState = require("./gameState");
 
@@ -1137,7 +1136,6 @@ io.on("connection", (socket) => {
   });
 
   // 早押しベスト４（境界同率拡張方式）
-  // デバッグ的に最大3人しかやれないので、早押しベスト２（デバッグ用）
   socket.on("admin:showCorrectBest", () => {
 
     if (gameState.phase !== "result") return;
@@ -1493,10 +1491,6 @@ io.on("connection", (socket) => {
 });
 
 
-// ★ 自動 answer_check 準備（集計のみ）
-// タイムアップ時に自動で解答集計
-// answer_check_ready（集計完了）フェーズ移行
-// ★ 自動 answer_check 準備（集計のみ）
 
 // ブザービートとして許容するタイム（目安0.5秒）
 const COLLECT_GRACE_MS = 500;
@@ -1516,20 +1510,28 @@ setInterval(() => {
     if (gameState.answersByClientId[clientId]) continue;
 
     gameState.answersByClientId[clientId] = {
-      answer: "over",
-      result: "over"
+      answer: "over", 
+      answeredAt: null,
+      elapsedMs: null,
+      elapsedSecRaw: null, 
+      elapsedSecFixed: null, 
+      time: null, 
+      result: "over" 
     };
   }
 
+  // 解答数カウント（アンサーチェック用）
   const counts = {};
   for (const clientId in gameState.answersByClientId) {
     const key = gameState.answersByClientId[clientId].answer ?? "over";
     counts[key] = (counts[key] ?? 0) + 1;
   }
 
+  // 解答データ取得
   const qid = gameState.questionId;
   if (qid == null) return;
 
+  // 既に作成済みなら何もしない（二重作成防止）
   if (!gameState.questionResults[qid]) {
 
     const question = questionBank[qid];
@@ -1553,12 +1555,19 @@ setInterval(() => {
     }
 
     gameState.questionResults[qid] = {
-      correctAnswer: correct,
-      answers: tempAnswers
+    correctAnswer: correct,
+    
+    pointCorrect: question.pointCorrect ?? 1,
+    pointWrong: question.pointWrong ?? 0,
+    isEvent: question.isEvent ?? false,
+
+    answers: tempAnswers
     };
   }
 
+  // アンサーチェック用のデータまとめ
   gameState.answerCounts = counts;
+  // フェーズ移行処理
   gameState.phase = "answer_check_ready";
 
   emitAdminState();

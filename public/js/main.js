@@ -373,7 +373,7 @@ setInterval(async () => {
     const state = await res.json();
     updateOffset(state.serverNow);
   } catch {}
-}, 5000);
+}, 15000);
 
 
 async function syncState() {
@@ -1205,11 +1205,11 @@ socket.on("ranking:correctBest", ({ ranking }) => {
   // 本体
   const tbody = document.createElement("tbody");
 
-  ranking.forEach((player, index) => {
+  ranking.forEach((player) => {
     const tr = document.createElement("tr");
 
     tr.innerHTML = `
-      <td>${index + 1}</td>
+      <td>${player.rank}</td>
       <td>${player.name}</td>
       <td>${player.time.toFixed(2)}秒</td>
     `;
