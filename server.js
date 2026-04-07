@@ -835,6 +835,12 @@ io.on("connection", (socket) => {
     if (gameState.phase !== "question") return;
     // 解答有効時間前（フライング）
     if (serverNow < gameState.answerOpenAt) return;
+    // サーバー受付（実際に有効な範囲）
+     // 時間終了0.5秒程度だけ許す
+    // （マイナス表示防止済・通称ブザービート→解答受付のブザービート的使い方)
+    // サーバー側のブザービートは0.5秒まで許容
+    const ACCEPT_GRACE_MS = 500;
+    if (serverNow > gameState.answerCloseAt + ACCEPT_GRACE_MS) return;
   
     // 解答済み
     if (gameState.answersByClientId[clientId]) return;
@@ -1441,15 +1447,16 @@ io.on("connection", (socket) => {
       return;
     }
     
-    // 過去の問題の正解変更は理屈上可能だがブロックしたい（実装が高コスト）
-
-
-    console.log("[ADMIN] setCorrectAnswer", qid, answer);
-
+    // 過去の問題の正解変更は理屈上可能だがブロック
+    //（実装が超高コストでイレギュラー寄り機能）
     if (gameState.questionId !== qid) {
       console.log("[ERROR] not current question");
       return;
     }
+
+
+    console.log("[ADMIN] setCorrectAnswer", qid, answer);
+    
 
     // 管理者側で 0 を設定 = 正解なし
     if (answer === 0) {
@@ -1485,14 +1492,14 @@ io.on("connection", (socket) => {
 
   });
 
-  
-
 //聖域 
 });
 
 
 
-// ブザービートとして許容するタイム（目安0.5秒）
+// 締め切り処理
+// 時間終了0.5秒程度だけ許す
+// （マイナス表示防止済・通称ブザービート→締め切り処理のブザービート的使い方)
 const COLLECT_GRACE_MS = 500;
 
 setInterval(() => {

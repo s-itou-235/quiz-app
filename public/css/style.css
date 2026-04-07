@@ -264,7 +264,7 @@ header {
 }
 
 #question_text{
-  font-size: clamp(24px, 8vw, 40px);
+  font-size: clamp(20px, 6vw, 32px);
   word-break: break-word;
   vertical-align: middle;
 }
@@ -592,10 +592,9 @@ header {
  }
 
   #question_text{
-    font-size:clamp(18px,8vw,26px);
-    word-break:break-word;
-    margin:8px;
-    padding:12px;
+    font-size: clamp(14px, 4vw, 20px);
+    word-break: break-word;
+    vertical-align: middle;
   }
 
   /* タイマー */

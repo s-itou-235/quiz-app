@@ -710,8 +710,11 @@ function startStableTimer(state) {
     const remainingMs = timerEndAt - now;
 
     // ===== 時間切れ =====
-    // 0.3秒程度だけ許す（マイナス表示防止済・通称ブザービート)
-    if (now > state.answerCloseAt + 300) {
+
+    // 時間終了0.3秒程度だけ許す
+    // （マイナス表示防止済・通称ブザービート→クライアントのブザービート的使い方)
+    const UI_GRACE_MS = 300;
+    if (now > state.answerCloseAt + UI_GRACE_MS) {
         
         // タイマー停止
         stopStableTimer();
