@@ -800,6 +800,7 @@ function updatePhaseNav(phase){
   if(phase === "idle"){
     standby.classList.add("phase-active");   //①
     Qid_input.classList.add("phase-active"); 
+    system_log_message.textContent = "問題番号を設定し出題準備ボタンを押してください";
   }
 
   if(phase === "standby"){
@@ -1051,12 +1052,18 @@ socket.on("admin:correctAnswerInfo", (data) => {
 
 // ゲームリセット
 document.getElementById("reset_btn").onclick = async () => {
+  // プッシュ確認
+  const check = confirm("全成績のリセットなどを行います。 よろしいですか？");
+  if(!check)return;
+
   try {
     const res = await fetch("/api/admin/reset?password=123456", {
       method: "POST"
     });
 
     const data = await res.json();
+    await loadQuestionsFromServer();
+    updateAskedQuestions();
     alert("リセット完了");
 
   } catch (err) {

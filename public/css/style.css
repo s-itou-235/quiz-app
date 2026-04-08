@@ -592,7 +592,7 @@ header {
  }
 
   #question_text{
-    font-size: clamp(14px, 4vw, 20px);
+    font-size: clamp(22px, 6vw, 30px);
     word-break: break-word;
     vertical-align: middle;
   }
