@@ -1536,14 +1536,16 @@ io.on("connection", (socket) => {
 
 
 // 締め切り処理
-// 時間終了0.5秒程度だけ許す
-// （マイナス表示防止済・通称ブザービート→締め切り処理のブザービート的使い方)
-const COLLECT_GRACE_MS = 500;
+// 問題時間終了７秒までは通信ラグ的受付時間として有効
+// タイムオーバー処理は、問題時間終了７秒後に行う
+const COLLECT_GRACE_MS = 7000;
 
 setInterval(() => {
   if (gameState.phase !== "question") return;
 
-  if (Date.now() < gameState.answerCloseAt + COLLECT_GRACE_MS) return;
+  // 問題時間終了７秒までは通信ラグ的受付時間として有効
+  const deadline = gameState.answerCloseAt + COLLECT_GRACE_MS;
+  if (Date.now() < deadline) return;
 
   console.log("[AUTO] Time up detected");
 

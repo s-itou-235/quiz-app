@@ -930,32 +930,55 @@ function startLogCountdown(sec){
 
   const infoEl = document.getElementById("system_log_info");
 
-  // 既存タイマー停止
   if(adminState.phase !== "question" && logCountdownTimer){
     clearInterval(logCountdownTimer);
     logCountdownTimer = null;
   }
 
-  // ＋２は 出題から受付までのラグ
-  let remain = sec + 2;
+  const LAG_TIME = 2;        // 出題ラグ
+  const ANSWER_TIME = sec;   // 実際の解答時間
+  const GRACE_TIME = 7;      // 集計猶予
 
-  infoEl.textContent = `解答受付 残り ${remain} 秒（目安）`;
+  const TOTAL_TIME = LAG_TIME + ANSWER_TIME + GRACE_TIME;
+
+  let remain = TOTAL_TIME;
+
+  const updateDisplay = () => {
+
+    if (remain > ANSWER_TIME + GRACE_TIME) {
+      // 出題ラグフェーズ
+      infoEl.textContent = `出題準備中……`;
+
+    } else if (remain > GRACE_TIME) {
+      // 解答受付フェーズ
+      const answerRemain = remain - GRACE_TIME;
+      infoEl.textContent = `解答受付 残り ${answerRemain} 秒（目安）`;
+
+    } else if (remain > 0) {
+      // 集計中フェーズ
+      infoEl.textContent = `集計中…… 残り ${remain} 秒（目安）`;
+
+    } else {
+      infoEl.textContent = "集計完了";
+    }
+  };
+
+  updateDisplay();
 
   logCountdownTimer = setInterval(()=>{
 
     remain--;
 
     if(remain <= 0){
-      infoEl.textContent = "時間終了";
+      updateDisplay();
       clearInterval(logCountdownTimer);
       logCountdownTimer = null;
       return;
     }
 
-    infoEl.textContent = `解答受付 残り ${remain} 秒（目安）`;
+    updateDisplay();
 
   },1000);
-
 }
 
 
