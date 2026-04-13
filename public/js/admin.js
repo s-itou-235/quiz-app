@@ -404,6 +404,19 @@ document.getElementById("registerBtn")
 // 登録フォームの内容を全削除
 document.getElementById("excelDeleteBtn")
 .addEventListener("click", () => {
+  document.getElementById("qid").value =  "";
+  document.getElementById("category").value = "normal";
+  document.getElementById("memo").value =  "";
+  document.getElementById("questionText").value =  "";
+  document.getElementById("timeLimitSec").value = "";
+  document.getElementById("choice1").value = "";
+  document.getElementById("choice2").value = "";
+  document.getElementById("choice3").value = "";
+  document.getElementById("choice4").value = "";
+  document.getElementById("correctIndex").value =  "";
+  document.getElementById("pointCorrect").value = "";
+  document.getElementById("pointWrong").value = "";
+  document.getElementById("explanation").value = "";
 
 });
 
@@ -575,6 +588,9 @@ window.addEventListener("load", () => {
   loadAdminRanking();
 });
 
+socket.on("admin:answerUpdated", () => {
+  loadAdminRanking();
+});
 
 async function loadAdminRanking() {
 
@@ -669,7 +685,7 @@ correct_worst_btn.addEventListener("click", () => {
 
 // ハイブリッドルールの実装
 hybrid_worst_btn.addEventListener("click", () => {
-  // プッシュ確認はいずれ入れる
+  // プッシュ確認
   const check = confirm("早押し最下位の点数を没収するボタンです！");
   if(!check)return;
 
@@ -690,6 +706,8 @@ phase_reset.onclick = () => {
 
   socket.emit("admin:phase_reset");
 }
+
+
 
 
 // 解答人数のリアルタイム取得
@@ -1062,9 +1080,8 @@ document.getElementById("reset_btn").onclick = async () => {
     });
 
     const data = await res.json();
-    await loadQuestionsFromServer();
-    updateAskedQuestions();
-    alert("リセット完了");
+    loadQuestionsFromServer()
+    alert("全成績などのリセットを行いました！");
 
   } catch (err) {
     console.error(err);

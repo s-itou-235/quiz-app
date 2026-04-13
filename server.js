@@ -192,16 +192,21 @@ app.get("/api/admin/ranking", (req, res) => {
   // 総合成績ランキング
   // -------------------------
 
+  const playerNames = gameState.playerNames || {};
   const totalData = gameState.scores || {};
 
+  const totalRanking = Object.keys(playerNames)
+    .map(clientId => {
 
-  const totalRanking = Object.entries(totalData)
-    .map(([clientId, data]) => ({
-      clientId,
-      name: gameState.playerNames[clientId] || "未登録",
-      correctCount: data.correctCount ?? 0,
-      totalTime: data.totalTime ?? 0
-    }))
+      const data = totalData[clientId];
+
+      return {
+        clientId,
+        name: playerNames[clientId] || "未登録",
+        correctCount: data?.correctCount ?? 0,
+        totalTime: data?.totalTime ?? 0
+      };
+    })
     .sort((a, b) => {
       if (b.correctCount !== a.correctCount) {
         return b.correctCount - a.correctCount;
@@ -597,11 +602,17 @@ io.on("connection", (socket) => {
     }
 
     if (currentAdminSocketId && currentAdminSocketId !== socket.id) {
-      io.to(currentAdminSocketId).emit("admin:force_logout");
+
+      const oldSocket = io.sockets.sockets.get(currentAdminSocketId);
+
+      if (oldSocket) {
+        oldSocket.leave("admin"); // ★これが重要
+        oldSocket.emit("admin:force_logout");
+      }
     }
 
     currentAdminSocketId = socket.id;
-
+    socket.join("admin");
     socket.emit("admin:login_success");
 
     console.log("[ADMIN LOGIN SUCCESS]", socket.id);
@@ -616,6 +627,8 @@ io.on("connection", (socket) => {
       console.log("[ADMIN DISCONNECTED]");
       currentAdminSocketId = null;
     }
+
+    socket.leave("admin"); // 念のため
   });
 
   // 管理者側の初期フェーズ送信
@@ -631,18 +644,19 @@ io.on("connection", (socket) => {
   
   // それぞれのユーザーデータ取得
   socket.on("registerClient", ({ clientId }) => {
-    socket.join(clientId); // ★ ここが核心
-  
+    socket.join(clientId); 
+
     if (!gameState.playerNames) {
       gameState.playerNames = {};
     }
 
     if (!gameState.playerNames[clientId]) {
       gameState.playerNames[clientId] = "未登録";
+      // ランキング更新
+      io.to("admin").emit("scoresUpdated");
     }
 
     console.log(`[ROOM] socket ${socket.id} joined room ${clientId}`);
-    console.log("[REGISTER] playerNames:", Object.keys(gameState.playerNames));
   });
 
   // ユーザーネーム取得
@@ -651,9 +665,15 @@ io.on("connection", (socket) => {
 
     gameState.playerNames[clientId] = name;
     console.log("[NAME UPDATE]", clientId, "ユーザー名",name);
+
+    // １。ユーザーに名前反映（実行順大事）
     io.emit("namesUpdated", {
       names: gameState.playerNames
     });
+
+    // ２。その名前をスコア表示に即反映（実行順大事）
+    io.to("admin").emit("scoresUpdated");
+
   });
 
   // RTT取得
@@ -835,18 +855,14 @@ io.on("connection", (socket) => {
     if (gameState.phase !== "question") return;
     // 解答有効時間前（フライング）
     if (serverNow < gameState.answerOpenAt) return;
-    // サーバー受付（実際に有効な範囲）
-     // 時間終了0.5秒程度だけ許す
-    // （マイナス表示防止済・通称ブザービート→解答受付のブザービート的使い方)
-    // サーバー側のブザービートは0.5秒まで許容
-    const ACCEPT_GRACE_MS = 500;
-    if (serverNow > gameState.answerCloseAt + ACCEPT_GRACE_MS) return;
-  
     // 解答済み
     if (gameState.answersByClientId[clientId]) return;
-    
+  
+    // 制限時間
+    const limitMs = gameState.answerCloseAt - gameState.answerOpenAt;
+
     // RTTがない or 異常値ならフォールバック
-    const MAX_RTT = 5000; // 5秒以上は異常
+    const MAX_RTT = 10000; // 10秒以上は異常
     const safeRtt = (rtt && rtt > 0 && rtt < MAX_RTT) ? rtt : null;
 
     // ① サーバー基準（絶対安全）
@@ -854,57 +870,58 @@ io.on("connection", (socket) => {
 
     // ② RTT補正
     let correctedElapsed = serverElapsed;
-    if (safeRtt && safeRtt < 2000) {
-      correctedElapsed = serverElapsed - (safeRtt / 2);
-    }
 
+    if (safeRtt) {
+      correctedElapsed = Math.max(0, serverElapsed - (safeRtt * 0.4));
+    }
+    
     // ③ クライアント時刻からの推定
     let clientElapsed = null;
     if (Number.isFinite(clientSendTime)) {
       clientElapsed = clientSendTime - gameState.answerOpenAt;
     }
 
-    // 異常値チェック
-    // 通信ラグを考慮しつつチート検知
     if (clientElapsed !== null) {
-    
-    // 問題の制限時間
-    const limitMs = gameState.answerCloseAt - gameState.answerOpenAt;
+      const maxAdvance = safeRtt ? safeRtt * 0.5 : 1000;
 
-    if (
-        clientElapsed < -1000 || // フライングしすぎ(開始前１秒以上)
-        clientElapsed > limitMs + 1000  // 制限時間超えすぎ（時間後１秒以上）
-      ) {
-        console.warn("[CHEAT DETECTED] clientElapsed invalid:", clientElapsed);
-        clientElapsed = null;
-      }
-    }
-
-    // サーバーとの時差検証
-    // サーバーとのラグが常識的な範囲か検証
-    if (clientElapsed !== null) {
-      
-      // サーバーとの差(ズル防止)
-      const diffFromServer = Math.abs(clientElapsed - serverElapsed);
-
-      // 通信ラグ（RTTベース）で１秒　か 0.3秒までは許す
-      const MAX_DIFF = Math.max(300, Math.min(safeRtt || 0, 1000));
-      
-      // サーバーとの差が規定値（概念的には非常識）かどうかチェック
-      if (diffFromServer > MAX_DIFF) {
-          // ↓アウトの場合↓
-          // タイム集計をそのまま反映
-          console.warn("[CLIENT TIME REJECTED]", {
+      // サーバーより「速すぎる」＝未来押し（チート or 不正同期）
+      if (clientElapsed < serverElapsed - maxAdvance) {
+          console.warn("[FUTURE INPUT DETECTED]", {
             clientElapsed,
             serverElapsed,
-            diffFromServer
+            maxAdvance
           });
-
-        // クライアント側のタイムを信用しない
-        // （結果的にサーバー側のタイムで集計）
-        clientElapsed = null;
+          clientElapsed = null;
         }
       }
+      // RTT整合性チェック
+      if (clientElapsed !== null && safeRtt) {
+        const delay = serverElapsed - clientElapsed;
+
+        if (delay > safeRtt * 1.2) {
+          console.warn("[DELAY NOT EXPLAINED BY RTT]", {
+            delay,
+            safeRtt
+          });
+
+          clientElapsed = null;
+        }
+      }
+
+      // 異常値チェック
+      // 通信ラグを考慮しつつチート検知
+      if (clientElapsed !== null) {
+      
+        if (
+            clientElapsed < -1000 || // フライングしすぎ(開始前１秒以上)
+            clientElapsed > limitMs + 1000  // 制限時間超えすぎ（時間後１秒以上）
+          ) {
+            console.warn("[CHEAT DETECTED] clientElapsed invalid:", clientElapsed);
+            clientElapsed = null;
+          }
+      }
+
+
 
       // =========================
       // ▼ 判定ロジック（改善版）
@@ -921,12 +938,12 @@ io.on("connection", (socket) => {
 
         diffClientServer = Math.abs(clientElapsed - serverElapsed);
 
-        if (diffClientServer < ALLOW_ERROR_MS) {
+        if (clientElapsed >= serverElapsed - (safeRtt ? safeRtt * 0.5 : 1000)) {
           // クライアントとサーバーが一致 → client採用
           // 上記の「clientElapsed 異常値チェック」「サーバーとの時差検証」をクリア
           finalElapsed = clientElapsed;
           source = "CLIENT";
-        } else if (safeRtt && safeRtt < 2000) {
+        } else if (safeRtt) {
 
           diffClientCorrected = Math.abs(clientElapsed - correctedElapsed);
 
@@ -948,16 +965,33 @@ io.on("connection", (socket) => {
         source = "FALLBACK_INVALID";
       }
 
+      // サーバー受付（実際に有効な範囲）
+      // 時間終了0.5秒程度だけ許す
+      // （マイナス表示防止済・通称ブザービート→解答受付のブザービート的使い方)
+      
+      // サーバー側のブザービートは0.3秒まで許容
+      // RTT値によって増減 （最大1秒）
+      // / 判定用（締切）
+      const ACCEPT_GRACE_MS = Math.min(1000,Math.max(300, safeRtt ? safeRtt * 0.5 : 300));
+      // ↑可読性重視であえてMath.min~ で表記
+
+      if (finalElapsed > limitMs + ACCEPT_GRACE_MS) return;
+
+      // ▼ 保険（通信事故防止）
+      if (serverNow > gameState.answerCloseAt + 2000) return;
 
 
+      
       //解答タイム計算
       const elapsedSecRaw = finalElapsed / 1000;
       
       //制限時間10秒の問題で
       //10.01や10.00というタイムの場合 は 9.99扱い
       //サーバーとのラグなどで起きうる
-      const limitMs = gameState.answerCloseAt - gameState.answerOpenAt;
       const maxDisplaySec = (limitMs - 1) / 1000;
+
+      // ここに最低解答タイム判定（0.00防止→最速は0.01）
+
 
       // 端数を小数点第2位まで切捨て
       const elapsedSecFixed = Math.min(
@@ -978,7 +1012,8 @@ io.on("connection", (socket) => {
       };
 
       console.log("[ANSWER FIXED]", clientId, elapsedSecFixed);
-      emitAdminState();
+      // 解答を管理者側でのみアップデート
+      io.to("admin").emit("admin:answerUpdated");
 
 
 
@@ -1017,9 +1052,11 @@ io.on("connection", (socket) => {
 
       console.log("[ANSWER FIXED]", clientId, elapsedSecFixed);
 
-      // 解答者ID 解答 解答タイムを answerAccepted という名前で送信
-      socket.emit("answerAccepted", {
-        clientId,
+      // 解答者した人のみに
+      // 解答 解答タイムを answerAccepted という名前で送信
+      // クライアント側ではボタンロックや選択ボタンのデータとして反映
+      io.to(clientId).emit("answerAccepted", {
+        clientId, //現状不要と思われるが、リロードでの再描写などで使う可能性を検討してから削除 
         answer,
         elapsedSecFixed
       });

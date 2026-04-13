@@ -898,7 +898,7 @@ socket.on("answerAccepted", (payload) => {
   hasAnswered = true;
   canAnswer = false;
 
-  monitor_result.innerHTML = "解答受付";
+  monitor_result.textContent = `解答完了`;
 
   // 全ボタン無効化
   select__button.forEach(btn => {
@@ -1095,7 +1095,7 @@ nameUpdateBtn.addEventListener("click", () => {
 
 socket.on("namesUpdated", ({ names }) => {
 
-  if (names[clientId]) {
+  if (clientId in names) {
     userNameEl.textContent = names[clientId];
   }
 
