@@ -277,7 +277,7 @@ function updateOffset(serverNow) {
     timeOffset = newOffset;
   } else {
     // スムージング（ブレ防止）
-    // 例えば５秒ズレたら ０．２５秒で１秒ずつ調整し急激に変化させない（概念的部分）
+    // 例えば５秒ズレたら ０．２５秒につきで１秒ずつ調整し急激に変化させない（概念的部分）
     timeOffset = timeOffset * 0.8 + newOffset * 0.2;
   }
   
@@ -302,18 +302,21 @@ setInterval(() => {
   const serverEl = document.getElementById("server_time");
   const offsetEl = document.getElementById("offset_time");
 
-  if (!clientEl || !serverEl || !offsetEl) return;
+  //デバッグ用ゾーン
+  
+  
+  // if (!clientEl || !serverEl || !offsetEl) return;
 
-  clientEl.textContent = new Date(clientNow).toLocaleTimeString('ja-JP', {
-    hour12: false,
-    minute: '2-digit',
-    second: '2-digit'
-  });
-  serverEl.textContent = new Date(syncedNow).toLocaleTimeString('ja-JP', {
-    hour12: false,
-    minute: '2-digit',
-    second: '2-digit'
-  });
+  // clientEl.textContent = new Date(clientNow).toLocaleTimeString('ja-JP', {
+  //   hour12: false,
+  //   minute: '2-digit',
+  //   second: '2-digit'
+  // });
+  // serverEl.textContent = new Date(syncedNow).toLocaleTimeString('ja-JP', {
+  //   hour12: false,
+  //   minute: '2-digit',
+  //   second: '2-digit'
+  // });
 
   offsetEl.textContent = Number.isFinite(timeOffset)
     ? `${Math.round(timeOffset)} ms`
@@ -419,6 +422,7 @@ async function syncState() {
         question__default.forEach(el =>{
             el.classList.add("none");
         }); 
+        clearQuestionText();
         // 出題情報の再反映
         renderQuestion(state);
         // 選んだ選択肢の枠線情報
@@ -458,6 +462,7 @@ async function syncState() {
         question__default.forEach(el =>{
             el.classList.add("none");
         }); 
+        clearQuestionText();
         // 出題情報の再反映
         renderQuestion(state);
         // アンサーチェック情報の反映
@@ -496,6 +501,7 @@ async function syncState() {
         question__default.forEach(el =>{
             el.classList.add("none");
         }); 
+        clearQuestionText();
         // 出題情報の再反映
         renderQuestion(state);
         // アンサーチェック情報の反映

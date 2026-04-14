@@ -45,14 +45,14 @@ let currentAdminSocketId = null;
 
 const loginAttempts = new Map();
 
-
-function requireAdmin(socket, actionName) {
-  if (socket.id !== currentAdminSocketId) {
-    console.log("[SECURITY BLOCKED]", actionName, socket.id);
-    return false;
-  }
-  return true;
-}
+// admin過剰操作防止
+// function requireAdmin(socket, actionName) {
+//   if (socket.id !== currentAdminSocketId) {
+//     console.log("[SECURITY BLOCKED]", actionName, socket.id);
+//     return false;
+//   }
+//   return true;
+// }
 
 
 
