@@ -649,6 +649,9 @@ function renderQuestion(state) {
       btn.value = index; // ★ 0始まり
     });
   });
+
+  // フォント調整
+  adjustFont();
 }
 
 
@@ -999,7 +1002,10 @@ function showAnswerCheck(answerCounts) {
     const sumEl = form.querySelector(".answer__sum");
     if (!sumEl) return;
 
-    sumEl.textContent = `${count}人`;
+    // 本番用
+    // sumEl.textContent = `${count}人`;
+    // デバッグ用
+    sumEl.textContent = `77人`;
   });
 
 }
@@ -1431,3 +1437,80 @@ socket.on("game:reset", () => {
 
   location.reload(); // 一番確実
 });
+
+
+// 文字サイズの調整
+// スマホ表示モードの分岐
+const width = window.innerWidth;
+
+const isMobile = width <= 428;
+const isTablet = width >= 429 && width <= 719;
+const isPC = width >= 720;
+
+function adjustFont() {
+
+  // ２択
+  document.querySelectorAll('.question__text__2text .select__button').forEach(el => {
+    const textLength = el.textContent.trim().length;
+    console.log(textLength);
+
+    if (isMobile) {
+    // スマホ（375px表示）
+      if (textLength <= 5) el.style.fontSize = '50px';//５文字以下
+      else if (textLength <= 8) el.style.fontSize = '30px';//６～８文字
+      else if (textLength <= 10) el.style.fontSize = '25px';//９～１０文字
+      else if (textLength <= 24) el.style.fontSize = '20px';//１１～２４文字
+      else el.style.fontSize = '18px';//２５文字以上～  
+    } 
+    //PC表示 （720px表示で再修正）
+    else {
+      if (textLength <= 5) el.style.fontSize = '80px';//５文字以下
+      else if (textLength <= 8) el.style.fontSize = '50px';//９～１０文字
+      else if (textLength <= 10) el.style.fontSize = '40px';//９～１０文字
+      else if (textLength <= 24) el.style.fontSize = '20px';//１１～２４文字
+      else el.style.fontSize = '18px';//２５文字以上～
+    }
+  });
+
+  document.querySelectorAll('.question__text__3text .select__button').forEach(el => {
+    const textLength = el.textContent.trim().length;
+    console.log(textLength);
+
+    if (isMobile) {
+    //スマホ表示 （375px表示）
+      if (textLength <= 5) el.style.fontSize = '50px';//５文字以下
+      else if (textLength <= 8) el.style.fontSize = '30px';//６～８文字
+      else if (textLength <= 10) el.style.fontSize = '25px';//９～１０文字
+      else if (textLength <= 24) el.style.fontSize = '20px';//１１～２４文字
+      else el.style.fontSize = '18px';//２５文字以上～ 
+    } 
+    //PC表示 （720px表示で再修正）
+    else {
+      if (textLength <= 5) el.style.fontSize = '50px';//５文字以下
+      else if (textLength <= 8) el.style.fontSize = '30px';//６～８文字
+      else if (textLength <= 10) el.style.fontSize = '25px';//９～１０文字
+      else if (textLength <= 24) el.style.fontSize = '20px';//１１～２４文字
+      else el.style.fontSize = '18px';//２５文字以上～ 
+    }
+  });
+
+    document.querySelectorAll('.question__text__4text .select__button').forEach(el => {
+    const textLength = el.textContent.trim().length;
+    console.log(textLength);
+
+    if (isMobile) {
+    //スマホ表示 （375px表示）
+      if (textLength <= 5) el.style.fontSize = '50px';//５文字以下
+      else if (textLength <= 8) el.style.fontSize = '30px';//６～８文字
+      else if (textLength <= 20) el.style.fontSize = '24px';//９～２０文字
+      else el.style.fontSize = '15px';//２１文字以上
+    } 
+    //PC表示 （720px表示で再修正）
+    else {
+      if (textLength <= 5) el.style.fontSize = '50px';//５文字以下
+      else if (textLength <= 8) el.style.fontSize = '30px';//６～８文字
+      else if (textLength <= 20) el.style.fontSize = '24px';//９～２０文字
+      else el.style.fontSize = '15px';//２１文字以上
+    }
+  });
+}
