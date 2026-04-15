@@ -1,23 +1,5 @@
 [
   {
-    "id": 1,
-    "category": "normal",
-    "memo": "デバッグ",
-    "questionText": "デバッグ３択",
-    "timeLimitSec": 5,
-    "choices": [
-      "デバッグ選択１",
-      "デバッグ選択２",
-      "デバッグ選択３"
-    ],
-    "correctIndex": 1,
-    "explanation": "選択肢３択で３Pのようなもの",
-    "point": {
-      "correct": 3,
-      "wrong": 0
-    }
-  },
-  {
     "id": 1000,
     "category": "event",
     "memo": "デバッグアンケート",
@@ -71,42 +53,6 @@
     }
   },
   {
-    "id": 0,
-    "category": "normal",
-    "memo": "デバッグ",
-    "questionText": "デバッグ２択",
-    "timeLimitSec": 5,
-    "choices": [
-      "デバッグ選択１",
-      "デバッグ選択２"
-    ],
-    "correctIndex": 1,
-    "explanation": "選択肢２択で２Pのようなもの",
-    "point": {
-      "correct": 2,
-      "wrong": 0
-    }
-  },
-  {
-    "id": 2,
-    "category": "normal",
-    "memo": "デバッグ",
-    "questionText": "デバッグ４択",
-    "timeLimitSec": 5,
-    "choices": [
-      "デバッグ選択１",
-      "デバッグ選択２",
-      "デバッグ選択３",
-      "デバッグ選択４"
-    ],
-    "correctIndex": 1,
-    "explanation": "選択肢３択で４Pのようなもの",
-    "point": {
-      "correct": 4,
-      "wrong": 0
-    }
-  },
-  {
     "id": 3,
     "category": "normal",
     "memo": "本番想定",
@@ -122,6 +68,60 @@
     "explanation": "東京都の沖ノ鳥島が、沖縄県より南にある",
     "point": {
       "correct": 1,
+      "wrong": 0
+    }
+  },
+  {
+    "id": 0,
+    "category": "normal",
+    "memo": "デバッグ",
+    "questionText": "デバッグ２択",
+    "timeLimitSec": 5,
+    "choices": [
+      "デバッグ選択１を２０文字程度の数にしたやつ",
+      "デバッグ選択２を２０文字程度の数にしたやつ"
+    ],
+    "correctIndex": 1,
+    "explanation": "選択肢２択で２Pのようなもの",
+    "point": {
+      "correct": 2,
+      "wrong": 0
+    }
+  },
+  {
+    "id": 1,
+    "category": "normal",
+    "memo": "デバッグ",
+    "questionText": "デバッグ３択",
+    "timeLimitSec": 5,
+    "choices": [
+      "デバッグ選択１を２０文字程度の数にしたやつ",
+      "デバッグ選択２を２０文字程度の数にしたやつ",
+      "デバッグ選択３を２０文字程度の数にしたやつ"
+    ],
+    "correctIndex": 1,
+    "explanation": "選択肢３択で３Pのようなもの",
+    "point": {
+      "correct": 3,
+      "wrong": 0
+    }
+  },
+  {
+    "id": 2,
+    "category": "normal",
+    "memo": "デバッグ",
+    "questionText": "デバッグ４択",
+    "timeLimitSec": 5,
+    "choices": [
+      "デバッグ選択１を２０文字程度の数にしたやつ",
+      "デバッグ選択２を２０文字程度の数にしたやつ",
+      "デバッグ選択３を２０文字程度の数にしたやつ",
+      "デバッグ選択４を２０文字程度の数にしたやつ"
+    ],
+    "correctIndex": 1,
+    "explanation": "選択肢３択で４Pのようなもの",
+    "point": {
+      "correct": 4,
       "wrong": 0
     }
   }

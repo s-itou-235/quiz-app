@@ -380,6 +380,11 @@ setInterval(async () => {
 
 
 async function syncState() {
+  // 枠線も削除
+  answeredChoiceRendered = false;
+  // 問題データなどを削除
+  clearQuestionText();
+
   const state = await fetch("/api/state").then(r => r.json());
   latestState = state;
   console.log("[CLIENT] load state", state);
@@ -398,8 +403,8 @@ async function syncState() {
 
         // サーバーが保持している「解答済みID一覧」を基準に
         // このクライアントが解答済みかどうかを判定
-        const answeredIds = state.answeredClientIds ?? [];
-        hasAnswered = answeredIds.includes(clientId);
+        const myAnswer = state.answers?.[clientId];
+        hasAnswered = myAnswer && myAnswer.answer !== "over";
 
         // タイマーが有効になるまでは解答不可
         canAnswer = false;
@@ -411,7 +416,25 @@ async function syncState() {
 
         // サーバー時刻基準でタイマーを再開
         startStableTimer(state);
-        scrollToQuestion();  
+        scrollToQuestion(); 
+
+         // 出題情報の再反映
+        renderQuestion(state);
+        // 選んだ選択肢の枠線情報
+        restoreAnsweredChoice(state);
+
+        // 解答があるときの表示
+        if (hasAnswered) {
+          monitor_result.innerHTML = "解答受付済";
+          time_limit.classList.remove("time__limit__active");
+          answer_lamp.classList.remove("lamp-on");
+          answer_lamp.classList.add("lamp-off");
+        } else {
+          monitor_result.innerHTML = "出題中";
+          time_limit.classList.add("time__limit__active");
+          answer_lamp.classList.remove("lamp-off");
+          answer_lamp.classList.add("lamp-on");
+        }
         
     }
 
@@ -422,7 +445,7 @@ async function syncState() {
         question__default.forEach(el =>{
             el.classList.add("none");
         }); 
-        clearQuestionText();
+
         // 出題情報の再反映
         renderQuestion(state);
         // 選んだ選択肢の枠線情報
@@ -436,7 +459,7 @@ async function syncState() {
         const myAnswer = state.answers?.[clientId];
         // シンプルにタイムオーバー（answer: 'over'） or 途中参加で解答無し
         if(!myAnswer || myAnswer.answer === "over"  ){
-            
+            monitor_result.innerHTML = "タイムオーバー";
             // 0表示 タイマー背景灰色 時間切れ ランプ消灯
             time_limit_count.innerHTML = "0";
             time_limit.classList.remove("time__limit__active");
@@ -462,7 +485,7 @@ async function syncState() {
         question__default.forEach(el =>{
             el.classList.add("none");
         }); 
-        clearQuestionText();
+
         // 出題情報の再反映
         renderQuestion(state);
         // アンサーチェック情報の反映
@@ -476,7 +499,7 @@ async function syncState() {
         const myAnswer = state.answers?.[clientId];
         // シンプルにタイムオーバー（answer: 'over'） or 途中参加で解答無し
         if(!myAnswer || myAnswer.answer === "over" ){
-            
+            monitor_result.innerHTML = "タイムオーバー";
             // 0表示 タイマー背景灰色 時間切れ ランプ消灯（不正解確定のため）
             time_limit_count.innerHTML = "0";
             time_limit.classList.remove("time__limit__active");
@@ -485,6 +508,7 @@ async function syncState() {
             return;
         } else{
             // 解答がある場合
+            monitor_result.innerHTML = "解答受付済";
             // 0表示 タイマー背景赤 ランプ点灯
             time_limit_count.innerHTML = "0";
             time_limit.classList.add("time__limit__active");
@@ -501,7 +525,7 @@ async function syncState() {
         question__default.forEach(el =>{
             el.classList.add("none");
         }); 
-        clearQuestionText();
+
         // 出題情報の再反映
         renderQuestion(state);
         // アンサーチェック情報の反映
@@ -579,7 +603,7 @@ function clearQuestionText() {
     // 全選択肢空白
     select__button.forEach(btn => btn.innerHTML = "");
     
-    //全アンサーチェック空白   
+    //全アンサーチェックリセット   
     answer__sum.forEach(btn => {
         // 人数表示
         btn.innerHTML = "";
@@ -587,6 +611,8 @@ function clearQuestionText() {
         btn.classList.remove("correct");
     });
 }
+
+
 
 
 
@@ -689,8 +715,8 @@ function syncQuestionFromServer() {
         applyTextChoiceLayout(state.textChoiceCount ?? 4);
 
         // サーバー基準で解答済みか再評価
-        const answeredIds = state.answeredClientIds ?? [];
-        hasAnswered = answeredIds.includes(clientId);
+        const myAnswer = state.answers?.[clientId];
+        hasAnswered = !!(myAnswer && myAnswer.answer !== undefined);
             
         canAnswer = false;
 
@@ -727,7 +753,7 @@ function startStableTimer(state) {
         canAnswer = false;
 
         // 未解答時の処理
-        if(!hasAnswered){
+        if (!hasAnswered){
             // 0表示 タイマー背景灰色 時間切れ ランプ消灯
             time_limit_count.innerHTML = "0";
             time_limit.classList.remove("time__limit__active");

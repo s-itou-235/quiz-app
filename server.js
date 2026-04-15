@@ -858,6 +858,7 @@ io.on("connection", (socket) => {
     // 解答済み
     if (gameState.answersByClientId[clientId]) return;
   
+
     // 制限時間
     const limitMs = gameState.answerCloseAt - gameState.answerOpenAt;
 
@@ -882,7 +883,7 @@ io.on("connection", (socket) => {
     }
 
     if (clientElapsed !== null) {
-      const maxAdvance = safeRtt ? safeRtt * 0.5 : 1000;
+      const maxAdvance = Math.max(30, safeRtt || 30);
 
       // サーバーより「速すぎる」＝未来押し（チート or 不正同期）
       if (clientElapsed < serverElapsed - maxAdvance) {
@@ -898,7 +899,7 @@ io.on("connection", (socket) => {
       if (clientElapsed !== null && safeRtt) {
         const delay = serverElapsed - clientElapsed;
 
-        if (delay > safeRtt * 1.2) {
+        if (delay > Math.max(80, safeRtt * 2)) {
           console.warn("[DELAY NOT EXPLAINED BY RTT]", {
             delay,
             safeRtt
@@ -926,7 +927,7 @@ io.on("connection", (socket) => {
       // =========================
       // ▼ 判定ロジック（改善版）
       // =========================
-      const ALLOW_ERROR_MS = Math.max(300, safeRtt ? safeRtt * 0.5 : 300);
+      const ALLOW_ERROR_MS = Math.max(50, safeRtt ? safeRtt * 2 : 200);
 
       let finalElapsed = serverElapsed; // ★ デフォルトを「生」に
       let source = "SERVER_RAW";
@@ -936,21 +937,20 @@ io.on("connection", (socket) => {
 
       if (clientElapsed !== null) {
 
-        diffClientServer = Math.abs(clientElapsed - serverElapsed);
+        const diffClientServer = Math.abs(clientElapsed - serverElapsed);
 
-        if (clientElapsed >= serverElapsed - (safeRtt ? safeRtt * 0.5 : 1000)) {
-          // クライアントとサーバーが一致 → client採用
-          // 上記の「clientElapsed 異常値チェック」「サーバーとの時差検証」をクリア
+        // セキュリティ的に問題ないなら client採用
+        if (diffClientServer < ALLOW_ERROR_MS ) {
           finalElapsed = clientElapsed;
           source = "CLIENT";
-        } else if (safeRtt) {
-
-          diffClientCorrected = Math.abs(clientElapsed - correctedElapsed);
-
-          if (diffClientCorrected < ALLOW_ERROR_MS) {
-            // ✔ 補正と一致 → RTT補正採用
+        } else {
+          // 大きくズレてる場合のみ fallback
+          if (safeRtt) {
             finalElapsed = correctedElapsed;
             source = "RTT_CORRECTED";
+          } else {
+            finalElapsed = serverElapsed;
+            source = "SERVER_RAW";
           }
         }
       }
@@ -1231,7 +1231,6 @@ io.on("connection", (socket) => {
 
   
   // 早押しワースト４ (境界同率拡張方式）
-  // デバッグ的に最大3人しかやれないので、早押しワースト２（デバッグ用）
   socket.on("admin:showCorrectWorst", () => {
 
     if (gameState.phase !== "result") return;
@@ -1448,7 +1447,7 @@ io.on("connection", (socket) => {
   socket.on("client:reload", () => {
     
     // スコア再計算
-    recomputeScoresFromQuestionResults();
+    // recomputeScoresFromQuestionResults();
 
     // =====  全クライアントへ反映 =====
     // 本当は全員にやる必要はないが
@@ -1458,7 +1457,6 @@ io.on("connection", (socket) => {
     });
 
     console.log("[RELOAD] score update");
-    emitAdminState();
   });
 
   // フェーズの強制変更
