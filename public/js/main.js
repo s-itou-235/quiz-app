@@ -1456,11 +1456,11 @@ function adjustFont() {
 
     if (isMobile) {
     // スマホ（375px表示）
-      if (textLength <= 5) el.style.fontSize = '50px';//５文字以下
-      else if (textLength <= 8) el.style.fontSize = '30px';//６～８文字
-      else if (textLength <= 10) el.style.fontSize = '25px';//９～１０文字
-      else if (textLength <= 24) el.style.fontSize = '20px';//１１～２４文字
-      else el.style.fontSize = '18px';//２５文字以上～  
+      if (textLength <= 5) el.style.fontSize = '45px';//５文字以下
+      else if (textLength <= 8) el.style.fontSize = '27px';//６～８文字
+      else if (textLength <= 10) el.style.fontSize = '22px';//９～１０文字
+      else if (textLength <= 24) el.style.fontSize = '18px';//１１～２４文字
+      else el.style.fontSize = '16px';//２５文字以上～  
     } 
     //PC表示 （720px表示で再修正）
     else {
@@ -1478,11 +1478,11 @@ function adjustFont() {
 
     if (isMobile) {
     //スマホ表示 （375px表示）
-      if (textLength <= 5) el.style.fontSize = '50px';//５文字以下
-      else if (textLength <= 8) el.style.fontSize = '30px';//６～８文字
-      else if (textLength <= 10) el.style.fontSize = '25px';//９～１０文字
-      else if (textLength <= 24) el.style.fontSize = '20px';//１１～２４文字
-      else el.style.fontSize = '18px';//２５文字以上～ 
+      if (textLength <= 5) el.style.fontSize = '45px';//５文字以下
+      else if (textLength <= 8) el.style.fontSize = '27px';//６～８文字
+      else if (textLength <= 10) el.style.fontSize = '22px';//９～１０文字
+      else if (textLength <= 24) el.style.fontSize = '18px';//１１～２４文字
+      else el.style.fontSize = '16px';//２５文字以上～ 
     } 
     //PC表示 （720px表示で再修正）
     else {
@@ -1500,10 +1500,10 @@ function adjustFont() {
 
     if (isMobile) {
     //スマホ表示 （375px表示）
-      if (textLength <= 5) el.style.fontSize = '50px';//５文字以下
-      else if (textLength <= 8) el.style.fontSize = '30px';//６～８文字
-      else if (textLength <= 20) el.style.fontSize = '24px';//９～２０文字
-      else el.style.fontSize = '15px';//２１文字以上
+      if (textLength <= 5) el.style.fontSize = '45px';//５文字以下
+      else if (textLength <= 8) el.style.fontSize = '27px';//６～８文字
+      else if (textLength <= 20) el.style.fontSize = '22px';//９～２０文字
+      else el.style.fontSize = '14px';//２１文字以上
     } 
     //PC表示 （720px表示で再修正）
     else {
