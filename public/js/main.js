@@ -1439,16 +1439,24 @@ socket.on("game:reset", () => {
 });
 
 
-// 文字サイズの調整
-// スマホ表示モードの分岐
-const width = window.innerWidth;
 
-const isMobile = width <= 428;
-const isTablet = width >= 429 && width <= 719;
-const isPC = width >= 720;
+// 表示モードの分岐
+function getDevice() {
+  const width = window.innerWidth;
+
+  return {
+    isMobile: width <= 428,
+    isTablet: width >= 429 && width <= 719,
+    isPC: width >= 720
+  };
+}
 
 function adjustFont() {
 
+  // ----------------------
+  // 選択肢文字サイズの調整
+  // ----------------------
+  
   // ２択
   document.querySelectorAll('.question__text__2text .select__button').forEach(el => {
     const textLength = el.textContent.trim().length;
@@ -1462,13 +1470,13 @@ function adjustFont() {
       else if (textLength <= 24) el.style.fontSize = '18px';//１１～２４文字
       else el.style.fontSize = '16px';//２５文字以上～  
     } 
-    //PC表示 （720px表示で再修正）
+    //PC表示 （720px表示）
     else {
       if (textLength <= 5) el.style.fontSize = '80px';//５文字以下
-      else if (textLength <= 8) el.style.fontSize = '50px';//９～１０文字
-      else if (textLength <= 10) el.style.fontSize = '40px';//９～１０文字
-      else if (textLength <= 24) el.style.fontSize = '20px';//１１～２４文字
-      else el.style.fontSize = '18px';//２５文字以上～
+      else if (textLength <= 8) el.style.fontSize = '60px';//６～８文字
+      else if (textLength <= 10) el.style.fontSize = '45px';//９～１０文字
+      else if (textLength <= 24) el.style.fontSize = '38px';//１１～２４文字
+      else el.style.fontSize = '32px';//２５文字以上～
     }
   });
 
@@ -1484,13 +1492,12 @@ function adjustFont() {
       else if (textLength <= 24) el.style.fontSize = '18px';//１１～２４文字
       else el.style.fontSize = '16px';//２５文字以上～ 
     } 
-    //PC表示 （720px表示で再修正）
+    //PC表示 （720px表示）
     else {
-      if (textLength <= 5) el.style.fontSize = '50px';//５文字以下
-      else if (textLength <= 8) el.style.fontSize = '30px';//６～８文字
-      else if (textLength <= 10) el.style.fontSize = '25px';//９～１０文字
-      else if (textLength <= 24) el.style.fontSize = '20px';//１１～２４文字
-      else el.style.fontSize = '18px';//２５文字以上～ 
+      if (textLength <= 8) el.style.fontSize = '60px';//８文字以下
+      else if (textLength <= 10) el.style.fontSize = '45px';//９～１０文字
+      else if (textLength <= 24) el.style.fontSize = '30px';//１１～２４文字
+      else el.style.fontSize = '22px';//２５文字以上～ 
     }
   });
 
@@ -1505,12 +1512,12 @@ function adjustFont() {
       else if (textLength <= 20) el.style.fontSize = '22px';//９～２０文字
       else el.style.fontSize = '14px';//２１文字以上
     } 
-    //PC表示 （720px表示で再修正）
+    //PC表示 （720px表示）
     else {
-      if (textLength <= 5) el.style.fontSize = '50px';//５文字以下
-      else if (textLength <= 8) el.style.fontSize = '30px';//６～８文字
-      else if (textLength <= 20) el.style.fontSize = '24px';//９～２０文字
-      else el.style.fontSize = '15px';//２１文字以上
+      if (textLength <= 8) el.style.fontSize = '50px';//８文字以下
+      else if (textLength <= 10) el.style.fontSize = '40px';//９～１０文字
+      else if (textLength <= 15) el.style.fontSize = '30px';//１１～１５文字
+      else el.style.fontSize = '23px';//１６文字以上
     }
   });
 }
