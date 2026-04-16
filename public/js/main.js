@@ -272,13 +272,14 @@ function updateOffset(serverNow) {
     return;
   }
 
+
   if (timeOffset === 0) {
     // 初回は即反映
     timeOffset = newOffset;
   } else {
     // スムージング（ブレ防止）
-    // 例えば５秒ズレたら ０．２５秒につきで１秒ずつ調整し急激に変化させない（概念的部分）
-    timeOffset = timeOffset * 0.8 + newOffset * 0.2;
+    const alpha = Math.abs(newOffset - timeOffset) > 100 ? 0.5 : 0.2;
+    timeOffset = timeOffset * (1 - alpha) + newOffset * alpha;
   }
   
 }
@@ -1003,9 +1004,9 @@ function showAnswerCheck(answerCounts) {
     if (!sumEl) return;
 
     // 本番用
-    // sumEl.textContent = `${count}人`;
+    sumEl.textContent = `${count}人`;
     // デバッグ用
-    sumEl.textContent = `77人`;
+    // sumEl.textContent = `77人`;
   });
 
 }
@@ -1452,6 +1453,8 @@ function getDevice() {
 }
 
 function adjustFont() {
+
+  const { isMobile, isTablet, isPC } = getDevice();
 
   // ----------------------
   // 選択肢文字サイズの調整

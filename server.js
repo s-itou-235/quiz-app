@@ -863,10 +863,11 @@ io.on("connection", (socket) => {
     const limitMs = gameState.answerCloseAt - gameState.answerOpenAt;
 
     // RTTがない or 異常値ならフォールバック
+    // 通信往復時間（概算ラグ指標）
     const MAX_RTT = 10000; // 10秒以上は異常
     const safeRtt = (rtt && rtt > 0 && rtt < MAX_RTT) ? rtt : null;
 
-    // ① サーバー基準（絶対安全）
+    // ① サーバー基準の解答タイム（絶対安全）
     const serverElapsed = serverNow - gameState.answerOpenAt;
 
     // ② RTT補正
@@ -876,16 +877,18 @@ io.on("connection", (socket) => {
       correctedElapsed = Math.max(0, serverElapsed - (safeRtt * 0.4));
     }
     
-    // ③ クライアント時刻からの推定
+    // ③ クライアント時刻からの解答タイム
+    // 不正チェックが全部クリアすればこのタイムを採用
     let clientElapsed = null;
     if (Number.isFinite(clientSendTime)) {
       clientElapsed = clientSendTime - gameState.answerOpenAt;
     }
 
     if (clientElapsed !== null) {
-      const maxAdvance = Math.max(30, safeRtt || 30);
+      
+      const maxAdvance = Math.max(400, safeRtt * 2);
 
-      // サーバーより「速すぎる」＝未来押し（チート or 不正同期）
+      // サーバーより「速すぎる」＝未来押しを判定（チート or 不正同期）
       if (clientElapsed < serverElapsed - maxAdvance) {
           console.warn("[FUTURE INPUT DETECTED]", {
             clientElapsed,
@@ -893,173 +896,180 @@ io.on("connection", (socket) => {
             maxAdvance
           });
           clientElapsed = null;
-        }
       }
-      // RTT整合性チェック
-      if (clientElapsed !== null && safeRtt) {
-        const delay = serverElapsed - clientElapsed;
+    }
 
-        if (delay > Math.max(80, safeRtt * 2)) {
-          console.warn("[DELAY NOT EXPLAINED BY RTT]", {
-            delay,
-            safeRtt
-          });
+    // RTT整合性チェック
+    // サーバー基準解答タイムとクライアント基準解答タイムの差と
+    // 通信ラグのRTTに整合性があるか
+    if (clientElapsed !== null && safeRtt) {
+      const delay = serverElapsed - clientElapsed;
 
+      // サーバー基準解答タイムとクライアント基準解答タイムの差と
+      // クライアント側解答→サーバー到達までの時間を比較
+      // クライアント側解答→サーバー到達までの時間の2倍（最大0.3秒まで）
+      // 概念的説明
+      // クライアント基準2秒 サーバー基準4秒 誤差2秒
+      // クライアント送信2秒 サーバー受信4秒 誤差2秒
+      // それぞれの誤差に整合性があるかどうか？
+
+      if (delay > Math.max(300, safeRtt * 2)) {
+        console.warn("[DELAY NOT EXPLAINED BY RTT]", {
+          delay,
+          safeRtt
+        });
+        clientElapsed = null;
+      }
+
+    }
+
+    // 異常値チェック
+    // 通信ラグを考慮しつつチート検知
+    if (clientElapsed !== null) {
+      if (
+          clientElapsed < -1000 || // フライングしすぎ(開始前１秒以上)
+          clientElapsed > limitMs + 1000  // 制限時間超えすぎ（時間後１秒以上）
+        ) {
+          console.warn("[CHEAT DETECTED] clientElapsed invalid:", clientElapsed);
           clientElapsed = null;
         }
+    }
+
+    // =========================
+    // ▼ 判定ロジック
+    // =========================
+    const MAX_TRUST_RTT = 7000; 
+
+    let finalElapsed = serverElapsed;
+    let source = "SERVER_RAW";
+
+    if (clientElapsed !== null && safeRtt && safeRtt < MAX_TRUST_RTT) {
+
+      const diff = Math.abs(clientElapsed - serverElapsed);
+
+      // RTTによって判定の厳しさを変える
+      const isHighLatency = safeRtt > 2000;
+
+      const allowDiff = isHighLatency
+        ? Math.max(500, safeRtt * 1.2)  // 重い回線 → 甘く
+        : Math.max(250, safeRtt * 1.5); // 通常回線
+
+      if (diff < allowDiff) {
+        finalElapsed = clientElapsed;
+        source = "CLIENT";
+
+      } else if (safeRtt) {
+        finalElapsed = correctedElapsed;
+        source = "RTT_CORRECTED";
       }
 
-      // 異常値チェック
-      // 通信ラグを考慮しつつチート検知
-      if (clientElapsed !== null) {
-      
-        if (
-            clientElapsed < -1000 || // フライングしすぎ(開始前１秒以上)
-            clientElapsed > limitMs + 1000  // 制限時間超えすぎ（時間後１秒以上）
-          ) {
-            console.warn("[CHEAT DETECTED] clientElapsed invalid:", clientElapsed);
-            clientElapsed = null;
-          }
-      }
+    } else if (safeRtt && safeRtt < MAX_TRUST_RTT) {
+      // client使えないがRTTは許容範囲
+      finalElapsed = correctedElapsed;
+      source = "RTT_CORRECTED";
+    }
+
+    // フライング防止
+    if (finalElapsed < 0) finalElapsed = 0;
+
+    // 最終防御
+    // NaN / Infinity などの防止
+    if (!Number.isFinite(finalElapsed)) {
+      finalElapsed = serverElapsed;
+      source = "FALLBACK_INVALID";
+    }
+
+    // サーバー受付（実際に有効な範囲）
+    // 時間終了0.5秒程度だけ許す
+    // （マイナス表示防止済・通称ブザービート→解答受付のブザービート的使い方)
+    
+    // サーバー側のブザービートは0.3秒まで許容
+    // RTT値によって増減 （最大1秒）
+    // / 判定用（締切）
+    const ACCEPT_GRACE_MS = Math.min(1000,Math.max(300, safeRtt ? safeRtt * 0.5 : 300));
+    // ↑可読性重視であえてMath.min~ で表記
+
+    if (finalElapsed > limitMs + ACCEPT_GRACE_MS) return;
+
+    // ▼ 保険（通信事故防止）
+    if (serverNow > gameState.answerCloseAt + 2000) return;
+
+
+    
+    //解答タイム計算
+    const elapsedSecRaw = finalElapsed / 1000;
+    
+    //制限時間10秒の問題で
+    //10.01や10.00というタイムの場合 は 9.99扱い
+    //サーバーとのラグなどで起きうる
+    const maxDisplaySec = (limitMs - 1) / 1000;
+
+    // ここに最低解答タイム判定（0.00防止→最速は0.01）
+
+
+    // 端数を小数点第2位まで切捨て
+    const elapsedSecFixed = Math.min(
+      Math.floor(elapsedSecRaw * 100) / 100,
+      Math.floor(maxDisplaySec * 100) / 100
+    );
+
+    // ユーザーデータに反映
+    gameState.answersByClientId[clientId] = {
+      answer,
+      answeredAt: serverNow,
+      elapsedMs: finalElapsed,
+      // elapsedSecRaw : 実測値（ログ・分析用）
+      elapsedSecRaw,
+      // elapsedSecFixed : 表示・順位判定用（最大値で丸め）
+      elapsedSecFixed,
+      time: elapsedSecFixed // ★ 追加（スコア計算用）
+    };
+
+    console.log("[ANSWER FIXED]", clientId, elapsedSecFixed);
+    // 解答を管理者側でのみアップデート
+    io.to("admin").emit("admin:answerUpdated");
 
 
 
-      // =========================
-      // ▼ 判定ロジック（改善版）
-      // =========================
-      const ALLOW_ERROR_MS = Math.max(50, safeRtt ? safeRtt * 2 : 200);
+    // ▼ デバッグログ
+    console.log("==== ANSWER DEBUG ====");
+    console.log("[INPUT]", { clientSendTime, rtt });
 
-      let finalElapsed = serverElapsed; // ★ デフォルトを「生」に
-      let source = "SERVER_RAW";
+    console.log("[SERVER]", {
+      serverNow,
+      serverElapsed
+    });
 
-      let diffClientServer = null;
-      let diffClientCorrected = null;
+    console.log("[RTT]", {
+      safeRtt,
+      correctedElapsed
+    });
 
-      if (clientElapsed !== null) {
-
-        const diffClientServer = Math.abs(clientElapsed - serverElapsed);
-
-        // セキュリティ的に問題ないなら client採用
-        if (diffClientServer < ALLOW_ERROR_MS ) {
-          finalElapsed = clientElapsed;
-          source = "CLIENT";
-        } else {
-          // 大きくズレてる場合のみ fallback
-          if (safeRtt) {
-            finalElapsed = correctedElapsed;
-            source = "RTT_CORRECTED";
-          } else {
-            finalElapsed = serverElapsed;
-            source = "SERVER_RAW";
-          }
-        }
-      }
-
-      // フライング防止
-      if (finalElapsed < 0) finalElapsed = 0;
-
-      // 最終防御
-      // NaN / Infinity などの防止
-      if (!Number.isFinite(finalElapsed)) {
-        finalElapsed = serverElapsed;
-        source = "FALLBACK_INVALID";
-      }
-
-      // サーバー受付（実際に有効な範囲）
-      // 時間終了0.5秒程度だけ許す
-      // （マイナス表示防止済・通称ブザービート→解答受付のブザービート的使い方)
-      
-      // サーバー側のブザービートは0.3秒まで許容
-      // RTT値によって増減 （最大1秒）
-      // / 判定用（締切）
-      const ACCEPT_GRACE_MS = Math.min(1000,Math.max(300, safeRtt ? safeRtt * 0.5 : 300));
-      // ↑可読性重視であえてMath.min~ で表記
-
-      if (finalElapsed > limitMs + ACCEPT_GRACE_MS) return;
-
-      // ▼ 保険（通信事故防止）
-      if (serverNow > gameState.answerCloseAt + 2000) return;
+    console.log("[CLIENT]", {
+      clientElapsed
+    });
 
 
-      
-      //解答タイム計算
-      const elapsedSecRaw = finalElapsed / 1000;
-      
-      //制限時間10秒の問題で
-      //10.01や10.00というタイムの場合 は 9.99扱い
-      //サーバーとのラグなどで起きうる
-      const maxDisplaySec = (limitMs - 1) / 1000;
+    console.log("[FINAL]", {
+      finalElapsed,
+      source,
+      serverElapsed,
+      clientElapsed,
+      correctedElapsed
+    });
 
-      // ここに最低解答タイム判定（0.00防止→最速は0.01）
+    console.log("======================");
 
+    console.log("[ANSWER FIXED]", clientId, elapsedSecFixed);
 
-      // 端数を小数点第2位まで切捨て
-      const elapsedSecFixed = Math.min(
-        Math.floor(elapsedSecRaw * 100) / 100,
-        Math.floor(maxDisplaySec * 100) / 100
-      );
-
-      // ユーザーデータに反映
-      gameState.answersByClientId[clientId] = {
-        answer,
-        answeredAt: serverNow,
-        elapsedMs: finalElapsed,
-        // elapsedSecRaw : 実測値（ログ・分析用）
-        elapsedSecRaw,
-        // elapsedSecFixed : 表示・順位判定用（最大値で丸め）
-        elapsedSecFixed,
-        time: elapsedSecFixed // ★ 追加（スコア計算用）
-      };
-
-      console.log("[ANSWER FIXED]", clientId, elapsedSecFixed);
-      // 解答を管理者側でのみアップデート
-      io.to("admin").emit("admin:answerUpdated");
-
-
-
-      // ▼ デバッグログ
-      console.log("==== ANSWER DEBUG ====");
-      console.log("[INPUT]", { clientSendTime, rtt });
-
-      console.log("[SERVER]", {
-        serverNow,
-        serverElapsed
-      });
-
-      console.log("[RTT]", {
-        safeRtt,
-        correctedElapsed
-      });
-
-      console.log("[CLIENT]", {
-        clientElapsed
-      });
-
-      console.log("[DIFF]", {
-        diffClientServer,
-        diffClientCorrected
-      });
-
-      console.log("[FINAL]", {
-        finalElapsed,
-        source,
-        serverElapsed,
-        clientElapsed,
-        correctedElapsed
-      });
-
-      console.log("======================");
-
-      console.log("[ANSWER FIXED]", clientId, elapsedSecFixed);
-
-      // 解答者した人のみに
-      // 解答 解答タイムを answerAccepted という名前で送信
-      // クライアント側ではボタンロックや選択ボタンのデータとして反映
-      io.to(clientId).emit("answerAccepted", {
-        clientId, //現状不要と思われるが、リロードでの再描写などで使う可能性を検討してから削除 
-        answer,
-        elapsedSecFixed
-      });
+    // 解答者した人のみに
+    // 解答 解答タイムを answerAccepted という名前で送信
+    // クライアント側ではボタンロックや選択ボタンのデータとして反映
+    io.to(clientId).emit("answerAccepted", {
+      clientId, //現状不要と思われるが、リロードでの再描写などで使う可能性を検討してから削除 
+      answer,
+      elapsedSecFixed
+    });
   });
 
 
