@@ -267,7 +267,7 @@
   #question_text{
     /* PC表示の文字サイズ */
     /* 表示保証文字数は５０文字 */
-    font-size: clamp(14px, 4vw, 28px);
+    /* font-size: clamp(14px, 4vw, 28px); */
     word-break: break-word;
 
     vertical-align: middle;
@@ -627,7 +627,7 @@
  }
 
   #question_text{
-    font-size: clamp(20px, 2vw, 28px);
+    /* font-size: clamp(20px, 2vw, 28px); */
     word-break: break-word;
     vertical-align: middle;
   }

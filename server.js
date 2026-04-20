@@ -884,6 +884,7 @@ io.on("connection", (socket) => {
       clientElapsed = clientSendTime - gameState.answerOpenAt;
     }
 
+    // 未来押しを判定
     if (clientElapsed !== null) {
       
       const OFFSET_ALLOW = 2000;
@@ -919,7 +920,9 @@ io.on("connection", (socket) => {
       // クライアント送信2秒 サーバー受信4秒 誤差2秒
       // それぞれの誤差に整合性があるかどうか？
 
-      if (delay > Math.max(300, safeRtt * 2)) {
+      const DELAY_ALLOW = Math.max(2000, safeRtt * 4);
+
+      if (delay > DELAY_ALLOW) {
         console.warn("[DELAY NOT EXPLAINED BY RTT]", {
           delay,
           safeRtt
@@ -949,19 +952,23 @@ io.on("connection", (socket) => {
     let finalElapsed = serverElapsed;
     let source = "SERVER_RAW";
 
-    if (clientElapsed !== null && safeRtt && safeRtt < MAX_TRUST_RTT) {
+    if (clientElapsed !== null) {
 
       const diff = Math.abs(clientElapsed - serverElapsed);
 
       // RTTによって判定の厳しさを変える
-      const isHighLatency = safeRtt > 2000;
+      const isHighLatency = safeRtt && safeRtt > 1500;
       const MAX_DIFF_CAP = 2000;
 
-      const allowDiffRaw = isHighLatency
-        ? Math.max(500, safeRtt * 1.2)  // 重い回線 → 甘く
-        : Math.max(250, safeRtt * 1.5); // 通常回線
+      let allowDiff;
 
-      const allowDiff = Math.min(MAX_DIFF_CAP, allowDiffRaw);
+      if (isHighLatency) {
+        // 高遅延時は上限キャップを外す
+        allowDiff = Math.max(500, safeRtt * 1.2);
+      } else {
+        const allowDiffRaw = Math.max(250, safeRtt ? safeRtt * 1.5 : 250);
+        allowDiff = Math.min(MAX_DIFF_CAP, allowDiffRaw);
+      }
 
       if (diff < allowDiff) {
         finalElapsed = clientElapsed;
@@ -1013,14 +1020,16 @@ io.on("connection", (socket) => {
     //サーバーとのラグなどで起きうる
     const maxDisplaySec = (limitMs - 1) / 1000;
 
-    // ここに最低解答タイム判定（0.00防止→最速は0.01）
-
-
     // 端数を小数点第2位まで切捨て
-    const elapsedSecFixed = Math.min(
+    let elapsedSecFixed = Math.min(
       Math.floor(elapsedSecRaw * 100) / 100,
-      Math.floor(maxDisplaySec * 100) / 100
+      Math.floor(maxDisplaySec * 100) / 100,
     );
+
+    // ここに最低解答タイム判定（0.00防止→最速は0.01）
+    if (elapsedSecFixed < 0.01) {
+      elapsedSecFixed = 0.01;
+    }
 
     // ユーザーデータに反映
     gameState.answersByClientId[clientId] = {
@@ -1554,7 +1563,8 @@ io.on("connection", (socket) => {
 
 // 締め切り処理
 // 問題時間終了７秒までは通信ラグ的受付時間として有効
-// タイムオーバー処理は、問題時間終了７秒後に行う
+// クライアント側でのタイムオーバーはタイムオーバー待機中のような状態として
+// 正式なタイムオーバー処理は、問題時間終了７秒後に行う
 const COLLECT_GRACE_MS = 7000;
 
 setInterval(() => {

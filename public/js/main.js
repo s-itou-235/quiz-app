@@ -389,7 +389,7 @@ async function syncState() {
 
   const state = await fetch("/api/state").then(r => r.json());
   latestState = state;
-  console.log("[CLIENT] load state", state);
+  // console.log("[CLIENT] load state", state);
   // タイマー再取得
   updateOffset(state.serverNow); 
 
@@ -816,7 +816,7 @@ function startStableTimer(state) {
         //   msEl.textContent = `${Math.max(0, sec)}.${ms.toString().padStart(3, "0")}s`;
         // }
         
-        
+
         // 1回だけ問題表示
         if (!questionRendered) {
             renderQuestion(state);
@@ -1458,7 +1458,31 @@ function adjustFont() {
   const { isMobile, isTablet, isPC } = getDevice();
 
   // ----------------------
-  // 選択肢文字サイズの調整
+  // 出題文字サイズの調整（表示保証５０文字）
+  // ----------------------
+
+  document.querySelectorAll('#question_text').forEach(el => {
+    const textLength = el.textContent.trim().length;
+    console.log(textLength);
+
+    if (isMobile) {
+    // スマホ（375px表示）
+      if (textLength <= 5) el.style.fontSize = '40px';//５文字以下
+      else if (textLength <= 7) el.style.fontSize = '30px';//６～７文字
+      else if (textLength <= 24) el.style.fontSize = '27px';//８～２４文字
+      else el.style.fontSize = '20px';//２５文字以上～  
+    } 
+    //PC表示 （720px表示）
+    else {
+      if (textLength <= 7) el.style.fontSize = '60px';//７文字以下
+      else if (textLength <= 10) el.style.fontSize = '45px';//８～１０文字
+      else if (textLength <= 22) el.style.fontSize = '40px';//１１～２２文字
+      else el.style.fontSize = '28px';//２３文字以上～  
+    }
+  });
+
+  // ----------------------
+  // 選択肢文字サイズの調整（表示保証４０文字）
   // ----------------------
   
   // ２択

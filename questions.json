@@ -89,24 +89,6 @@
     }
   },
   {
-    "id": 1,
-    "category": "normal",
-    "memo": "デバッグ",
-    "questionText": "デバッグ問題文",
-    "timeLimitSec": 5,
-    "choices": [
-      "デバッグ用選択肢１",
-      "デバッグ用選択肢２",
-      "デバッグ用選択肢３"
-    ],
-    "correctIndex": 1,
-    "explanation": "選択肢３択で３Pのようなもの",
-    "point": {
-      "correct": 3,
-      "wrong": 0
-    }
-  },
-  {
     "id": 2,
     "category": "normal",
     "memo": "デバッグ",
@@ -122,6 +104,24 @@
     "explanation": "選択肢３択で４Pのようなもの",
     "point": {
       "correct": 4,
+      "wrong": 0
+    }
+  },
+  {
+    "id": 1,
+    "category": "normal",
+    "memo": "デバッグ",
+    "questionText": "デバッグ問題文",
+    "timeLimitSec": 5,
+    "choices": [
+      "デバッグ用選択肢１",
+      "デバッグ用選択肢２",
+      "デバッグ用選択肢３"
+    ],
+    "correctIndex": 1,
+    "explanation": "選択肢３択で３Pのようなもの",
+    "point": {
+      "correct": 3,
       "wrong": 0
     }
   }
