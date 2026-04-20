@@ -299,12 +299,17 @@ setInterval(() => {
   const clientNow = Date.now();
   const syncedNow = getNow();
 
-  const clientEl = document.getElementById("client_time");
-  const serverEl = document.getElementById("server_time");
+  
   const offsetEl = document.getElementById("offset_time");
 
+  offsetEl.textContent = Number.isFinite(timeOffset)
+    ? `${Math.round(timeOffset)} ms`
+    : "OFFSET_ERR";
+
+
   //デバッグ用ゾーン
-  
+  // const clientEl = document.getElementById("client_time");
+  // const serverEl = document.getElementById("server_time");
   
   // if (!clientEl || !serverEl || !offsetEl) return;
 
@@ -318,10 +323,6 @@ setInterval(() => {
   //   minute: '2-digit',
   //   second: '2-digit'
   // });
-
-  offsetEl.textContent = Number.isFinite(timeOffset)
-    ? `${Math.round(timeOffset)} ms`
-    : "OFFSET_ERR";
 
 }, 250);
 
@@ -807,14 +808,14 @@ function startStableTimer(state) {
         answer_lamp.classList.add("lamp-on");
         answer_lamp.classList.remove("lamp-off");
 
-        const msEl = document.getElementById("time_limit_count_millisec_debug");
-
-        if (msEl) {
-          const sec = Math.floor(remainingMs / 1000);
-          const ms = Math.floor(remainingMs % 1000);
-
-          msEl.textContent = `${Math.max(0, sec)}.${ms.toString().padStart(3, "0")}s`;
-        }
+        // デバッグ用
+        // const msEl = document.getElementById("time_limit_count_millisec_debug");
+        // if (msEl) {
+        //   const sec = Math.floor(remainingMs / 1000);
+        //   const ms = Math.floor(remainingMs % 1000);
+        //   msEl.textContent = `${Math.max(0, sec)}.${ms.toString().padStart(3, "0")}s`;
+        // }
+        
         
         // 1回だけ問題表示
         if (!questionRendered) {
@@ -1436,7 +1437,7 @@ socket.on("pointUpdateInfo", () => {
 socket.on("game:reset", () => {
   console.log("[RESET RECEIVED]");
 
-  location.reload(); // 一番確実
+  location.reload();
 });
 
 

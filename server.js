@@ -886,7 +886,13 @@ io.on("connection", (socket) => {
 
     if (clientElapsed !== null) {
       
-      const maxAdvance = Math.max(400, safeRtt * 2);
+      const OFFSET_ALLOW = 2000;
+
+      const maxAdvance = Math.max(
+        800,
+        safeRtt ? safeRtt * 4 : 800,
+        OFFSET_ALLOW
+      );
 
       // サーバーより「速すぎる」＝未来押しを判定（チート or 不正同期）
       if (clientElapsed < serverElapsed - maxAdvance) {
@@ -949,10 +955,13 @@ io.on("connection", (socket) => {
 
       // RTTによって判定の厳しさを変える
       const isHighLatency = safeRtt > 2000;
+      const MAX_DIFF_CAP = 2000;
 
-      const allowDiff = isHighLatency
+      const allowDiffRaw = isHighLatency
         ? Math.max(500, safeRtt * 1.2)  // 重い回線 → 甘く
         : Math.max(250, safeRtt * 1.5); // 通常回線
+
+      const allowDiff = Math.min(MAX_DIFF_CAP, allowDiffRaw);
 
       if (diff < allowDiff) {
         finalElapsed = clientElapsed;
