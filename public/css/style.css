@@ -786,3 +786,20 @@
 
 }
 
+
+/* 早押しワースト系の背景色 */
+.worst-row {
+  background-color: #b56fff; /* 薄い紫 */
+}
+
+/* ハイブリッドルール没収者 */
+/* 通常（ベース） */
+.seizure-row {
+  font-weight: normal;
+}
+
+/* 点滅ON状態 */
+.seizure-active {
+  font-weight: bold;
+  color: rgb(255, 0, 0);
+}

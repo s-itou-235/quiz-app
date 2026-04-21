@@ -211,7 +211,12 @@ app.get("/api/admin/ranking", (req, res) => {
       if (b.correctCount !== a.correctCount) {
         return b.correctCount - a.correctCount;
       }
-      return a.totalTime - b.totalTime;
+          
+      const timeA = Math.round(a.totalTime * 100);
+      const timeB = Math.round(b.totalTime * 100);
+
+      return timeA - timeB;
+
     });
 
 
@@ -267,7 +272,6 @@ app.get("/api/state", (req, res) => {
   const qid = Number(gameState.questionId);
   const question = questionBank[qid];
 
-  // 🔥 ここが核心
   let answersToSend = gameState.answersByClientId ?? {};
 
   if (
@@ -1372,6 +1376,9 @@ io.on("connection", (socket) => {
 
     console.log("[HYBRID] 没収対象:", seizureTargets);
 
+    // ▼ Set化（高速＆扱いやすい）
+    const seizureSet = new Set(seizureTargets.map(p => p.clientId));
+
     seizureTargets.forEach(player => {
 
       const ans = questionData.answers[player.clientId];
@@ -1413,7 +1420,12 @@ io.on("connection", (socket) => {
 
 
     // ⑦ ランキング表示（変更なし）
-    io.emit("ranking:hybridWorst", { result: displayTargets });
+    const displayWithFlag = displayTargets.map(p => ({
+      ...p,
+      isSeizure: seizureSet.has(p.clientId)
+    }));
+
+    io.emit("ranking:hybridWorst", { result: displayWithFlag });
     emitAdminState();
   });
 

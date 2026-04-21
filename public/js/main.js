@@ -1307,6 +1307,8 @@ socket.on("ranking:correctWorst", ({ ranking }) => {
   ranking.forEach((player) => {
 
     const tr = document.createElement("tr");
+    
+    tr.classList.add("worst-row");
 
     tr.innerHTML = `
       <td>${player.rank}</td>
@@ -1336,7 +1338,7 @@ socket.on("ranking:hybridWorst", ({ result }) => {
   container.className = "ranking_block";
 
   const title = document.createElement("h2");
-  title.textContent = "早押しワースト４（没収）";
+  title.textContent = "早押しワースト４";
   container.appendChild(title);
 
   const table = document.createElement("table");
@@ -1358,11 +1360,23 @@ socket.on("ranking:hybridWorst", ({ result }) => {
 
     const tr = document.createElement("tr");
 
+    tr.classList.add("worst-row");
+
     tr.innerHTML = `
       <td>${player.rank}</td>
       <td>${player.name}</td>
       <td>${player.time.toFixed(2)}秒</td>
     `;
+
+    // ▼ 没収対象だけ強調
+    if (player.isSeizure) {
+      tr.classList.add("seizure-row");
+      tr.innerHTML = `
+        <td>没収</td>
+        <td>${player.name}</td>
+        <td>${player.time.toFixed(2)}秒</td>
+      `;
+    }
 
     tbody.appendChild(tr);
   });
@@ -1370,7 +1384,41 @@ socket.on("ranking:hybridWorst", ({ result }) => {
   table.appendChild(tbody);
   container.appendChild(table);
   area.appendChild(container);
+  
+  // 最下位点滅
+  flashSeizureRows();
 });
+
+function flashSeizureRows() {
+
+  const rows = document.querySelectorAll(".seizure-row");
+
+  if (!rows.length) return;
+
+  let count = 0;
+
+  const interval = setInterval(() => {
+
+    rows.forEach(row => {
+      if (count % 2 === 0) {
+        row.classList.add("seizure-active");
+      } else {
+        row.classList.remove("seizure-active");
+      }
+    });
+
+    count++;
+
+    // 点滅回数（20回）
+    if (count >= 20) {
+      clearInterval(interval);
+
+      // 最終状態（点灯状態で止める）
+      rows.forEach(row => row.classList.add("seizure-active"));
+    }
+
+  }, 150);
+}
 
 
 // ランキング非表示
