@@ -501,14 +501,7 @@ function recomputeScoresFromQuestionResults() {
   console.log("[RECOMPUTE] recalculated:", newScores);
 }
 
-// 正解発表後の正解変更に対応
-// function refinalizeQuestion(qid){
-//   delete gameState.questionResults[qid];
 
-//   finalizeQuestionResult(qid);
-//   recomputeScoresFromQuestionResults();
-//   emitAdminState();
-// }
 
 
 
@@ -1643,8 +1636,8 @@ setInterval(() => {
     gameState.questionResults[qid] = {
     correctAnswer: correct,
     
-    pointCorrect: question.pointCorrect ?? 1,
-    pointWrong: question.pointWrong ?? 0,
+    pointCorrect: question.point?.correct ?? 1,
+    pointWrong: question.point?.wrong ?? 0,
     isEvent: question.isEvent ?? false,
 
     answers: tempAnswers
@@ -1677,28 +1670,5 @@ server.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });
 
-
-
-// 本番用(ローカル使用)
-
-// server.listen(3000, '0.0.0.0', () => {
-//   console.log("Server running on 0.0.0.0 3000");
-// });
-
-// 使用方法
-// ①使用時のコマンド（Windows）
-// node server.js
-// 以下のログが出ればOK
-// Server running on 0.0.0.0 3000 
-
-// ②ipconfigで調べる 
-// 例IPv4 アドレス . . . . . . . . . . . .: 192.168.??.?
-
-// ③アドレス案内
-// ②で調べたもののうち
-// 参加者に
-// Wireless LAN adapter Wi-Fi:
-// IPv4 アドレス . . . . . . . . . . . .: 192.168.??.? 
-// http://192.168.??.?:3000/index.html のようなアドレスを案内
 
 
