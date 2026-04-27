@@ -15,7 +15,7 @@ app.use(cors({
   // HTTPメソッド制限
   methods: ["GET", "POST", "DELETE"],
   // Cookieや認証情報を許可
-  credentials: true
+  credentials: true  
 }));
 
 const apiLimiter = rateLimit({
@@ -44,17 +44,6 @@ if (!ADMIN_PASSWORD) {
 let currentAdminSocketId = null;
 
 const loginAttempts = new Map();
-
-// admin過剰操作防止
-// function requireAdmin(socket, actionName) {
-//   if (socket.id !== currentAdminSocketId) {
-//     console.log("[SECURITY BLOCKED]", actionName, socket.id);
-//     return false;
-//   }
-//   return true;
-// }
-
-
 
 
 // ===============================
@@ -543,7 +532,7 @@ function emitAdminError(message, detail = "") {
 // ゲームリセット
 function resetGameState() {
   gameState.phase = "idle";
-  gameState.questionId = 0;
+  gameState.questionId = null;
   gameState.answersByClientId = {};
   gameState.answerCounts = {};
   gameState.scores = {};

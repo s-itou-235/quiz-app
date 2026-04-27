@@ -246,7 +246,6 @@ let questionRendered = false;
 // 枠線がついているかの状態管理
 let answeredChoiceRendered = false;
 
-
 // 時間ずれの取得
 let timeOffset = 0;
 
@@ -626,6 +625,11 @@ function renderQuestion(state) {
     console.log("[RENDER] question data missing");
     return;
   }
+  
+  // 出題開始前は何もしない
+  if (getNow() < state.answerOpenAt) {
+    clearQuestionText(); //念のため 
+    return;  }
 
   // 選択肢数
   const choiceCount = state.choices.length;
