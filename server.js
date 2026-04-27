@@ -308,6 +308,7 @@ app.post("/api/admin/reset", (req, res) => {
   io.emit("game:reset");
 
   console.log("[RESET] game state reset");
+  console.log(gameState.askedQuestionIds);
 
   res.json({ status: "reset done" });
 });
@@ -539,6 +540,8 @@ function resetGameState() {
   gameState.playerNames = {};
   gameState.questionResults = {};
   gameState.askedQuestionIds = [];
+
+  emitAdminState();
 }
 
 

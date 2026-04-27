@@ -17,23 +17,6 @@
     }
   },
   {
-    "id": 1001,
-    "category": "event",
-    "memo": "デバッグイベント募集",
-    "questionText": "ダーツ対決参加する？",
-    "timeLimitSec": 5,
-    "choices": [
-      "参加する（先着4人）",
-      "参加しない"
-    ],
-    "correctIndex": 0,
-    "explanation": "正解設定はするがアンケート目的なのでポイント０",
-    "point": {
-      "correct": 0,
-      "wrong": 0
-    }
-  },
-  {
     "id": 1002,
     "category": "event",
     "memo": "デバッグイベント予想",
@@ -122,6 +105,23 @@
     "explanation": "選択肢３択で３Pのようなもの",
     "point": {
       "correct": 3,
+      "wrong": 0
+    }
+  },
+  {
+    "id": 1001,
+    "category": "event",
+    "memo": "デバッグイベント募集",
+    "questionText": "ダーツ対決参加する？（先着4人）",
+    "timeLimitSec": 5,
+    "choices": [
+      "参加する",
+      "参加しない"
+    ],
+    "correctIndex": 0,
+    "explanation": "正解設定はするがアンケート目的なのでポイント０",
+    "point": {
+      "correct": 0,
       "wrong": 0
     }
   }

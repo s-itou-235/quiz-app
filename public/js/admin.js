@@ -1103,7 +1103,7 @@ document.getElementById("reset_btn").onclick = async () => {
     });
 
     const data = await res.json();
-    loadQuestionsFromServer()
+    loadQuestionsFromServer();
     alert("全成績などのリセットを行いました！");
 
   } catch (err) {
