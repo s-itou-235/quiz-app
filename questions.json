@@ -36,25 +36,6 @@
     }
   },
   {
-    "id": 3,
-    "category": "normal",
-    "memo": "本番想定のサンプル問題",
-    "questionText": "日本最南端の地がある都道府県は？",
-    "timeLimitSec": 15,
-    "choices": [
-      "北海道",
-      "東京都",
-      "鹿児島県",
-      "沖縄県"
-    ],
-    "correctIndex": 1,
-    "explanation": "東京都の沖ノ鳥島が、沖縄県より南にある",
-    "point": {
-      "correct": 1,
-      "wrong": 0
-    }
-  },
-  {
     "id": 0,
     "category": "normal",
     "memo": "デバッグ",
@@ -68,25 +49,6 @@
     "explanation": "選択肢２択で２Pのようなもの",
     "point": {
       "correct": 2,
-      "wrong": 0
-    }
-  },
-  {
-    "id": 2,
-    "category": "normal",
-    "memo": "デバッグ",
-    "questionText": "デバッグ問題文",
-    "timeLimitSec": 5,
-    "choices": [
-      "デバッグ用選択肢１",
-      "デバッグ用選択肢２",
-      "デバッグ用選択肢３",
-      "デバッグ用選択肢４"
-    ],
-    "correctIndex": 1,
-    "explanation": "選択肢３択で４Pのようなもの",
-    "point": {
-      "correct": 4,
       "wrong": 0
     }
   },
@@ -122,6 +84,44 @@
     "explanation": "正解設定はするがアンケート目的なのでポイント０",
     "point": {
       "correct": 0,
+      "wrong": 0
+    }
+  },
+  {
+    "id": 2,
+    "category": "normal",
+    "memo": "デバッグ",
+    "questionText": "デバッグ問題文",
+    "timeLimitSec": 5,
+    "choices": [
+      "デバッグ用選択肢１",
+      "デバッグ用選択肢２",
+      "デバッグ用選択肢３",
+      "デバッグ用選択肢４"
+    ],
+    "correctIndex": 1,
+    "explanation": "選択肢３択で４Pのようなもの",
+    "point": {
+      "correct": 4,
+      "wrong": 0
+    }
+  },
+  {
+    "id": 3,
+    "category": "normal",
+    "memo": "想定問題（シンプル1ポイント）",
+    "questionText": "日本最南端の地がある都道府県は？",
+    "timeLimitSec": 15,
+    "choices": [
+      "北海道",
+      "東京都",
+      "鹿児島県",
+      "沖縄県"
+    ],
+    "correctIndex": 1,
+    "explanation": "東京都の沖ノ鳥島が、沖縄県より南にある",
+    "point": {
+      "correct": 1,
       "wrong": 0
     }
   }

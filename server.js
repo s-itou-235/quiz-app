@@ -11,7 +11,7 @@ const app = express();
 
 app.use(cors({
   // このURLからだけアクセス許可
-  origin: ["http://localhost:3000","https://mou-fan-zu-feng-kuizutsuru.onrender.com/"],
+  origin: ["http://localhost:3000","https://mou-fan-zu-feng-kuizutsuru.onrender.com"],
   // HTTPメソッド制限
   methods: ["GET", "POST", "DELETE"],
   // Cookieや認証情報を許可
@@ -328,7 +328,7 @@ const server = http.createServer(app);
 const io = new Server(server, {
   cors: {
     // このURLのみ許可
-    origin: ["http://localhost:3000","https://mou-fan-zu-feng-kuizutsuru.onrender.com/"],
+    origin: ["http://localhost:3000","https://mou-fan-zu-feng-kuizutsuru.onrender.com"],
     // HTTPメソッド制限
     methods: ["GET", "POST"]
   }
@@ -1430,7 +1430,7 @@ io.on("connection", (socket) => {
   // イレギュラー対応系
   // ===============================
   
-  // 問題の取り消し
+  // 問題の取消
   socket.on("admin:deleteQuestion", ({ qid }) => {
     console.log("[ADMIN] deleteQuestion:", qid);
 
@@ -1446,7 +1446,7 @@ io.on("connection", (socket) => {
 
     // ② 出題済み履歴からも削除
     gameState.askedQuestionIds =
-      gameState.askedQuestionIds.filter(id => id !== qid);
+    gameState.askedQuestionIds.filter(id => id !== qid);
 
     console.log("[DELETE] questionResults removed:", qid);
     emitAdminMessage("[DELETE] questionResults removed:", qid);
@@ -1470,6 +1470,7 @@ io.on("connection", (socket) => {
     emitAdminState();
   });
 
+
   // リロードをトリガーにサーバーから取得するもの
   // どんな状況のリロードでも必ず反映されるタイプのものを入れること
   socket.on("client:reload", () => {
@@ -1486,6 +1487,7 @@ io.on("connection", (socket) => {
 
     console.log("[RELOAD] score update");
   });
+
 
   // フェーズの強制変更
   socket.on("admin:phase_reset", () => {
