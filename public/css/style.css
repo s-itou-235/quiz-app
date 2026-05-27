@@ -1,15 +1,18 @@
-
+  :root{
+    /* 文字の立体風デザイン */
+    /* ver(--Textured-shadow) */
+    --Textured-shadow:
+      -3px -3px rgb(0,0,0),
+      3px -3px rgb(0,0,0),
+      3px  3px rgb(0,0,0),
+      -3px  3px rgb(0,0,0);
+  }
 
   /* 全体の背景デザイン（リモコン風） */
   body {
     background-color: #747474;
     font-family: 'Arial', sans-serif;
   }
-
-
-
-
-  /* 登録画面（仮） */
 
   /* ヘッダー部分の設定 */
   header {
@@ -20,17 +23,11 @@
 
   }
 
-
-
-
-
-
   .header__left {
     display: flex; /* 左側のブロックをFlexコンテナにし、その中の要素を制御 */
     flex-direction: column; /* 左側のブロックの子要素（タイトルロゴと登録名）を縦方向に並べる */
     justify-content: flex-start; /* 縦方向の並び順で、上端に揃える */
-    /* align-items: flex-start; もしくは stretch (デフォルト) で左揃え */
-
+    
     align-items: center;   /* （横中央揃え） */
 
     width: 30%;
@@ -54,7 +51,6 @@
     text-decoration: underline;
   }
 
-
   #user_name {
     display: inline-block;
     margin-top: 5px;
@@ -63,7 +59,6 @@
     font-size: 14px;
     width: 80%;
   }
-
 
   #name_input {
     width: 80%;
@@ -173,18 +168,6 @@
   }
 
 
-
-
-  /* 出題画面（背景） */
-
-
-
-
-
-  /* 出題画面（問題文） */
-
-
-
   .question__default{
 
     background-color: #a4a4a4;
@@ -194,32 +177,14 @@
     text-align: center;
   }
 
-  .question__text__4text{
+  .question {
     background-color: #a4a4a4;
     border: 3px solid #000000;
     padding: 5px;
     /* デフォルトは非表示 */
     /* display: none; */
   }
-
-  .question__text__3text{
-    background-color: #a4a4a4;
-    border: 3px solid #000000;
-    padding: 5px;
-    /* デフォルトは非表示 */
-    /* display: none; */
-  }
-
-  .question__text__2text{
-    background-color: #a4a4a4;
-    border: 3px solid #000000;
-    padding: 5px;
-    /* デフォルトは非表示 */
-    /* display: none; */
-  }
-
-
-
+  
 
   .question_area {
       display: flex;
@@ -256,12 +221,7 @@
       color: #000000;
       text-shadow: 0 1px 0 #333, 0 1px 0 #333, 0 4px 10px rgba(0, 0, 0, 0.5);
 
-      box-shadow:
-          -3px -3px rgb(0, 0, 0),
-          3px -3px rgb(0, 0, 0),
-          3px 3px rgb(0, 0, 0),
-          -3px 3px rgb(0, 0, 0);
-      ;
+      box-shadow: var(--Textured-shadow);
   }
 
   #question_text{
@@ -302,12 +262,7 @@
       text-shadow: 0 1px 0 #ccc, 0 3px 0 #ccc, 0 4px 10px rgba(0, 0, 0, 0.5);
 
       /* リモコン風デザイン兼枠線変化用 */
-      box-shadow:
-          -3px -3px rgb(0, 0, 0),
-          3px -3px rgb(0, 0, 0),
-          3px 3px rgb(0, 0, 0),
-          -3px 3px rgb(0, 0, 0);
-      ;
+      box-shadow:var(--Textured-shadow);
   }
 
   #time_limit_count {
@@ -358,34 +313,21 @@
 
 
       /* リモコン風デザイン兼枠線変化用 */
-    box-shadow:
-          -3px -3px rgb(0, 0, 0),
-          3px -3px rgb(0, 0, 0),
-          3px 3px rgb(0, 0, 0),
-          -3px 3px rgb(0, 0, 0);
-      ;
+      box-shadow: var(--Textured-shadow);
 
   }
 
+  /* 選択肢の縦幅 */
   .question__text__4text .select__button {
     height: 80px;
-    /* PC表示の文字サイズ */
-    /* 表示保証文字数は４０文字 */
-
   }
 
   .question__text__3text .select__button {
-    height: 105px;
-    /* PC表示の文字サイズ */
-    /* 表示保証文字数は４０文字 */
-  
+    height: 105px; 
   }
 
   .question__text__2text .select__button {
-    height: 160px;
-    /* PC表示の文字サイズ */
-    /* 表示保証文字数は４０文字 */
-    
+    height: 160px;   
   }
 
 
@@ -446,12 +388,7 @@
       border-bottom: solid 10px #bbbbbb;
 
       /* リモコン風デザイン兼枠線変化用 */
-      box-shadow:
-          -3px -3px rgb(0, 0, 0),
-          3px -3px rgb(0, 0, 0),
-          3px 3px rgb(0, 0, 0),
-          -3px 3px rgb(0, 0, 0);
-      ;
+      box-shadow:var(--Textured-shadow);
   } 
 
   .question__text__4text .answer__sum {
@@ -691,9 +628,9 @@
   .question__text__4text .answer__sum {
     /* PC表示 表示保証２桁（耐久性的に最大４０人） */
     font-size: clamp(30px, 6vw, 50px);
-    /*  スマホ表示４択時
-    ７７
-     人 のような表記NG（見栄えが悪いため）*/
+    /* スマホ4択時は
+    77
+    人 で改行すると見栄えが悪い */
     /* word-break:break-word; */
   }
 

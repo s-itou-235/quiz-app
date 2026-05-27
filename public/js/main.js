@@ -16,139 +16,55 @@ const userNameEl = document.getElementById("user_name");
 const nameInputEl = document.getElementById("name_input");
 const nameUpdateBtn = document.getElementById("name_update_btn");
 
-
 // モニター表示関連
-var monitor_correct_total = document.getElementById("monitor_correct_total")
-var monitor_time_total = document.getElementById("monitor_time_total")
-var monitor_result = document.getElementById("monitor_result")
+const monitor_correct_total = document.getElementById("monitor_correct_total")
+const monitor_time_total = document.getElementById("monitor_time_total")
+const monitor_result = document.getElementById("monitor_result")
 
 // ランプ表示
-var answer_lamp = document.getElementById("answer_lamp")
-var answer_lamp_num = document.getElementById("answer_lamp_num")
-var answer_lamp_info = document.getElementById("answer_lamp_info")
+const answer_lamp = document.getElementById("answer_lamp")
+const answer_lamp_num = document.getElementById("answer_lamp_num")
+const answer_lamp_info = document.getElementById("answer_lamp_info")
 
 
 // 解答画面（出題部分）
 // 問題文関連
-var question_form = document.getElementById("question_form")
-var question_text = document.getElementById("question_text")
+const question_form = document.getElementById("question_form")
+const question_text = document.getElementById("question_text")
 
 // 解答時間関連
-var time_limit = document.getElementById("time_limit")
-var time_limit_count = document.getElementById("time_limit_count")
-
-
+const time_limit = document.getElementById("time_limit")
+const time_limit_count = document.getElementById("time_limit_count")
 
 
 // 解答選択肢ボタン
-
-var select__button = document.querySelectorAll('.select__button');
-
-var select__button__1 = document.querySelectorAll(".select__button__1");
-var select__button__2 = document.querySelectorAll(".select__button__2");
-var select__button__3 = document.querySelectorAll(".select__button__3");
-var select__button__4 = document.querySelectorAll(".select__button__4");
-
+const select__button = document.querySelectorAll('.select__button');
 
 // アンサーチェック用
-
-var answer__sum = document.querySelectorAll('.answer__sum');
-
-var answer__sum__1 = document.querySelectorAll(".answer__sum__1");
-var answer__sum__2 = document.querySelectorAll(".answer__sum__2");
-var answer__sum__3 = document.querySelectorAll(".answer__sum__3");
-var answer__sum__4 = document.querySelectorAll(".answer__sum__4");
-
-
-
-// 管理者画面関連
-var question_num = document.getElementById("question_num")
-var question_standby = document.getElementById("question_standby")
-
-var question_check = document.getElementById("question_check")
-var time_check = document.getElementById("time_check")
-
-var select_check_1 = document.getElementById("select_check_1")
-var select_check_2 = document.getElementById("select_check_2")
-var select_check_3 = document.getElementById("select_check_3")
-var select_check_4 = document.getElementById("select_check_4")
+const answer__sum = document.querySelectorAll('.answer__sum');
 
 
 // モードごとに設定してあるclass取得
 // 全体
-var question = document.querySelectorAll(".question");
-var question__default = document.querySelectorAll(".question__default");
-// 
-var question__text__4text = document.querySelectorAll(".question__text__4text");
-var question__text__3text = document.querySelectorAll(".question__text__3text");
-var question__text__2text = document.querySelectorAll(".question__text__2text");
+const question = document.querySelectorAll(".question");
+const question__default = document.querySelectorAll(".question__default");
 
-
-
-// モード選択のボタン（文字ベース）
-
-// 命名法則mode_出題方式_択数と方式 mode_text_4text→文字問題 4択文字
-var btn_text_4text = document.getElementById("btn_text_4text")
-var btn_text_3text = document.getElementById("btn_text_3text")
-var btn_text_2text = document.getElementById("btn_text_2text")
-
-// いずれやりたい
-// 画像問題 テキスト4択
-// var mode_image_4select = document.getElementById("mode_image_4select")
-// テキスト問題 画像4択
-// var mode_text_4image = document.getElementById("mode_text_4image")
-// 画像問題 画像4択
-// var mode_image_4image = document.getElementById("mode_text_4image")
-// gif問題問題 テキスト4択
-// var mode_image_4image = document.getElementById("mode_text_4image")
-
-
-
-var questionStandby = document.getElementById("question_standby");
-var questionStart = document.getElementById("question_start");
-
-
-var user_answer_choice = document.getElementById("user_answer_choice")
-var user_answer_time = document.getElementById("user_answer_time")
-var user_time = document.getElementById("user_time")
-
-var answer_check_btn = document.getElementById("answer_check_btn")
-var question_result = document.getElementById("question_result")
-
-
-
-
-// ユーザーナンバー（ランプの数字）
-var userNumber = null;
-// 解答入れ
-var userAnswer = null;
-var answerTime = 0;
-// var isQuestionActive = false;
-
-
-// アンサーチェック用配列（本家であった6択まで対応）
-var answer_check_arr = [0,0,0,0,0,0];
-
+// それぞれの問題数の択数 
+const question__text__4text = document.querySelectorAll(".question__text__4text");
+const question__text__3text = document.querySelectorAll(".question__text__3text");
+const question__text__2text = document.querySelectorAll(".question__text__2text");
 
 
 
 
 
 // 本番では参加人数に合わせてボタン
-  answer_lamp_num.innerHTML = 1;
-
+answer_lamp_num.innerHTML = 1;
 
 // 問題ボタンを全部非表示
 question.forEach(el =>{
     el.classList.add("none");
 });  
-
-
-// ===============================
-// サーバー絡みの部分
-// ===============================
-// ・サーバーと同期するためのクライアント側ロジック全体
-// ・clientId 管理、状態復元、Socketイベント、解答制御を担当
 
 
 // ===============================
@@ -613,11 +529,6 @@ function clearQuestionText() {
     });
 }
 
-
-
-
-
-
 // ・questionId を元に、問題文と選択肢を画面に反映
 function renderQuestion(state) {
 
@@ -958,24 +869,6 @@ socket.on("answerAccepted", (payload) => {
 
 
 
-// ===============================
-// 解答済みUIロック
-// ===============================
-function lockAnsweredUI() {
-  canAnswer = false;// 新規解答不可
-  hasAnswered = true;// 解答送信済み
-  
-  // ランプのメッセージ更新
-  answer_lamp_info.innerHTML = "解答受付";
-  // 解答受付→リロードなどなしで解答が出来たとき
-  // 解答受付済→リロードで解答不能なとき
-
-  //全解答ボタン無効化   
-  select__button.forEach(btn => {
-    btn.disabled = true;
-  }); 
-
-}
 
 // ===============================
 // アンサーチェック
@@ -1493,11 +1386,103 @@ socket.on("game:reset", () => {
 });
 
 
+// -----------------------
+// フォントサイズ変更
+// -----------------------
 
-// 表示モードの分岐
+
+
+const FONT_RULES = {
+
+  // 文字数ごとにサイズ調整
+  // { max: 5, size: 40 } → 「５」文字まではフォントサイズ「40」px
+
+  // PC表示は横幅720px での表示前提で調整
+  // スマホ表示は横幅375px での表示前提で調整（一番小さいスマホの横幅）
+
+  // スマホ表示の場合
+  mobile: {
+
+    // 問題文（表示保証５０文字）
+    question: [
+      { max: 5, size: 40 },
+      { max: 7, size: 30 },
+      { max: 24, size: 27 },
+      { max: Infinity, size: 20 },
+    ],
+
+    // 2択（表示保証４０文字）
+    choice2: [
+      { max: 5, size: 45 },
+      { max: 8, size: 27 },
+      { max: 10, size: 22 },
+      { max: 24, size: 18 },
+      { max: Infinity, size: 16 },
+    ],
+
+    // 3択（表示保証４０文字）
+    choice3: [
+      { max: 5, size: 45 },
+      { max: 8, size: 27 },
+      { max: 10, size: 22 },
+      { max: 24, size: 18 },
+      { max: Infinity, size: 16 },
+    ],
+
+    // 4択（表示保証４０文字）
+    choice4: [
+      { max: 5, size: 45 },
+      { max: 8, size: 27 },
+      { max: 20, size: 22 },
+      { max: Infinity, size: 14 },
+    ],
+
+  },
+
+  // PC表示の場合
+  pc: {
+
+    // 問題文（表示保証５０文字）
+    question: [
+      { max: 7, size: 60 },
+      { max: 10, size: 45 },
+      { max: 22, size: 40 },
+      { max: Infinity, size: 28 },
+    ],
+
+    // 2択（表示保証４０文字）
+    choice2: [
+      { max: 5, size: 80 },
+      { max: 8, size: 60 },
+      { max: 10, size: 45 },
+      { max: 24, size: 38 },
+      { max: Infinity, size: 32 },
+    ],
+
+    // 3択（表示保証４０文字）
+    choice3: [
+      { max: 8, size: 60 },
+      { max: 10, size: 45 },
+      { max: 24, size: 30 },
+      { max: Infinity, size: 22 },
+    ],
+
+    // 4択（表示保証４０文字）
+    choice4: [
+      { max: 8, size: 50 },
+      { max: 10, size: 40 },
+      { max: 15, size: 30 },
+      { max: Infinity, size: 23 },
+    ],
+  }
+
+};
+
+
+
+// デバイス判定
 function getDevice() {
   const width = window.innerWidth;
-
   return {
     isMobile: width <= 428,
     isTablet: width >= 429 && width <= 719,
@@ -1505,99 +1490,53 @@ function getDevice() {
   };
 }
 
+// フォントサイズ適用
+function applyFontRule(elements, ruleSet) {
+  elements.forEach(el => {
+    const textLength = el.textContent.trim().length;
+    console.log(textLength);
+    for (const rule of ruleSet) {
+      if (textLength <= rule.max) {
+        el.style.fontSize = `${rule.size}px`;
+        break;
+      }
+    }
+  });
+}
+
+
+// メイン処理（フォントを実際に調整）
 function adjustFont() {
 
-  const { isMobile, isTablet, isPC } = getDevice();
+  const { isMobile } = getDevice();
 
-  // ----------------------
-  // 出題文字サイズの調整（表示保証５０文字）
-  // ----------------------
+  // 使用ルール
+  const deviceRules = isMobile
+    ? FONT_RULES.mobile
+    : FONT_RULES.pc;
 
-  document.querySelectorAll('#question_text').forEach(el => {
-    const textLength = el.textContent.trim().length;
-    console.log(textLength);
 
-    if (isMobile) {
-    // スマホ（375px表示）
-      if (textLength <= 5) el.style.fontSize = '40px';//５文字以下
-      else if (textLength <= 7) el.style.fontSize = '30px';//６～７文字
-      else if (textLength <= 24) el.style.fontSize = '27px';//８～２４文字
-      else el.style.fontSize = '20px';//２５文字以上～  
-    } 
-    //PC表示 （720px表示）
-    else {
-      if (textLength <= 7) el.style.fontSize = '60px';//７文字以下
-      else if (textLength <= 10) el.style.fontSize = '45px';//８～１０文字
-      else if (textLength <= 22) el.style.fontSize = '40px';//１１～２２文字
-      else el.style.fontSize = '28px';//２３文字以上～  
-    }
-  });
+  // 問題文
+  applyFontRule(
+    document.querySelectorAll('#question_text'),
+    deviceRules.question
+  );
 
-  // ----------------------
-  // 選択肢文字サイズの調整（表示保証４０文字）
-  // ----------------------
-  
-  // ２択
-  document.querySelectorAll('.question__text__2text .select__button').forEach(el => {
-    const textLength = el.textContent.trim().length;
-    console.log(textLength);
+  // 2択
+  applyFontRule(
+    document.querySelectorAll('.question__text__2text .select__button'),
+    deviceRules.choice2
+  );
 
-    if (isMobile) {
-    // スマホ（375px表示）
-      if (textLength <= 5) el.style.fontSize = '45px';//５文字以下
-      else if (textLength <= 8) el.style.fontSize = '27px';//６～８文字
-      else if (textLength <= 10) el.style.fontSize = '22px';//９～１０文字
-      else if (textLength <= 24) el.style.fontSize = '18px';//１１～２４文字
-      else el.style.fontSize = '16px';//２５文字以上～  
-    } 
-    //PC表示 （720px表示）
-    else {
-      if (textLength <= 5) el.style.fontSize = '80px';//５文字以下
-      else if (textLength <= 8) el.style.fontSize = '60px';//６～８文字
-      else if (textLength <= 10) el.style.fontSize = '45px';//９～１０文字
-      else if (textLength <= 24) el.style.fontSize = '38px';//１１～２４文字
-      else el.style.fontSize = '32px';//２５文字以上～
-    }
-  });
+  // 3択
+  applyFontRule(
+    document.querySelectorAll('.question__text__3text .select__button'),
+    deviceRules.choice3
+  );
 
-  document.querySelectorAll('.question__text__3text .select__button').forEach(el => {
-    const textLength = el.textContent.trim().length;
-    console.log(textLength);
-
-    if (isMobile) {
-    //スマホ表示 （375px表示）
-      if (textLength <= 5) el.style.fontSize = '45px';//５文字以下
-      else if (textLength <= 8) el.style.fontSize = '27px';//６～８文字
-      else if (textLength <= 10) el.style.fontSize = '22px';//９～１０文字
-      else if (textLength <= 24) el.style.fontSize = '18px';//１１～２４文字
-      else el.style.fontSize = '16px';//２５文字以上～ 
-    } 
-    //PC表示 （720px表示）
-    else {
-      if (textLength <= 8) el.style.fontSize = '60px';//８文字以下
-      else if (textLength <= 10) el.style.fontSize = '45px';//９～１０文字
-      else if (textLength <= 24) el.style.fontSize = '30px';//１１～２４文字
-      else el.style.fontSize = '22px';//２５文字以上～ 
-    }
-  });
-
-    document.querySelectorAll('.question__text__4text .select__button').forEach(el => {
-    const textLength = el.textContent.trim().length;
-    console.log(textLength);
-
-    if (isMobile) {
-    //スマホ表示 （375px表示）
-      if (textLength <= 5) el.style.fontSize = '45px';//５文字以下
-      else if (textLength <= 8) el.style.fontSize = '27px';//６～８文字
-      else if (textLength <= 20) el.style.fontSize = '22px';//９～２０文字
-      else el.style.fontSize = '14px';//２１文字以上
-    } 
-    //PC表示 （720px表示）
-    else {
-      if (textLength <= 8) el.style.fontSize = '50px';//８文字以下
-      else if (textLength <= 10) el.style.fontSize = '40px';//９～１０文字
-      else if (textLength <= 15) el.style.fontSize = '30px';//１１～１５文字
-      else el.style.fontSize = '23px';//１６文字以上
-    }
-  });
+  // 4択
+  applyFontRule(
+    document.querySelectorAll('.question__text__4text .select__button'),
+    deviceRules.choice4
+  );
 }

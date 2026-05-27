@@ -18,9 +18,11 @@ app.use(cors({
   credentials: true  
 }));
 
+
+// 管理者側側不正アクセス防止
 const apiLimiter = rateLimit({
   windowMs: 60 * 1000, // 1分
-  max: 100, // 100回まで
+  max: 20, // 20回まで
   message: "ログイン試行が多すぎます。少し待ってください"
 });
 
@@ -30,11 +32,13 @@ app.use(express.static("public"));
 // ログイン系だけ制限
 app.use("/api/admin", apiLimiter);
 
+
 const gameState = require("./gameState");
 
 // ===============================
 // 管理者認証
 // ===============================
+
 const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD;
 
 if (!ADMIN_PASSWORD) {
@@ -49,19 +53,27 @@ const loginAttempts = new Map();
 // ===============================
 // 問題データ保存用
 // ===============================
+
+// 問題データ用ファイルへアクセス
 const fs = require("fs");
 const path = require("path");
 
 const QUESTION_DATA_FILE = path.join(__dirname, "questions.json");
 console.log("QUESTION FILE PATH:", QUESTION_DATA_FILE);
+
 // ファイルが無ければ作る（初回起動対策）
 if (!fs.existsSync(QUESTION_DATA_FILE)) {
   fs.writeFileSync(QUESTION_DATA_FILE, "[]");
 }
 
+// ===============================
 // 問題取得
+// ===============================
+
+// 問題データを入れる変数
 let questionBank = {};
 
+// 問題データの取得 
 function loadQuestions() {
   const raw = fs.readFileSync(QUESTION_DATA_FILE, "utf-8");
   const arr = JSON.parse(raw);
@@ -69,20 +81,16 @@ function loadQuestions() {
   arr.forEach(q => {
     questionBank[q.id] = q;
   });
-
-  
 }
 
 loadQuestions();
 
 
-
-app.use("/admin", require("./routes/adminRoutes"));
-// app.use("/api/state", require("./routes/stateRoutes"));
-
 // ===============================
 // 問題データAPI
 // ===============================
+
+app.use("/admin", require("./routes/adminRoutes"));
 
 // 問題一覧取得
 app.get("/questions", (req, res) => {
@@ -117,13 +125,13 @@ app.post("/questions", (req, res) => {
     const raw = fs.readFileSync(QUESTION_DATA_FILE, "utf-8");
     const questions = JSON.parse(raw);
 
-    // 同じIDがあれば削除（上書き保存）
+    // 同じIDがあれば一回削除（上書き保存）
     const filtered = questions.filter(q => q.id !== newQuestion.id);
     filtered.push(newQuestion);
 
    fs.writeFileSync(
       QUESTION_DATA_FILE,
-      JSON.stringify(filtered, null, 2)  // ← ここを変更
+      JSON.stringify(filtered, null, 2)  
     );
 
     loadQuestions(); 
@@ -178,9 +186,8 @@ app.delete("/questions/:id", (req, res) => {
 app.get("/api/admin/ranking", (req, res) => {
 
   // -------------------------
-  // 総合成績ランキング
+  // 総合成績ランキング(すべての問題の合計正解数)
   // -------------------------
-
   const playerNames = gameState.playerNames || {};
   const totalData = gameState.scores || {};
 
@@ -210,7 +217,7 @@ app.get("/api/admin/ranking", (req, res) => {
 
 
   // -------------------------
-  // 問題ランキング(全員/正解者のみ)
+  // 問題ランキング(1問単位の正解者のみでのランキング)
   // -------------------------
 
   const qid = gameState.questionId ;  
@@ -255,7 +262,7 @@ app.get("/api/admin/ranking", (req, res) => {
 
 });
 
-
+// ？？？
 app.get("/api/state", (req, res) => {
 
   const qid = Number(gameState.questionId);
@@ -289,7 +296,7 @@ app.get("/api/state", (req, res) => {
     answerCloseAt: gameState.answerCloseAt,
 
     // ===== 解答状況 =====
-    answers: answersToSend,   // ★ ここを差し替え
+    answers: answersToSend, 
     answerCounts: gameState.answerCounts ?? {}
   });
 });
@@ -297,14 +304,14 @@ app.get("/api/state", (req, res) => {
 // ゲームリセット処理
 app.post("/api/admin/reset", (req, res) => {
 
-  // 🔒 簡易認証
+  // 簡易認証
   if (req.query.password !== ADMIN_PASSWORD) {
     return res.status(403).json({ error: "Forbidden" });
   }
 
   resetGameState();
 
-  // 🔥 全員に通知（重要）
+  // 全員に通知
   io.emit("game:reset");
 
   console.log("[RESET] game state reset");
@@ -405,8 +412,7 @@ function finalizeQuestionResult(qid) {
     // src.answer（ユーザーの解答） === correct（この問題の正解）;
     let result;
     if (correct === -1) {
-      // 正解なし問題（アンケートなど）
-      // 未解答時はそれで上書きされる
+      // 正解なし問題（アンケートなど）の未解答時は上書きされる
       result = "event";
     } else if (src.answer === correct) {
       // 正解処理
@@ -426,11 +432,13 @@ function finalizeQuestionResult(qid) {
   //問題単位で保存する 
   gameState.questionResults[qid] = {
     correctAnswer: correct,
-    pointCorrect,   // ★ 正解ポイント
-    pointWrong,     // ★ 不正解ポイント
+    pointCorrect,   // 正解ポイント
+    pointWrong,     // 不正解ポイント
     isEvent, // イベントモードの有無
     answers: finalizedAnswers
   };
+
+  // 最終的に完成するもの
 
   //  questionResults [0]: {　→ 問題番号
   //  correctAnswer: 2,　問題の正解
@@ -474,8 +482,7 @@ function recomputeScoresFromQuestionResults() {
         newScores[clientId].correctCount += pointCorrect;
 
         // タイム加算条件
-        // イベントモードの場合
-        // もしくは正解ポイント０以下に設定した場合はタイム加算しない
+        // イベントモードの場合に、正解ポイント０以下に設定した場合はタイム加算しない
         if (!isEvent && pointCorrect > 0) {
           newScores[clientId].totalTime += answerData.time ?? 0;
         }
@@ -499,15 +506,15 @@ function recomputeScoresFromQuestionResults() {
 function emitAdminState() {
   io.emit("admin:state", {
     // リアルタイム情報用
-    phase: gameState.phase, // フェーズ
-    questionId: gameState.questionId, // 出題ID 
-    players: gameState.players,  // 
-    answers: gameState.answersByClientId, //
+    phase: gameState.phase, 
+    questionId: gameState.questionId, 
+    players: gameState.players,  
+    answers: gameState.answersByClientId, 
     askedQuestionIds: gameState.askedQuestionIds
   });
 
   // フェーズによって実行有無を決める
-  // questionでは解答が大量に来るのでそのたび更新は負荷
+  // questionでは解答が大量に来るのでそのたび更新されたくないもの
   if (gameState.phase === "question")return;
 
   // 正解ナビ
@@ -519,11 +526,11 @@ function emitAdminState() {
 
 }
 
-// エラーメッセージ表示用
+// エラーメッセージなどの表示用
 // 使用例
-// emitAdminError("メッセージ",変数)
-// emitAdminError("フェーズが違います phase =",gameState.phase); など
-function emitAdminError(message, detail = "") {
+// emitAdminMessage("メッセージ",変数)
+// emitAdminMessage("フェーズが違います phase =",gameState.phase); など
+function emitAdminMessage(message, detail = "") {
   io.emit("admin:error", {
     message,
     detail
@@ -550,14 +557,14 @@ function resetGameState() {
 // ===============================
 
 // ===== 問題設定（★サーバーが唯一保持）=====
-// 不変
-const ANSWER_BUFFER_MS = 2000; // 出題～解答開始まで
+// 管理者側の出題開始ボタン～解答者側の解答開始まで
+const ANSWER_BUFFER_MS = 2000; 
 
 
 
 
 io.on("connection", (socket) => {
-//聖域 
+// 左インデントは極力使わないこと 
   console.log("[SOCKET] connected",socket.id);
   
   // 管理者ログイン
@@ -595,7 +602,7 @@ io.on("connection", (socket) => {
       const oldSocket = io.sockets.sockets.get(currentAdminSocketId);
 
       if (oldSocket) {
-        oldSocket.leave("admin"); // ★これが重要
+        oldSocket.leave("admin");
         oldSocket.emit("admin:force_logout");
       }
     }
@@ -690,7 +697,7 @@ io.on("connection", (socket) => {
     // 「result → 問題終了」など
     if (!["idle","standby", "result"].includes(gameState.phase)) {
       console.log("[ADMIN] standby blocked. phase =", gameState.phase);
-      emitAdminError("[ADMIN] standby blocked. phase =", gameState.phase);
+      emitAdminMessage("出題準備は idle standby resultフェーズのみ使用可能です! （現在のフェーズ）→", gameState.phase);
       return;
     }
 
@@ -734,7 +741,7 @@ io.on("connection", (socket) => {
 
     if (gameState.phase !== "standby") {
       console.log("[SERVER]startQuestion BLOCKED(フェーズ違い)", gameState.phase);
-      emitAdminError("このボタンはstandbyフェーズ専用です! （現在のフェーズ）→", gameState.phase);
+      emitAdminMessage("出題開始ボタンは standby フェーズ専用です! （現在のフェーズ）→", gameState.phase);
       return
     };
 
@@ -746,7 +753,7 @@ io.on("connection", (socket) => {
       gameState.phase = "idle";
       emitAdminState();
       console.log("[SERVER] startQuestion BLOCKED (出題済み問題)", qid);
-      emitAdminError("この問題は出題済です！ 問題を再セットしてください！ (出題済み問題一覧)→", gameState.askedQuestionIds);
+      emitAdminMessage("この問題は出題済です！ 問題を再セットしてください！ (出題済み問題一覧)→", gameState.askedQuestionIds);
       return;
     }
 
@@ -762,7 +769,7 @@ io.on("connection", (socket) => {
 
     if (!question) {
       console.log("[SERVER] question not found:", qid);
-      emitAdminError("[SERVER] question not found:", qid);
+      emitAdminMessage("[SERVER] question not found:", qid);
       return;
     }
 
@@ -903,12 +910,9 @@ io.on("connection", (socket) => {
 
       // サーバー基準解答タイムとクライアント基準解答タイムの差と
       // クライアント側解答→サーバー到達までの時間を比較
-      // クライアント側解答→サーバー到達までの時間の2倍（最大0.3秒まで）
       // 概念的説明
-      // クライアント基準2秒 サーバー基準4秒 誤差2秒
       // クライアント送信2秒 サーバー受信4秒 誤差2秒
       // それぞれの誤差に整合性があるかどうか？
-
       const DELAY_ALLOW = Math.max(2000, safeRtt * 4);
 
       if (delay > DELAY_ALLOW) {
@@ -1015,7 +1019,7 @@ io.on("connection", (socket) => {
       Math.floor(maxDisplaySec * 100) / 100,
     );
 
-    // ここに最低解答タイム判定（0.00防止→最速は0.01）
+    // 最低解答タイム判定（0.00防止→最速は0.01）
     if (elapsedSecFixed < 0.01) {
       elapsedSecFixed = 0.01;
     }
@@ -1025,11 +1029,9 @@ io.on("connection", (socket) => {
       answer,
       answeredAt: serverNow,
       elapsedMs: finalElapsed,
-      // elapsedSecRaw : 実測値（ログ・分析用）
-      elapsedSecRaw,
-      // elapsedSecFixed : 表示・順位判定用（最大値で丸め）
-      elapsedSecFixed,
-      time: elapsedSecFixed // ★ 追加（スコア計算用）
+      elapsedSecRaw, // elapsedSecRaw : 実測値（ログ・分析用）
+      elapsedSecFixed,  // elapsedSecFixed : 表示・順位判定用（最大値で丸め）
+      time: elapsedSecFixed  // スコア計算用
     };
 
     console.log("[ANSWER FIXED]", clientId, elapsedSecFixed);
@@ -1087,7 +1089,7 @@ io.on("connection", (socket) => {
     // 自動集計完了後のみ許可
     if (gameState.phase !== "answer_check_ready") {
       console.log("[ANSWER CHECK] ignored:", gameState.phase);
-      emitAdminError("[ANSWER CHECK] ignored:", gameState.phase);
+      emitAdminMessage("[ANSWER CHECK] ignored:", gameState.phase);
       return;
     }
 
@@ -1238,7 +1240,7 @@ io.on("connection", (socket) => {
 
     const boundaryTime = baseSlice[baseSlice.length - 1].time;
 
-    // ④ 境界タイム以下を全取得（拡張）
+    // ④ 境界タイムを全取得（拡張）
     const result = ranked.filter(p => p.time <= boundaryTime);
 
     console.log("[RANKING] correct best", result);
@@ -1288,7 +1290,7 @@ io.on("connection", (socket) => {
     const baseSlice = ranked.slice(-BASE);
     const boundaryTime = baseSlice[0].time;
 
-    // ④ 境界タイム以上を全取得（拡張）
+    // ④ 境界タイムを全取得（拡張）
     const result = ranked.filter(p => p.time >= boundaryTime);
 
     console.log("[RANKING] correct worst", result);
@@ -1325,7 +1327,7 @@ io.on("connection", (socket) => {
     
     // 正解者1人以下時は未実行
     if (sorted.length <= 1) {
-      emitAdminError("正解者１人以下のため未実行 正解者→", sorted.length);
+      emitAdminMessage("正解者１人以下のため未実行 正解者→", sorted.length);
       return
     };
 
@@ -1383,6 +1385,7 @@ io.on("connection", (socket) => {
       scores: gameState.scores
     });
 
+    
 
     // ⑥ ランプ処理
     const answers = gameState.questionResults[qid].answers;
@@ -1434,7 +1437,7 @@ io.on("connection", (socket) => {
     // 存在チェック
     if (!gameState.questionResults[qid]) {
       console.log("[DELETE] question not found:", qid);
-      emitAdminError("[DELETE] question not found:", qid);
+      emitAdminMessage("[DELETE] question not found:", qid);
       return;
     }
 
@@ -1446,7 +1449,7 @@ io.on("connection", (socket) => {
       gameState.askedQuestionIds.filter(id => id !== qid);
 
     console.log("[DELETE] questionResults removed:", qid);
-    emitAdminError("[DELETE] questionResults removed:", qid);
+    emitAdminMessage("[DELETE] questionResults removed:", qid);
 
     gameState.phase = "idle";
     gameState.questionId = null;
@@ -1463,7 +1466,7 @@ io.on("connection", (socket) => {
     // ポイント更新のメッセージ表示
     io.emit("pointUpdateInfo");
     console.log("[DELETE] scores recalculated and broadcasted");
-    emitAdminError("[DELETE] scores recalculated and broadcasted");
+    emitAdminMessage("[DELETE] scores recalculated and broadcasted");
     emitAdminState();
   });
 
@@ -1543,17 +1546,16 @@ io.on("connection", (socket) => {
     // スコアの再計算
     recomputeScoresFromQuestionResults();
 
-    // ★ フェーズ遷移
+    // フェーズ遷移
     // 正解の再発表などのため
     gameState.phase = "answer_check";
     emitAdminState();
 
-    // 正解発表時に反映のためコメント化デバッグ的に使うことあり
-    // io.emit("score_update", gameState.scores);
+    
 
   });
 
-//聖域 
+// 左インデントは極力使わないこと
 });
 
 
