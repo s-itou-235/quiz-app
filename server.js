@@ -41,6 +41,19 @@ const gameState = require("./gameState");
 
 const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD;
 
+function checkAdmin(req, res, next) {
+
+  const password = req.headers["x-admin-password"];
+
+  if (password !== ADMIN_PASSWORD) {
+    return res.status(403).json({
+      error: "Forbidden"
+    });
+  }
+
+  next();
+}
+
 if (!ADMIN_PASSWORD) {
   throw new Error("ADMIN_PASSWORD is not set");
 }
@@ -93,7 +106,7 @@ loadQuestions();
 app.use("/admin", require("./routes/adminRoutes"));
 
 // 問題一覧取得
-app.get("/questions", (req, res) => {
+app.get("/questions", checkAdmin,(req, res) => {
   try {
     let raw = fs.readFileSync(QUESTION_DATA_FILE, "utf-8");
 
@@ -118,7 +131,7 @@ app.get("/questions", (req, res) => {
 });
 
 // 問題保存（追加）
-app.post("/questions", (req, res) => {
+app.post("/questions", checkAdmin, (req, res) => {
   try {
     const newQuestion = req.body;
 
@@ -150,7 +163,7 @@ app.post("/questions", (req, res) => {
 });
 
 // 問題削除
-app.delete("/questions/:id", (req, res) => {
+app.delete("/questions/:id", checkAdmin, (req, res) => {
   try {
     const id = req.params.id; // 数値化しない
 
@@ -1440,6 +1453,7 @@ io.on("connection", (socket) => {
       emitAdminMessage("[DELETE] question not found:", qid);
       return;
     }
+
 
     // ===== ① 問題データ削除 =====
     delete gameState.questionResults[qid];

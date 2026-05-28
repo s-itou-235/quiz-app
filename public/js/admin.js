@@ -14,14 +14,25 @@ const system_log_message = document.getElementById("system_log_message");
 document.getElementById("admin_panel").style.display = "none";
 
 document.getElementById("login_btn").onclick = () => {
-  const pw = admin_pw.value;
+
+  const pw = 
+    document.getElementById("admin_pw").value;
+
+  // ログイン送信
   socket.emit("admin:login", pw);
+
+  // 一時保存
+  // login_success時に使用
+  window.tempAdminPassword = pw;
 };
 
-
 socket.on("admin:login_success", () => {
+
   document.getElementById("login_screen").style.display = "none";
   document.getElementById("admin_panel").style.display = "block";
+
+  // 正式保存
+  window.adminPassword = window.tempAdminPassword;
 });
 
 socket.on("admin:login_failed", () => {
@@ -227,11 +238,20 @@ let questionBank = {};
 
 // 問題データをサーバーへ保存する関数
 async function saveQuestionToServer(question) {
-  await fetch("/questions", {
+
+  const res = await fetch("/questions", {
     method: "POST",
-    headers: { "Content-Type": "application/json" },
+    headers: {
+      "Content-Type": "application/json",
+      "x-admin-password": window.adminPassword
+    },
     body: JSON.stringify(question)
   });
+
+  if (!res.ok) {
+    alert("保存失敗");
+    return;
+  }
 }
 
 // サーバーの問題データを反映する関数
@@ -568,8 +588,12 @@ function loadQuestionToForm(q) {
 }
 
 async function deleteQuestion(id) {
+
   const res = await fetch(`/questions/${id}`, {
-    method: "DELETE"
+    method: "DELETE",
+    headers: {
+      "x-admin-password": window.adminPassword
+    }
   });
 
   if (!res.ok) {

@@ -36,23 +36,6 @@
     }
   },
   {
-    "id": 0,
-    "category": "normal",
-    "memo": "デバッグ",
-    "questionText": "デバッグ問題文",
-    "timeLimitSec": 5,
-    "choices": [
-      "デバッグ用選択肢１",
-      "デバッグ用選択肢２"
-    ],
-    "correctIndex": 1,
-    "explanation": "選択肢２択で２Pのようなもの",
-    "point": {
-      "correct": 2,
-      "wrong": 0
-    }
-  },
-  {
     "id": 1,
     "category": "normal",
     "memo": "デバッグ",
@@ -120,6 +103,23 @@
     ],
     "correctIndex": 1,
     "explanation": "東京都の沖ノ鳥島が、沖縄県より南にある",
+    "point": {
+      "correct": 1,
+      "wrong": 0
+    }
+  },
+  {
+    "id": 0,
+    "category": "normal",
+    "memo": "デバッグ",
+    "questionText": "デバッグ２択",
+    "timeLimitSec": 5,
+    "choices": [
+      "デバッグ選択１",
+      "デバッグ選択２"
+    ],
+    "correctIndex": 1,
+    "explanation": "選択肢２択で２Pのようなもの",
     "point": {
       "correct": 1,
       "wrong": 0
