@@ -275,7 +275,7 @@ app.get("/api/admin/ranking", (req, res) => {
 
 });
 
-// ？？？
+// 出題しているクイズデータ（？）
 app.get("/api/state", (req, res) => {
 
   const qid = Number(gameState.questionId);
@@ -315,20 +315,13 @@ app.get("/api/state", (req, res) => {
 });
 
 // ゲームリセット処理
-app.post("/api/admin/reset", (req, res) => {
-
-  // 簡易認証
-  if (req.query.password !== ADMIN_PASSWORD) {
-    return res.status(403).json({ error: "Forbidden" });
-  }
+app.post("/api/admin/reset", checkAdmin, (req, res) => {
 
   resetGameState();
 
-  // 全員に通知
   io.emit("game:reset");
 
   console.log("[RESET] game state reset");
-  console.log(gameState.askedQuestionIds);
 
   res.json({ status: "reset done" });
 });
@@ -1665,16 +1658,8 @@ setInterval(() => {
 
 
 
-  
 
-
-// テスト用
-// server.listen(3000, () => {
-//    console.log("Server running on http://localhost:3000");
-// });
-
-
-// 本番用（サーバー公開用）
+// 本番用（サーバー公開対応）
 const PORT = process.env.PORT || 3000;
 server.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);

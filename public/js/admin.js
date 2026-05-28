@@ -26,13 +26,16 @@ document.getElementById("login_btn").onclick = () => {
   window.tempAdminPassword = pw;
 };
 
-socket.on("admin:login_success", () => {
+socket.on("admin:login_success", async () => {
 
   document.getElementById("login_screen").style.display = "none";
   document.getElementById("admin_panel").style.display = "block";
 
   // 正式保存
   window.adminPassword = window.tempAdminPassword;
+
+  await loadQuestionsFromServer();
+
 });
 
 socket.on("admin:login_failed", () => {
@@ -257,8 +260,14 @@ async function saveQuestionToServer(question) {
 // サーバーの問題データを反映する関数
 // リロード時などは再反映の動きも可能
 async function loadQuestionsFromServer() {
+  
   try {
-    const res = await fetch("/questions");
+    const res = await fetch("/questions", {
+      headers: {
+        "x-admin-password": window.adminPassword
+      }
+    });
+
     if (!res.ok) throw new Error("取得失敗");
 
     const data = await res.json();
@@ -1117,17 +1126,27 @@ socket.on("admin:correctAnswerInfo", (data) => {
 
 // ゲームリセット
 document.getElementById("reset_btn").onclick = async () => {
-  // プッシュ確認
-  const check = confirm("全成績のリセットなどを行います。 よろしいですか？");
-  if(!check)return;
+
+  const check = confirm(
+    "全成績のリセットなどを行います。 よろしいですか？"
+  );
+  if (!check) return;
 
   try {
-    const res = await fetch("/api/admin/reset?password=123456", {
-      method: "POST"
+    const res = await fetch("/api/admin/reset", {
+      method: "POST",
+
+      headers: {
+        "x-admin-password": window.adminPassword
+      }
     });
 
+    if (!res.ok) {
+      throw new Error("reset failed");
+    }
+
     const data = await res.json();
-    loadQuestionsFromServer();
+    await loadQuestionsFromServer();
     alert("全成績などのリセットを行いました！");
 
   } catch (err) {
