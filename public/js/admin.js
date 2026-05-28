@@ -35,6 +35,7 @@ socket.on("admin:login_success", async () => {
   window.adminPassword = window.tempAdminPassword;
 
   await loadQuestionsFromServer();
+  await loadAdminRanking();
 
 });
 
@@ -615,9 +616,12 @@ async function deleteQuestion(id) {
 }
 
 
-
+// ---------------------
+// ランキング系
+// ---------------------
 
 window.addEventListener("load", () => {
+  if (!window.adminPassword) return;
   loadAdminRanking();
 });
 
@@ -627,7 +631,18 @@ socket.on("admin:answerUpdated", () => {
 
 async function loadAdminRanking() {
 
-  const res = await fetch("/api/admin/ranking");
+  const res = await fetch("/api/admin/ranking", {
+
+    headers: {
+      "x-admin-password": window.adminPassword
+    }
+
+  });
+
+  if (!res.ok) {
+    throw new Error("ランキング取得失敗");
+  }
+
   const data = await res.json();
 
   renderAdminTotal(data.totalRanking);

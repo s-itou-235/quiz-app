@@ -196,7 +196,7 @@ app.delete("/questions/:id", checkAdmin, (req, res) => {
 // ===============================
 // 管理者用ランキングAPI
 // ===============================
-app.get("/api/admin/ranking", (req, res) => {
+app.get("/api/admin/ranking",checkAdmin, (req, res) => {
 
   // -------------------------
   // 総合成績ランキング(すべての問題の合計正解数)
