@@ -16,7 +16,6 @@ https://mou-fan-zu-feng-kuizutsuru.onrender.com/
 ## 管理者用
 https://mou-fan-zu-feng-kuizutsuru.onrender.com/admin.html
 
-
 ---
 
 # 制作背景
@@ -191,18 +190,6 @@ Socket.IO の再接続時に、
 
 によって挙動が大きく変化するため、
 実際に複数端末で検証しながら調整を行いました。
-
----
-
-# 簡易アーキテクチャ
-
-## 出題〜解答
-
-（アーキテクチャ画像を掲載）
-
-## 解答〜ランキング反映
-
-（アーキテクチャ画像を掲載）
 
 ---
 
