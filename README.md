@@ -203,28 +203,6 @@ Socket.IO の再接続時に、
 
 ---
 
-# 起動方法
-
-## インストール
-
-```bash
-npm install
-```
-
-## 起動
-
-```bash
-node server.js
-```
-
-## ローカルアクセス
-
-```txt
-http://localhost:3000
-```
-
----
-
 # 制作期間
 
 約7ヶ月
