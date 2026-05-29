@@ -1235,7 +1235,7 @@ socket.on("ranking:hybridWorst", ({ result }) => {
   container.className = "ranking_block";
 
   const title = document.createElement("h2");
-  title.textContent = "早押しワースト４";
+  title.textContent = "早押しワースト４（ハイブリッドルール）";
   container.appendChild(title);
 
   const table = document.createElement("table");
