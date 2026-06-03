@@ -562,10 +562,14 @@ button:active {
 ================================= */
 
 #questionList td:nth-child(7),
-#questionList td:nth-child(8),
-#questionList td:nth-child(17) {
+#questionList td:nth-child(8) {
   min-width: 200px;
-  max-width: 400px;
+  max-width: 600px;
+}
+
+#questionList td:nth-child(17) {
+  min-width: 300px;
+  max-width: 600px;
 }
 
 /* ==============================
