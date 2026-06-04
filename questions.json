@@ -25,13 +25,13 @@
     "questionText": "デバッグ問題文",
     "timeLimitSec": 5,
     "choices": [
-      "デバッグ選択１",
-      "デバッグ選択２"
+      "デバッグ１",
+      "デバッグ２"
     ],
     "correctIndex": 1,
-    "explanation": "選択肢２択で２Pのようなもの",
+    "explanation": "選択肢2択で1Pのようなもの",
     "point": {
-      "correct": 2,
+      "correct": 1,
       "wrong": 0
     }
   },
@@ -42,14 +42,14 @@
     "questionText": "デバッグ問題文",
     "timeLimitSec": 5,
     "choices": [
-      "デバッグ用選択肢１",
-      "デバッグ用選択肢２",
-      "デバッグ用選択肢３"
+      "デバッグ用選択１",
+      "デバッグ用選択２",
+      "デバッグ用選択３"
     ],
     "correctIndex": 1,
-    "explanation": "選択肢３択で３Pのようなもの",
+    "explanation": "選択肢3択で2Pのようなもの",
     "point": {
-      "correct": 3,
+      "correct": 2,
       "wrong": 0
     }
   },
@@ -66,9 +66,9 @@
       "デバッグ用選択肢４"
     ],
     "correctIndex": 1,
-    "explanation": "選択肢３択で４Pのようなもの",
+    "explanation": "選択肢4択で3Pのようなもの",
     "point": {
-      "correct": 4,
+      "correct": 3,
       "wrong": 0
     }
   },

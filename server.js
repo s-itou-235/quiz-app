@@ -275,13 +275,16 @@ app.get("/api/admin/ranking",checkAdmin, (req, res) => {
 
 });
 
-// 出題しているクイズデータ（？）
+// 出題しているクイズデータ
+// ただしユーザーがカンニング的にアクセスできる問題発生中
+// 管理者も解答者も使うデータのため、重要データをフェーズ毎に表示管理の方針
+
 app.get("/api/state", (req, res) => {
 
   const qid = Number(gameState.questionId);
   const question = questionBank[qid];
 
-  let answersToSend = gameState.answersByClientId ?? {};
+  let answersToSend = {};
 
   if (
     gameState.phase === "result" &&
@@ -289,6 +292,13 @@ app.get("/api/state", (req, res) => {
   ) {
     answersToSend = gameState.questionResults[qid].answers;
   }
+
+  // 出題中のフェーズ（ユーザーに問題データが見えても問題ない）
+  const showQuestion =
+      gameState.phase === "question" ||
+      gameState.phase === "answer_check_ready" ||
+      gameState.phase === "answer_check" ||
+      gameState.phase === "result";
 
   res.json({
     phase: gameState.phase,
@@ -299,10 +309,24 @@ app.get("/api/state", (req, res) => {
     serverNow: Date.now(),
 
     // ===== 問題データ =====
-    questionText: question?.questionText ?? "",
-    choices: question?.choices ?? [],
-    textChoiceCount: question?.choices?.length ?? 4,
-    correctAnswer: (question?.correctIndex ?? 0) + 1,
+    // フェーズが出題のときのみ表示
+    questionText: showQuestion
+        ? question?.questionText ?? ""
+        : "",
+
+    choices: showQuestion
+        ? question?.choices ?? []
+        : [],
+
+    textChoiceCount: showQuestion
+        ? question?.choices?.length ?? 4
+        : 0,
+    
+    // result時以外は正解を隠す 
+    correctAnswer: 
+              gameState.phase === "result"
+                ? (question?.correctIndex ?? 0) + 1
+                : null,
 
     // ===== タイミング =====
     answerOpenAt: gameState.answerOpenAt,
@@ -448,7 +472,7 @@ function finalizeQuestionResult(qid) {
 
   //  questionResults [0]: {　→ 問題番号
   //  correctAnswer: 2,　問題の正解
-  //  point: 1,　問題の正解ポイント
+  //  pointCorrect: 1,　問題の正解ポイント
   //  answers: {
   //     clientId: {
   //       answer: 2 ,　→ clientIdの解答データ
@@ -679,6 +703,7 @@ io.on("connection", (socket) => {
   });
 
   // RTT取得
+  // RTT →　クライアント から サーバー 間の通信時間
   socket.on("sync", ({ t0 }) => {
     socket.emit("sync:response", {
       t0,
@@ -710,12 +735,9 @@ io.on("connection", (socket) => {
     gameState.phase = "standby";
     gameState.questionId = questionId;
 
-
     const q = questionBank[questionId];
-
   
     gameState.currentQuestion = q;
-
 
     // 解答リセット
     gameState.answersByClientId = {};
@@ -725,7 +747,6 @@ io.on("connection", (socket) => {
 
     emitAdminState();
     
-
     console.log("[ADMIN] qid set", gameState.questionId);
 
     socket.emit("admin:standby:ok", {
@@ -805,9 +826,8 @@ io.on("connection", (socket) => {
     gameState.textChoiceCount = textChoiceCount;
 
     // ===== 前問データの完全リセット =====
-    gameState.answersByClientId = {}; // ★ 解答（必須）
-    gameState.answerCounts = {};       // ★ アンサーチェック
-    // gameState.scoredQuestionId = null; // ★ 二重加算防止解除
+    gameState.answersByClientId = {}; //  解答
+    gameState.answerCounts = {};       //  アンサーチェック
      
 
     console.log("[SERVER] startQuestion", gameState.questionId);
