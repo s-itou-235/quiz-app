@@ -9,7 +9,8 @@
 
 <body>
     <header>
-        <!--ヘッダー左側の配置 -->
+        <!-- ヘッダー左側の配置 -->
+        <!-- 名前登録画面 -->
         <div class="header__left">
             <div class="entry__date">
                 <p>あなたの登録名</p>
@@ -21,19 +22,24 @@
 
 
         <!-- ヘッダー中央の表示 -->
+        <!-- 成績表示 -->
         <div class="header__center">
-            <!-- 〇✕などの有無 -->
             <p id="monitor_title">あなたの成績</p>
             
+            <!-- 合計正解数 -->
+            <!-- 正解ポイントが基本１なら「問」-->
+            <!-- 正解ポイントが頻繁に変動するなら「P」などに変更 -->
             <div class="monitor__score">
             <span>合計正解数： </span><span id="monitor_correct_total"></span><span> 問</span>
             </div>
-            
+
+            <!-- 合計解答タイム -->
             <div class="monitor__score">
             <span>合計タイム： </span><span id="monitor_time_total"></span><span> 秒</span>
             </div>
 
-            <p id="monitor_result">？？？</p>
+            <!-- 正解不正解などの文字表示 -->
+            <p id="monitor_result"></p>
 
 
         </div>
@@ -43,16 +49,11 @@
             <!-- 解答権利有無表示　-->
             <div id="answer_lamp" class="answer__lamp">
                 <p id="answer_lamp_num"></p> 
-                <!-- この辺に時刻表示 -->
-                <!-- デバッグ用などではなく本実装にも反映する？ -->
-                <!-- 「〇〇さんランプの下の時刻どうなってます？」的な -->
-                <div id="debug_time">
-                    <!-- 本実装でもそのまま表示 -->
-                    <p id="offset_time"></p>
-                    
-                    <p id="server_time"></p>  
-                    <p id="client_time"></p>
 
+                <!-- 本実装でもそのまま表示 -->
+                <div id="debug_time">
+                    <!-- サーバーとの通信ラグの表示 → 詳細はmain.js-->
+                    <p id="offset_time"></p>
                 </div>
 
             </div>
@@ -65,27 +66,30 @@
         
         <!-- 解答画面 -->
 
-            <!-- 問題文出力 -->
+            <!-- 問題文などの出力 -->
             <section class="question_area" id ="question_area">
 
                 <div class="fix__text__Q">Q.</div>
-        
+                
+                <!-- 問題文の表示エリア -->
                 <div id="question_form">
                     <p id="question_text"></p>
                 </div>
-                <!-- 制限時間 -->
+
+                <!-- 制限時間の表示エリア -->
                 <div id="time_limit">
                     <span id="time_limit_count"></span>
-                    <!-- <span id="time_limit_count_millisec_debug"></span> -->
                 </div>
             </section> 
         
         <!-- 出題待機中のもの -->
+        <!-- 現行ではほぼ非表示 消す候補-->
         <div class="question__default none">
             <p>出題までしばらくお待ちください。</p>
         </div>
 
         <!-- テキスト問題 4択テキスト選択肢モード -->
+        <!-- 通常は非表示 4択問題出題時に出現 -->
         <div class="question question__text__4text none">  
             <div class="select_button_area">
 
@@ -116,6 +120,7 @@
         </div>
 
         <!-- テキスト問題 3択テキスト選択肢モード -->
+        <!-- 通常は非表示 3択問題出題時に出現 -->
         <div class="question question__text__3text none">
             <div class="select_button_area">
 
@@ -140,6 +145,7 @@
         </div>
 
         <!-- テキスト問題 2択テキスト選択肢モード -->
+        <!-- 通常は非表示 2択問題出題時に出現 -->
         <div class="question question__text__2text none">
           
             <div class="select_button_area">
@@ -160,13 +166,13 @@
     </maim>
 
 
-    
-    <footer>    
     <!-- ランキング表示画面 -->
-    <div class="ranking_area" id="ranking_area">
-        <div id="index_ranking_area"></div>
-    </div>
-       
+    <footer>    
+        <!-- 早押しランキングや総合成績などが表示 -->
+        <div class="ranking_area" id="ranking_area">
+            <!-- main.jsにてHTML作成＆表示 -->
+            <div id="index_ranking_area"></div>
+        </div>
     </footer>
 
     

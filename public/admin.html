@@ -7,6 +7,7 @@
 </head>
 <body>
 
+<!-- 最初に表示される画面 設定したパスワードを入力する -->
 <div id="login_screen">
   <h2>管理者認証</h2>
   <input type="password" id="admin_pw">
@@ -15,50 +16,78 @@
 </div>
 
 
+<!-- 管理者認証しているときのみ表示 -->
 <div id="admin_panel" style="display:none;">
-<!-- 聖域 -->
-
+<!-- 左インデントは使わない -->
 
   <div class="control-wrapper">
 
     <!-- 出題制御 -->
     <div class="control-block">
       <h3>出題制御</h3>
-      <div class="control-row">
+
+      <!-- 出題する問題番号の選択 -->
+      <div class="control-row">  
         <label>問題番号</label>
         <input id="question_num" type="number" value="0" min="0">
-       
       </div>
 
+      <!-- 出題ボタンなど -->
       <div class="control-row buttons">
+        
         <div>
+          <!-- 問題番号のセット -->
           <button id="question_standby" type="button">① 出題準備</button>
+
+          <!-- セットされた問題を出題開始 -->
           <button id="question_start" type="button">② 出題開始</button>
+
+          <!-- 緊急の出題取消 -->
           <button id="question_delete" type="button">出題取消</button>
+
+          <!-- 【イレギュラー操作】開催中になにかしらの理由でフェーズ変更が出来なくなった場合 -->
           <button id="phase_reset" type="button">フェーズを準備中へ強制変更</button>
         </div>
+
       </div>
+
       <div>
+        <!-- 出題済み番号の反映 -->
         <pre class="system_log" id="question_info"></pre>
       </div>
+
     </div>
 
     <!-- 解答制御 -->
     <div class="control-block">
       <h3>解答制御</h3>
+
+      <!-- 正解変更 -->
+      <!-- 緊急の正解訂正・勝者予想問題などで正解を後付けするときなどに使用 -->
+      <!-- 正解発表 → 訂正 → もう一度正解発表 のような動きも可 -->
       <div class="control-row">
         <label>正解変更</label>
-        <!-- 多数決アンケートなど正解を後付けするなどのときに使用 -->
+
+        <!-- 変更する正解の設定 0は正解無しの意味-->
         <input id="answer_num" type="number" value="" min="0" max="10">
+        
+        <!-- 変更の確定 -->
         <button id="answer_num_set" type="button">変更</button>
+      
       </div>
 
+      <!-- 出題後の関連 -->
       <div class="control-row buttons">
+
+        <!-- それぞれの選択肢に押した人数の反映 -->
         <button id="answer_check_btn" type="button">③ アンサーチェック</button>
+
+        <!-- 全員に正解発表 -->
         <button id="question_result" type="button">④ 正解発表</button>
       </div>
+
       <div>
-        <!-- ここに正解情報を記載 -->
+        <!-- 正解の選択肢とその内容を反映 -->
         <pre class="system_log" id="answer_info"></pre>
       </div>
 
@@ -66,12 +95,19 @@
 
 
 
-    <!-- 解答制御 -->
+    <!-- 選択肢と解答状況の確認 -->
+    <!-- 出題前に選択肢の確認など -->
     <div class="control-block">
+      
+      <!-- （Q.1）のようにどの問題がセットされてるかなども反映 -->
       <h3>選択肢と解答状況 (Q.<span class="now_Qid">-</span>)</h3>
-        <div id="answerStats">
-          <div id="answer_counts"></div>
-        </div>
+        
+      <div id="answerStats">
+
+        <!-- ここに選択肢番号と選択肢内容 -->
+        <div id="answer_counts"></div>
+
+      </div>
     </div>
 
   </div>
@@ -79,26 +115,38 @@
   <!-- ログ表示 -->
   <div class="log-block">
     <h3>システムログ</h3>
+    
+    <!-- 現在のフェーズついて（例：現在のフェーズはanswer_check_ready） -->
     <pre class="system_log" id="system_log_phase"></pre>
+
+    <!-- 現在の進行について（例：集計完了しました） -->
     <pre class="system_log" id="system_log_message"></pre>
+    
+    <!-- 出題前の前フリや、出題後の解説などの表示エリア-->
     <pre class="system_log" id="system_log_info"></pre>
   </div>
 
 
+  <!-- ランキングの表示 -->
   <div class="admin-ranking-wrapper">
 
+    <!-- 総合成績 -->
+    <!-- 現在の総合順位 兼 現在の参加ユーザーの一覧 -->
     <div class="ranking-box">
       <h3>総合成績</h3>
-      <pre id="admin_total_ranking"></pre>
-      
+      <pre id="admin_total_ranking"></pre>      
     </div>
 
+    <!-- 解答一覧 -->
+    <!-- 出題中の問題に対しての解答と解答タイム -->
     <div class="ranking-box">
       <h3>この問題の解答一覧(Q.<span class="now_Qid">-</span>)</h3>
       <pre id="admin_question_all"></pre>
       
     </div>
 
+    <!-- 正解者ランキング -->
+    <!-- 出題中の問題の正解者のみのランキング -->
     <div class="ranking-box">
       <h3>この問題の正解者(Q.<span class="now_Qid">-</span>)</h3>
       <pre id="admin_question_correct"></pre>
@@ -110,10 +158,20 @@
   <h3>ランキング表示</h3>
   <div class="ranking-controls">
     <!-- 早押しランキング反映ボタン -->
+
+    <!-- 全ての問題を通しての総合ランキング発表 -->
     <button id="total_ranking_btn" type="button">総合成績発表</button>
+
+    <!-- この問題の正解者のみで、早押しタイムのベスト４ -->
     <button id="correct_best_btn" type="button">⑤ 早押しベスト４</button>
+
+    <!-- この問題の正解者のみで、早押しタイムのワースト４ -->
     <button id="correct_worst_btn" type="button">⑤ 早押しワースト４</button>
+
+    <!-- ランキングの表示終了 -->
     <button id="ranking_none_btn" type="button">⑥ 表示終了</button>
+
+    <!-- ハイブリッドルール（早押し最下位者のポイント没収） -->
     <button id="hybrid_worst_btn" type="button">⑤ 早押しワースト４（ハイブリッドルール・最下位ポイント没収）</button>
   </div>
 
@@ -121,99 +179,128 @@
 
   <h2>問題登録</h2>
 
+  <!-- 問題登録用のフォーム -->
   <div id="registerForm">
 
-    <!-- 1行目：QID / カテゴリ / メモ -->
+    <!-- 1行目 -->
     <div class="form-row triple">
+
+      <!-- Qidの設定 -->
       <div class="form-group">
         <label>Qid *</label>
         <input type="number" id="qid">
       </div>
 
+      <!-- 問題カテゴリの選択 -->
       <div class="form-group">
         <label>問題カテゴリ *</label>
+        <!-- カテゴリーの選択 -->
         <select id="category">
+
+          <!-- 通常問題 → 基本はこちら -->
           <option value="normal">normal</option>
-          <!-- アンケートやギャンブルタイム -->
+
+          <!-- event問題 → アンケートや勝者予想問題 -->
           <option value="event">event</option>
+
+          <!-- なにかしらの拡張予定 -->
+
         </select>
       </div>
 
     </div>
+
     <!-- メモ -->
     <div class="form-group">
       <label>メモ（前フリなど）</label>
       <input type="text" id="memo">
     </div>
+
     <!-- 問題文 -->
     <div class="form-group full">
       <label>問題文 *</label>
       <input type="text" id="questionText">
     </div>
 
-    <!-- 制限時間 / 正解番号 / ポイント -->
     <div class="form-row quadruple">
+
+      <!-- 制限時間の設定 -->
       <div class="form-group">
         <label>制限時間 *</label>
         <input type="number" id="timeLimitSec">
       </div>
 
+      <!-- 正解の選択肢番号 -->
       <div class="form-group">
         <label>正解の選択肢 *</label>
-        <input type="number" id="correctIndex" min="1" max="4">
+        <input type="number" id="correctIndex" min="0" max="4">
       </div>
 
+      <!-- 正解ポイントの設定 -->
       <div class="form-group">
         <label>正解ポイント *</label>
-        <input type="number" id="pointCorrect">
+        <input type="number" id="pointCorrect" min="0">
       </div>
 
+      <!-- 不正解ポイントの設定 -->
+      <!-- 不正解のポイント没収設定 -->
       <div class="form-group">
         <label>不正解ポイント</label>
-        <input type="number" id="pointWrong">
+        <input type="number" id="pointWrong" value="0">
       </div>
     </div>
 
     <!-- 選択肢 -->
     <div class="choices-block">
+      <!-- 選択肢１（必須） -->
       <div class="form-group">
         <label>選択肢1 *</label>
         <input type="text" id="choice1">
       </div>
 
+      <!-- 選択肢２（必須） -->
       <div class="form-group">
         <label>選択肢2 *</label>
         <input type="text" id="choice2">
       </div>
 
+      <!-- 選択肢３ -->
       <div class="form-group">
         <label>選択肢3</label>
         <input type="text" id="choice3">
       </div>
 
+      <!-- 選択肢４ -->
       <div class="form-group">
         <label>選択肢4</label>
         <input type="text" id="choice4">
       </div>
+
     </div>
 
-    <!-- 解説 -->
+    <!-- 問題の解説 -->
+    <!-- 出題後の解説メモ -->
     <div class="form-group full">
       <label>問題の解説</label>
       <input type="text" id="explanation">
     </div>
 
     <!-- ボタン -->
-
     <div class="form-submit">
+
+      <!-- フォーム内容の全削除 -->
       <button id="excelDeleteBtn">全削除</button>
+
+      <!-- 追加や修正の反映 -->
+      <!-- 新規登録も上書きも同じ内容 -->
       <button id="registerBtn">追加/修正反映</button>
+
     </div>
 
   </div>
 
 
-
+  <!-- Excelなどのデータから一括貼付け -->
   <h2>Excel一括貼り付け</h2>
   <div class="excel-area">
   <textarea id="bulkInput" rows="5" cols="120"
