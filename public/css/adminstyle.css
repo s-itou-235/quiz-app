@@ -594,7 +594,7 @@ button:active {
   line-height: 1.4;
 }
 
-/* スクロールバー視認性向上（任意） */
+/* スクロールバー視認性向上 */
 #questionList::-webkit-scrollbar {
   height: 8px;
 }
@@ -604,6 +604,11 @@ button:active {
   border-radius: 4px;
 }
 
+/* スマホ表示用 */
+@media (max-width: 428px){
+
+
+}
 
 /* JS追加用 */
 .phase-active{

@@ -1014,11 +1014,6 @@ io.on("connection", (socket) => {
       source = "FALLBACK_INVALID";
     }
 
-    // サーバー受付（実際に有効な範囲）
-    // 時間終了0.5秒程度だけ許す
-    // （マイナス表示防止済・通称ブザービート→解答受付のブザービート的使い方)
-    
-    // サーバー側のブザービートは0.3秒まで許容
     // RTT値によって増減 （最大1秒）
     // / 判定用（締切）
     const ACCEPT_GRACE_MS = Math.min(1000,Math.max(300, safeRtt ? safeRtt * 0.5 : 300));
@@ -1502,9 +1497,6 @@ io.on("connection", (socket) => {
   // どんな状況のリロードでも必ず反映されるタイプのものを入れること
   socket.on("client:reload", () => {
     
-    // スコア再計算
-    // recomputeScoresFromQuestionResults();
-
     // =====  全クライアントへ反映 =====
     // 本当は全員にやる必要はないが
     // 可読性＆スコアがリアルタイムで損はしないためこのまま
@@ -1546,7 +1538,6 @@ io.on("connection", (socket) => {
       console.log("[ERROR] not current question");
       return;
     }
-
 
     console.log("[ADMIN] setCorrectAnswer", qid, answer);
     
@@ -1676,14 +1667,8 @@ setInterval(() => {
 
 }, 300);
 
-
-
-
 // 本番用（サーバー公開対応）
 const PORT = process.env.PORT || 3000;
 server.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });
-
-
-
