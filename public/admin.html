@@ -302,22 +302,32 @@
 
   <!-- Excelなどのデータから一括貼付け -->
   <h2>Excel一括貼り付け</h2>
+
+  <!-- Excelのデータ貼付フォーム -->
   <div class="excel-area">
-  <textarea id="bulkInput" rows="5" cols="120"
-    placeholder="①登録用ExcelからQidなどをコピーしてここに貼り付け ②登録反映ボタン"></textarea>
+        <textarea id="bulkInput" rows="5" cols="120"
+      placeholder="①登録用ExcelからQidなどをコピーしてここに貼り付け ②登録反映ボタン"></textarea>
   </div>
+
+  <!-- 登録の反映（先頭行の内容を登録フォームに） -->
   <button id="bulkPreviewBtn">登録反映（先頭を反映）</button>
 
 
   <h2>登録済み問題一覧</h2>
 
   <table id="questionList">
+    <!-- 登録カテゴリーの一覧 -->
     <thead>
       <tr>
+        <!-- ボタンなど -->
         <th>出題</th>
         <th>修正</th>
         <th>削除</th>
+
+        <!-- 出題済などのチェック -->
         <th>確認</th>
+
+
         <th>Qid</th>
         <th>カテゴリ</th>
         <th>メモ</th>
@@ -336,12 +346,13 @@
     <tbody id="questionListBody"></tbody>
   </table>
 
+  <!-- 問題データ以外の全て初期化 -->
   <button id="reset_btn">成績等のリセット</button>
 
   <script src="/socket.io/socket.io.js"></script>
   <script src="/js/admin.js"></script>
 
-<!-- 聖域 -->
+<!-- 左インデントは使わない -->
 </div>
 
 </body>
