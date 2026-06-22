@@ -1,16 +1,16 @@
 const gameState = {
 
+  // 参加しているプレイヤーの一覧
   playerNames: {},
 
   // フェーズ制御
   phase: "idle",     // idle | standby | question | answer_check | result
-  questionId: null,
-
+  questionId: null, // 出題中のquestionId
 
   // ===== 出題制御 =====
-  askedQuestionIds: [], // ★ 出題済みID
+  askedQuestionIds: [], // 出題済みID
   textChoiceCount: 4, // 2 / 3 / 4
-  answerOpenAt: null, //出題開始 
+  answerOpenAt: null, //出題開始時刻
   answerCloseAt: null, //出題終了時刻
   startedAt: null, //役割を忘れたが変に消すより保持
 
@@ -34,7 +34,7 @@ const gameState = {
 
   // ===== 正解情報 =====
   // 一応の仮置き
-  correctAnswer: 2, // 仮（後で問題マスタ参照）
+  correctAnswer: 0, // 仮（後で問題マスタ参照）
 
 
   // ===== 問題ごとの解答データ =====
@@ -45,7 +45,7 @@ const gameState = {
     // correctAnswer: 2,　問題の正解
     // point: 1,　問題のポイント
     // answers: {
-    //   clientId: {
+    //   clientId1: {
     //     answer: 2 | "over",　→ clientIdの解答データ
     //     time: 3.61 | null,　→ clientIdのタイムデータ
     //     result: "correct" | "wrong" | "over"　→ clientIdの正解不正解データ
@@ -57,11 +57,11 @@ const gameState = {
     //   }
     // }
 
-     // [qid]: {　→問題番号その2
+    // [qid]: {　→問題番号その2
     // correctAnswer: 4,　問題の正解
     // point: 2,　問題のポイント
     // answers: {
-    //   clientId: {
+    //   clientId1: {
     //     answer: 4 | "over",　→ clientIdの解答データ
     //     time: 3.61 | null,　→ clientIdのタイムデータ
     //     result: "correct" | "wrong" | "over"　→ clientIdの正解不正解データ
@@ -75,14 +75,17 @@ const gameState = {
   },
   
   scores : {
-     // clientId: {
-    //   correctCount: Number, → 正解ポイント
-    //   totalTime: Number, → 合計解答時間
+    // clientId1: {
+    //   correctCount: 4, → 正解ポイント
+    //   totalTime: 16.84, → 合計解答時間
+    //   }
+    // clientId2: {
+    //   correctCount: 3, → 正解ポイント
+    //   totalTime: 8.58, → 合計解答時間
     //   }
   },
 
-  // ===== 二重加算防止 =====
-  scoredQuestionId : null, // 二重加算防止
+  scoredQuestionId : null, // 二重加算防止用
 
 };
 

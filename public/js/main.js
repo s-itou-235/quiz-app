@@ -1,59 +1,67 @@
 // HTML要素の取得
 
-// ルール
-// 変数もタグのidも同じ名前
+// 命名ルール（なるべく）
+
+// 変数 と タグのid は 同じ名前
 // 単語区切りはアンダーバー（user_name）など
 // 基本的に小文字で統一
 
-// 変数もタグのclassも同じ名前
+// 変数 と タグのclass も同じ名前
 // 単語区切りはアンダーバー2つ（user__name）など
 // 基本的に小文字で統一
 
 
 // ヘッダー関連
-// 名前登録
-const userNameEl = document.getElementById("user_name");
-const nameInputEl = document.getElementById("name_input");
-const nameUpdateBtn = document.getElementById("name_update_btn");
+// 名前登録関連
+const userNameEl = document.getElementById("user_name"); // 名前表示
+const nameInputEl = document.getElementById("name_input"); // 名前入力欄
+const nameUpdateBtn = document.getElementById("name_update_btn"); // 登録ボタン 
+
 
 // モニター表示関連
-const monitor_correct_total = document.getElementById("monitor_correct_total")
-const monitor_time_total = document.getElementById("monitor_time_total")
-const monitor_result = document.getElementById("monitor_result")
+const monitor_correct_total = document.getElementById("monitor_correct_total"); // 正解数の合計
+const monitor_time_total = document.getElementById("monitor_time_total");// タイムの合計
+const monitor_result = document.getElementById("monitor_result"); // 正解不正解などの表示
 
-// ランプ表示
-const answer_lamp = document.getElementById("answer_lamp")
-const answer_lamp_num = document.getElementById("answer_lamp_num")
-const answer_lamp_info = document.getElementById("answer_lamp_info")
+
+// ランプ表示関連
+const answer_lamp = document.getElementById("answer_lamp"); // ランプそのもの
+const answer_lamp_num = document.getElementById("answer_lamp_num"); // のちのちの拡張用。現状は1番固定。 
 
 
 // 解答画面（出題部分）
+
+// 全体
+const question = document.querySelectorAll(".question"); // クイズ出題エリア全体
+const question__default = document.querySelectorAll(".question__default"); // 出題までしばらくお待ちください表示
+
 // 問題文関連
-const question_form = document.getElementById("question_form")
-const question_text = document.getElementById("question_text")
+const question_form = document.getElementById("question_form"); // 問題文の表示エリア 
+const question_text = document.getElementById("question_text"); // 問題文そのもの
+
 
 // 解答時間関連
-const time_limit = document.getElementById("time_limit")
-const time_limit_count = document.getElementById("time_limit_count")
+const time_limit = document.getElementById("time_limit"); // 制限時間の表示エリア
+const time_limit_count = document.getElementById("time_limit_count"); // 制限時間そのもの
 
 
 // 解答選択肢ボタン
-const select__button = document.querySelectorAll('.select__button');
+const select__button = document.querySelectorAll('.select__button'); // 選択肢１～４全て
+// 1番の選択肢 .select__button__1～4 のような命名。
+
 
 // アンサーチェック用
-const answer__sum = document.querySelectorAll('.answer__sum');
+const answer__sum = document.querySelectorAll('.answer__sum'); // アンサーチェック人数などの表示部分
+// 1番の選択肢 .select__sum__1～4 のような命名。
 
-
-// モードごとに設定してあるclass取得
-// 全体
-const question = document.querySelectorAll(".question");
-const question__default = document.querySelectorAll(".question__default");
 
 // それぞれの問題数の択数 
-const question__text__4text = document.querySelectorAll(".question__text__4text");
-const question__text__3text = document.querySelectorAll(".question__text__3text");
-const question__text__2text = document.querySelectorAll(".question__text__2text");
-
+const question__text__4text = document.querySelectorAll(".question__text__4text"); // テキスト方式問題 テキスト方式選択肢の4択
+const question__text__3text = document.querySelectorAll(".question__text__3text"); // テキスト方式問題 テキスト方式選択肢の3択
+const question__text__2text = document.querySelectorAll(".question__text__2text"); // テキスト方式問題 テキスト方式選択肢の2択
+// いずれ
+// const question__image__2text = document.querySelectorAll(".question__image__2text"); // 画像問題 テキスト方式選択肢の2択 
+// const question__text__2image = document.querySelectorAll(".question__image__2text"); // テキスト方式問題 画像選択肢の2択
 
 
 

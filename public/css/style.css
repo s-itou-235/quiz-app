@@ -1,6 +1,6 @@
   :root{
     /* 文字の立体風デザイン */
-    /* ver(--Textured-shadow) */
+    /* box-shadow: ver(--Textured-shadow) */
     --Textured-shadow:
       -3px -3px rgb(0,0,0),
       3px -3px rgb(0,0,0),
