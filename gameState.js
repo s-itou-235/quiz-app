@@ -12,7 +12,7 @@ const gameState = {
   textChoiceCount: 4, // 2 / 3 / 4
   answerOpenAt: null, //出題開始時刻
   answerCloseAt: null, //出題終了時刻
-  startedAt: null, //役割を忘れたが変に消すより保持
+  startedAt: null, //
 
   
   // ===== 解答管理（誰が何番を何秒で押した）=====
