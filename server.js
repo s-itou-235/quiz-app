@@ -286,6 +286,9 @@ app.get("/api/state", (req, res) => {
 
   let answersToSend = {};
 
+  // 解答状況の表示
+  // result時以外は非表示
+  // リロード時の解答復元はクライアント側で処理
   if (
     gameState.phase === "result" &&
     gameState.questionResults[qid]
@@ -334,7 +337,11 @@ app.get("/api/state", (req, res) => {
 
     // ===== 解答状況 =====
     answers: answersToSend, 
-    answerCounts: gameState.answerCounts ?? {}
+    answerCounts:
+                gameState.phase === "answer_check" ||
+                gameState.phase === "result"
+                  ? gameState.answerCounts ?? {}
+                : null,
   });
 });
 

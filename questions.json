@@ -1,22 +1,5 @@
 [
   {
-    "id": 0,
-    "category": "normal",
-    "memo": "デバッグ",
-    "questionText": "デバッグ問題文",
-    "timeLimitSec": 5,
-    "choices": [
-      "デバッグ１",
-      "デバッグ２"
-    ],
-    "correctIndex": 1,
-    "explanation": "選択肢2択で1Pのようなもの",
-    "point": {
-      "correct": 1,
-      "wrong": 0
-    }
-  },
-  {
     "id": 1,
     "category": "normal",
     "memo": "デバッグ",
@@ -760,6 +743,23 @@
     "explanation": "どんなに偏ったサイコロでも、１～６のどれかは出る。仮に１が１００％出るサイコロだとして、普通のサイコロで６が出れば つまり６分の１で合計７、２が１００％に対して５、３が１００％に対して４などのように、偏ったサイコロの数字に応じて、合計が７になる確率なのでちょうど1/6",
     "point": {
       "correct": 2,
+      "wrong": 0
+    }
+  },
+  {
+    "id": 0,
+    "category": "normal",
+    "memo": "デバッグ",
+    "questionText": "デバッグ問題文",
+    "timeLimitSec": 10,
+    "choices": [
+      "デバッグ１",
+      "デバッグ２"
+    ],
+    "correctIndex": 1,
+    "explanation": "選択肢2択で1Pのようなもの",
+    "point": {
+      "correct": 1,
       "wrong": 0
     }
   }

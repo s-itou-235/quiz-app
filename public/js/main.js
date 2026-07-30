@@ -186,12 +186,14 @@ function updateOffset(serverNow) {
   // ② newOffsetがNaN/Infinityなら終了
   if (!Number.isFinite(newOffset)) {
     console.warn("[OFFSET] newOffset invalid:", newOffset);
+    timeOffset = "E-01";
     return;
   }
 
   // ③ 異常値カット
   if (Math.abs(newOffset) > 10000) {
     console.warn("[OFFSET] abnormal:", newOffset);
+    timeOffset = "E-02";
     return;
   }
 
@@ -303,6 +305,21 @@ setInterval(async () => {
   } catch {}
 }, 15000);
 
+// ローカルストレージに解答があるか判定
+function hasLocalAnswer(questionId) {
+    try {
+        const cache = JSON.parse(
+            localStorage.getItem("lastAnswer")
+        );
+        return(
+            cache &&
+            cache.questionId === questionId
+        );
+    } catch {
+        return false;
+    }
+  }
+
 
 async function syncState() {
   // 枠線も削除
@@ -328,8 +345,11 @@ async function syncState() {
 
         // サーバーが保持している「解答済みID一覧」を基準に
         // このクライアントが解答済みかどうかを判定
-        const myAnswer = state.answers?.[clientId];
-        hasAnswered = myAnswer && myAnswer.answer !== "over";
+        // const myAnswer = state.answers?.[clientId];
+        // hasAnswered = myAnswer && myAnswer.answer !== "over";
+
+        // ローカルキャッシュを見て回答済み判定
+        hasAnswered = hasLocalAnswer(state.questionId);
 
         // タイマーが有効になるまでは解答不可
         canAnswer = false;
@@ -380,10 +400,17 @@ async function syncState() {
         
         scrollToQuestion();  
         // 解答状態の反映(後で関数にでもする)
-        /// 解答時の処理
-        const myAnswer = state.answers?.[clientId];
+
+        
+        // 解答時の処理
+        // サーバー取得 
+        // const myAnswer = state.answers?.[clientId];
+        // ローカル
+        const answered = hasLocalAnswer(state.questionId);
+
+
         // シンプルにタイムオーバー（answer: 'over'） or 途中参加で解答無し
-        if(!myAnswer || myAnswer.answer === "over"  ){
+        if(!answered){
             monitor_result.innerHTML = "タイムオーバー";
             // 0表示 タイマー背景灰色 時間切れ ランプ消灯
             time_limit_count.innerHTML = "0";
@@ -421,9 +448,13 @@ async function syncState() {
        
 
         /// 解答時の処理
+        // サーバー取得
         const myAnswer = state.answers?.[clientId];
-        // シンプルにタイムオーバー（answer: 'over'） or 途中参加で解答無し
-        if(!myAnswer || myAnswer.answer === "over" ){
+         // ローカル
+        const answered = hasLocalAnswer(state.questionId);
+
+        // タイムオーバー or 途中参加で解答無し
+        if(!answered){
             monitor_result.innerHTML = "タイムオーバー";
             // 0表示 タイマー背景灰色 時間切れ ランプ消灯（不正解確定のため）
             time_limit_count.innerHTML = "0";
@@ -627,6 +658,9 @@ function syncQuestionFromServer() {
         // 新しい問題なのでクライアント状態をリセット
         hasAnswered = false;
         canAnswer = false;
+        
+        // 新しい問題なのでローカルストレージの解答保存リセット
+        localStorage.removeItem("lastAnswer");
 
         // ボタン有効化 & 枠リセット
         select__button.forEach(btn => {
@@ -774,7 +808,26 @@ function startStableTimer(state) {
 function restoreAnsweredChoice(state = latestState) {
   if (!state) return;
 
-  const myAnswer = state.answers?.[clientId]?.answer;
+  let myAnswer = null;
+
+   // ① ローカルストレージから復元
+  try {
+    const cache = JSON.parse(localStorage.getItem("lastAnswer"));
+
+    if (
+      cache &&
+      cache.questionId === state.questionId
+    ) {
+      myAnswer = cache.answer;
+    }
+  } catch {}
+
+   const serverAnswer = state.answers?.[clientId]?.answer;
+
+  if (serverAnswer != null) {
+    myAnswer = serverAnswer;
+  }
+
   if (myAnswer == null) return;
 
   const btn = [...document.querySelectorAll(
@@ -834,6 +887,13 @@ function handleAnswer(event) {
   const selectedIndex = Number(event.currentTarget.value);
 
   const clientSendTime = getNow();
+
+  // 復元用キャッシュ
+  // resultまでの解答復元はこちら（カンニング防止）
+  localStorage.setItem("lastAnswer", JSON.stringify({
+    questionId: currentQuestionId,
+    answer: selectedIndex
+  }));
 
   socket.emit("client:answer", {
     clientId,
