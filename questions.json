@@ -1,19 +1,36 @@
 [
   {
+    "id": 0,
+    "category": "normal",
+    "memo": "デバッグ",
+    "questionText": "デバッグ２択",
+    "timeLimitSec": 5,
+    "choices": [
+      "デバッグ選択１",
+      "デバッグ選択２"
+    ],
+    "correctIndex": 1,
+    "explanation": "選択肢２択で２Pのようなもの",
+    "point": {
+      "correct": 1,
+      "wrong": 0
+    }
+  },
+  {
     "id": 1,
     "category": "normal",
     "memo": "デバッグ",
-    "questionText": "デバッグ問題文",
+    "questionText": "デバッグ３択",
     "timeLimitSec": 5,
     "choices": [
-      "デバッグ用選択１",
-      "デバッグ用選択２",
-      "デバッグ用選択３"
+      "デバッグ選択１",
+      "デバッグ選択２",
+      "デバッグ選択３"
     ],
     "correctIndex": 1,
-    "explanation": "選択肢3択で2Pのようなもの",
+    "explanation": "選択肢３択で３Pのようなもの",
     "point": {
-      "correct": 2,
+      "correct": 1,
       "wrong": 0
     }
   },
@@ -21,35 +38,16 @@
     "id": 2,
     "category": "normal",
     "memo": "デバッグ",
-    "questionText": "デバッグ問題文",
+    "questionText": "デバッグ４択",
     "timeLimitSec": 5,
     "choices": [
-      "デバッグ用選択肢１",
-      "デバッグ用選択肢２",
-      "デバッグ用選択肢３",
-      "デバッグ用選択肢４"
+      "デバッグ選択１",
+      "デバッグ選択２",
+      "デバッグ選択３",
+      "デバッグ選択4"
     ],
     "correctIndex": 1,
-    "explanation": "選択肢4択で3Pのようなもの",
-    "point": {
-      "correct": 3,
-      "wrong": 0
-    }
-  },
-  {
-    "id": 1002,
-    "category": "event",
-    "memo": "勝者予想問題サンプル",
-    "questionText": "ダーツ対決に勝つのは？",
-    "timeLimitSec": 15,
-    "choices": [
-      "Aさん",
-      "Bさん",
-      "Cさん",
-      "Dさん"
-    ],
-    "correctIndex": -1,
-    "explanation": "「ゲームの勝者予想問題」　主な使用方法　１．選択肢を参加者の名前に変更　２．そのまま出題とアンサーチェック　３．イベント開催　４．解答制御にある正解変更でイベントの勝者を設定して正解発表",
+    "explanation": "選択肢３択で４Pのようなもの",
     "point": {
       "correct": 1,
       "wrong": 0
@@ -58,15 +56,15 @@
   {
     "id": 1000,
     "category": "event",
-    "memo": "アンケート問題サンプル",
+    "memo": "デバッグアンケート",
     "questionText": "次回開催は？",
-    "timeLimitSec": 15,
+    "timeLimitSec": 5,
     "choices": [
       "やりたい",
       "やりたくない"
     ],
     "correctIndex": -1,
-    "explanation": "「スコア加算などなしのアンケート」　正解選択肢０で正解なし、正解ポイントを０として、参加後のアンケートなどに使用可",
+    "explanation": "スコア加算などなしのシンプルなアンケート",
     "point": {
       "correct": 0,
       "wrong": 0
@@ -75,689 +73,34 @@
   {
     "id": 1001,
     "category": "event",
-    "memo": "参加募集問題サンプル",
-    "questionText": "ダーツ対決参加する？（先着4人）",
-    "timeLimitSec": 15,
+    "memo": "デバッグイベント募集",
+    "questionText": "イベントに参加する？",
+    "timeLimitSec": 5,
     "choices": [
-      "参加する",
+      "参加する（先着4人）",
       "参加しない"
     ],
     "correctIndex": 0,
-    "explanation": "「早押しランキングのあるアンケート」　早押しランキングを表示したい選択肢を正解に設定（今回の場合は参加する）　 正解ポイント０とすることで、正解は設定するがポイントやタイムは付与せず、参加者は先着４人のみ有効のような方法が可能",
+    "explanation": "正解設定はするがアンケート目的なのでポイント０",
     "point": {
       "correct": 0,
       "wrong": 0
     }
   },
   {
-    "id": 3,
-    "category": "normal",
-    "memo": "ライフスタイル",
-    "questionText": "不動産などの「徒歩～分」の表示の１分は何ｍ？",
-    "timeLimitSec": 15,
+    "id": 1002,
+    "category": "event",
+    "memo": "デバッグイベント予想",
+    "questionText": "イベントで勝つのは？",
+    "timeLimitSec": 5,
     "choices": [
-      "50ｍ",
-      "60ｍ",
-      "70ｍ",
-      "80ｍ"
+      "Aさん",
+      "Bさん",
+      "Cさん",
+      "Dさん"
     ],
-    "correctIndex": 3,
-    "explanation": "",
-    "point": {
-      "correct": 1,
-      "wrong": 0
-    }
-  },
-  {
-    "id": 4,
-    "category": "normal",
-    "memo": "ライフスタイル",
-    "questionText": "日本の宝くじでミニロトの抽選が行なわれるのは毎週何曜日？",
-    "timeLimitSec": 15,
-    "choices": [
-      "月曜日",
-      "火曜日",
-      "水曜日",
-      "木曜日"
-    ],
-    "correctIndex": 1,
-    "explanation": "",
-    "point": {
-      "correct": 1,
-      "wrong": 0
-    }
-  },
-  {
-    "id": 5,
-    "category": "normal",
-    "memo": "ライフスタイル",
-    "questionText": "ワイシャツの「ワイ」はもともとどんな言葉？",
-    "timeLimitSec": 15,
-    "choices": [
-      "wide",
-      "wild",
-      "white",
-      "why"
-    ],
-    "correctIndex": 2,
-    "explanation": "",
-    "point": {
-      "correct": 1,
-      "wrong": 0
-    }
-  },
-  {
-    "id": 6,
-    "category": "normal",
-    "memo": "ライフスタイル",
-    "questionText": "二十四節気の立春があるのは現在の暦で何月？",
-    "timeLimitSec": 15,
-    "choices": [
-      "２月",
-      "３月",
-      "４月",
-      "５月"
-    ],
-    "correctIndex": 0,
-    "explanation": "",
-    "point": {
-      "correct": 1,
-      "wrong": 0
-    }
-  },
-  {
-    "id": 7,
-    "category": "normal",
-    "memo": "ライフスタイル２倍",
-    "questionText": "「ミラージュ」「クロノス」「オシリス」「福兵衛」これはどの野菜の品種？",
-    "timeLimitSec": 15,
-    "choices": [
-      "じゃがいも",
-      "トマト",
-      "ほうれん草",
-      "水菜"
-    ],
-    "correctIndex": 2,
-    "explanation": "",
-    "point": {
-      "correct": 2,
-      "wrong": 0
-    }
-  },
-  {
-    "id": 8,
-    "category": "normal",
-    "memo": "アニメ・ゲーム",
-    "questionText": "アニメ『ドラえもん』でドラえもんの体の色は何色？",
-    "timeLimitSec": 15,
-    "choices": [
-      "青色",
-      "赤色",
-      "緑色",
-      "黄色"
-    ],
-    "correctIndex": 0,
-    "explanation": "",
-    "point": {
-      "correct": 1,
-      "wrong": 0
-    }
-  },
-  {
-    "id": 9,
-    "category": "normal",
-    "memo": "アニメ・ゲーム",
-    "questionText": "ドラえもんのしっぽの色は何色？",
-    "timeLimitSec": 15,
-    "choices": [
-      "青色",
-      "赤色",
-      "緑色",
-      "黄色"
-    ],
-    "correctIndex": 1,
-    "explanation": "",
-    "point": {
-      "correct": 1,
-      "wrong": 0
-    }
-  },
-  {
-    "id": 10,
-    "category": "normal",
-    "memo": "アニメ・ゲーム",
-    "questionText": "任天堂の本社があるのは？",
-    "timeLimitSec": 15,
-    "choices": [
-      "北海道",
-      "東京都",
-      "京都府",
-      "大阪府"
-    ],
-    "correctIndex": 2,
-    "explanation": "",
-    "point": {
-      "correct": 1,
-      "wrong": 0
-    }
-  },
-  {
-    "id": 11,
-    "category": "normal",
-    "memo": "アニメ・ゲーム",
-    "questionText": "アニメ『ポケットモンスター』でピカチュウの声を演じていたのは？",
-    "timeLimitSec": 15,
-    "choices": [
-      "犬山イヌコ",
-      "大谷育江",
-      "こおろぎさとみ",
-      "高乃麗"
-    ],
-    "correctIndex": 1,
-    "explanation": "④たかの うらら",
-    "point": {
-      "correct": 1,
-      "wrong": 0
-    }
-  },
-  {
-    "id": 12,
-    "category": "normal",
-    "memo": "アニメ・ゲーム ２倍",
-    "questionText": "では、ライチュウの声を演じていたのは？",
-    "timeLimitSec": 15,
-    "choices": [
-      "犬山イヌコ",
-      "大谷育江",
-      "こおろぎさとみ",
-      "高乃麗"
-    ],
-    "correctIndex": 3,
-    "explanation": "④たかの うらら",
-    "point": {
-      "correct": 2,
-      "wrong": 0
-    }
-  },
-  {
-    "id": 13,
-    "category": "normal",
-    "memo": "芸能",
-    "questionText": "『２４時間テレビ愛は地球を救う』を放映するテレビ局は？",
-    "timeLimitSec": 15,
-    "choices": [
-      "TBS",
-      "NHK",
-      "日本テレビ",
-      "フジテレビ"
-    ],
-    "correctIndex": 2,
-    "explanation": "",
-    "point": {
-      "correct": 1,
-      "wrong": 0
-    }
-  },
-  {
-    "id": 14,
-    "category": "normal",
-    "memo": "芸能",
-    "questionText": "では、『FNS27時間テレビ』を放映するのは？",
-    "timeLimitSec": 15,
-    "choices": [
-      "TBS",
-      "NHK",
-      "日本テレビ",
-      "フジテレビ"
-    ],
-    "correctIndex": 3,
-    "explanation": "",
-    "point": {
-      "correct": 1,
-      "wrong": 0
-    }
-  },
-  {
-    "id": 15,
-    "category": "normal",
-    "memo": "芸能",
-    "questionText": "タレントやグループの名前がタイトルに付けられた番組のことをなんという？",
-    "timeLimitSec": 15,
-    "choices": [
-      "兜番組",
-      "冠番組",
-      "靴番組",
-      "鎧番組"
-    ],
-    "correctIndex": 1,
-    "explanation": "",
-    "point": {
-      "correct": 1,
-      "wrong": 0
-    }
-  },
-  {
-    "id": 16,
-    "category": "normal",
-    "memo": "芸能",
-    "questionText": "TBS系列のバラエティ『○時だョ！全員集合』。○に入る数字は何？",
-    "timeLimitSec": 15,
-    "choices": [
-      "寅の刻",
-      "辰の刻",
-      "巳の刻",
-      "午の刻"
-    ],
-    "correctIndex": 1,
-    "explanation": "厳密には午前８時のこと",
-    "point": {
-      "correct": 1,
-      "wrong": 0
-    }
-  },
-  {
-    "id": 17,
-    "category": "normal",
-    "memo": "芸能 ２倍",
-    "questionText": "「プレバト!!」「日曜日の初耳学」「情熱大陸」を制作しているのはどこ？",
-    "timeLimitSec": 15,
-    "choices": [
-      "ABS",
-      "CBS",
-      "TBS",
-      "MBS"
-    ],
-    "correctIndex": 3,
-    "explanation": "",
-    "point": {
-      "correct": 2,
-      "wrong": 0
-    }
-  },
-  {
-    "id": 18,
-    "category": "normal",
-    "memo": "社会",
-    "questionText": "求人情報サイト インディードは？",
-    "timeLimitSec": 15,
-    "choices": [
-      "inded",
-      "indeed",
-      "indeeed",
-      "indeeeed"
-    ],
-    "correctIndex": 1,
-    "explanation": "",
-    "point": {
-      "correct": 1,
-      "wrong": 0
-    }
-  },
-  {
-    "id": 19,
-    "category": "normal",
-    "memo": "社会",
-    "questionText": "地球上の経度を表す東経と西経はそれぞれ何度まである？",
-    "timeLimitSec": 15,
-    "choices": [
-      "９０度",
-      "１８０度",
-      "２７０度",
-      "３６０度"
-    ],
-    "correctIndex": 1,
-    "explanation": "",
-    "point": {
-      "correct": 1,
-      "wrong": 0
-    }
-  },
-  {
-    "id": 20,
-    "category": "normal",
-    "memo": "社会",
-    "questionText": "お辞儀の角度で 最敬礼は何度？",
-    "timeLimitSec": 15,
-    "choices": [
-      "４５度",
-      "９０度",
-      "１８０度",
-      "３６０度"
-    ],
-    "correctIndex": 0,
-    "explanation": "",
-    "point": {
-      "correct": 1,
-      "wrong": 0
-    }
-  },
-  {
-    "id": 21,
-    "category": "normal",
-    "memo": "社会",
-    "questionText": "日本円にしたとき最も高いのは？",
-    "timeLimitSec": 15,
-    "choices": [
-      "１米ドル (USD）",
-      "１ユーロ（EUR）",
-      "１ポンド（GBP）"
-    ],
-    "correctIndex": 2,
-    "explanation": "",
-    "point": {
-      "correct": 1,
-      "wrong": 0
-    }
-  },
-  {
-    "id": 22,
-    "category": "normal",
-    "memo": "社会２倍",
-    "questionText": "日本円にしたとき最も高いのは？",
-    "timeLimitSec": 15,
-    "choices": [
-      "１米ドル (USD）",
-      "１カナダドル (CAD）",
-      "１香港ドル (HKD）"
-    ],
-    "correctIndex": 0,
-    "explanation": "",
-    "point": {
-      "correct": 2,
-      "wrong": 0
-    }
-  },
-  {
-    "id": 23,
-    "category": "normal",
-    "memo": "スポーツ",
-    "questionText": "甲子園球場があるのは？",
-    "timeLimitSec": 15,
-    "choices": [
-      "大阪府",
-      "京都府",
-      "兵庫県",
-      "和歌山県"
-    ],
-    "correctIndex": 2,
-    "explanation": "",
-    "point": {
-      "correct": 1,
-      "wrong": 0
-    }
-  },
-  {
-    "id": 24,
-    "category": "normal",
-    "memo": "スポーツ",
-    "questionText": "試合時間が一番長いのは？",
-    "timeLimitSec": 15,
-    "choices": [
-      "サッカー",
-      "バスケットボール",
-      "ラグビー"
-    ],
-    "correctIndex": 0,
-    "explanation": "①90分 ②40分 ③80分",
-    "point": {
-      "correct": 1,
-      "wrong": 0
-    }
-  },
-  {
-    "id": 25,
-    "category": "normal",
-    "memo": "スポーツ",
-    "questionText": "新体操で使う道具は？",
-    "timeLimitSec": 15,
-    "choices": [
-      "アックス",
-      "こん棒",
-      "スピア",
-      "タクト"
-    ],
-    "correctIndex": 1,
-    "explanation": "クラブの正式名称がこん棒 2本1組で使用します。左右対称に回したり、空中に投げたりして演技",
-    "point": {
-      "correct": 1,
-      "wrong": 0
-    }
-  },
-  {
-    "id": 26,
-    "category": "normal",
-    "memo": "スポーツ",
-    "questionText": "野球場で、場内アナウンスを行う女性を「何」嬢というでしょう？",
-    "timeLimitSec": 15,
-    "choices": [
-      "鶯",
-      "烏",
-      "鷺",
-      "鷲"
-    ],
-    "correctIndex": 0,
-    "explanation": "①うぐいす ②からす ③さぎ ④わし",
-    "point": {
-      "correct": 1,
-      "wrong": 0
-    }
-  },
-  {
-    "id": 27,
-    "category": "normal",
-    "memo": "スポーツ2倍",
-    "questionText": "パラリンピック（夏季）で存在しない種目は？",
-    "timeLimitSec": 15,
-    "choices": [
-      "パラ柔道",
-      "パラ体操",
-      "パラトライアスロン",
-      "パラ馬術"
-    ],
-    "correctIndex": 1,
-    "explanation": "",
-    "point": {
-      "correct": 2,
-      "wrong": 0
-    }
-  },
-  {
-    "id": 28,
-    "category": "normal",
-    "memo": "文系　なかのおおえのおうじ",
-    "questionText": "７世紀に中大兄皇子を中心に行われた政治改革は？",
-    "timeLimitSec": 15,
-    "choices": [
-      "大化の改新",
-      "大家の改新",
-      "大化の改心",
-      "大家の改心"
-    ],
-    "correctIndex": 0,
-    "explanation": "",
-    "point": {
-      "correct": 1,
-      "wrong": 0
-    }
-  },
-  {
-    "id": 29,
-    "category": "normal",
-    "memo": "文系　おおば ようぞう",
-    "questionText": "画家を夢見る大庭葉蔵を主人公とした太宰治の小説は？",
-    "timeLimitSec": 15,
-    "choices": [
-      "人間失格",
-      "人間脱落",
-      "人間敗退"
-    ],
-    "correctIndex": 0,
-    "explanation": "",
-    "point": {
-      "correct": 1,
-      "wrong": 0
-    }
-  },
-  {
-    "id": 30,
-    "category": "normal",
-    "memo": "文系　きゅうそ",
-    "questionText": "窮鼠、猫を噛む　嚙んだのは？",
-    "timeLimitSec": 15,
-    "choices": [
-      "猫",
-      "ねずみ"
-    ],
-    "correctIndex": 1,
-    "explanation": "追い詰められたねずみが反撃で猫を噛む的な意味",
-    "point": {
-      "correct": 1,
-      "wrong": 0
-    }
-  },
-  {
-    "id": 31,
-    "category": "normal",
-    "memo": "文系",
-    "questionText": "ことわざ えびで 「何」を釣る？",
-    "timeLimitSec": 15,
-    "choices": [
-      "鰹",
-      "鮭",
-      "鯛",
-      "鰤"
-    ],
-    "correctIndex": 2,
-    "explanation": "",
-    "point": {
-      "correct": 1,
-      "wrong": 0
-    }
-  },
-  {
-    "id": 32,
-    "category": "normal",
-    "memo": "文系　2倍　ふおうせんそう",
-    "questionText": "１８６６年、プロイセンとオーストリアの間に勃発した「普墺戦争」の別名は？",
-    "timeLimitSec": 15,
-    "choices": [
-      "七分間戦争",
-      "七時間戦争",
-      "七日間戦争",
-      "七週間戦争"
-    ],
-    "correctIndex": 3,
-    "explanation": "",
-    "point": {
-      "correct": 2,
-      "wrong": 0
-    }
-  },
-  {
-    "id": 33,
-    "category": "normal",
-    "memo": "理系",
-    "questionText": "ABO式の血液型、日本で１番多いのは？",
-    "timeLimitSec": 15,
-    "choices": [
-      "A型",
-      "B型",
-      "O型",
-      "AB型"
-    ],
-    "correctIndex": 0,
-    "explanation": "",
-    "point": {
-      "correct": 1,
-      "wrong": 0
-    }
-  },
-  {
-    "id": 34,
-    "category": "normal",
-    "memo": "理系　じゃくらんはん",
-    "questionText": "正式には「雀卵斑」という顔に出るものは？",
-    "timeLimitSec": 15,
-    "choices": [
-      "しみ",
-      "そばかす",
-      "にきび"
-    ],
-    "correctIndex": 1,
-    "explanation": "",
-    "point": {
-      "correct": 1,
-      "wrong": 0
-    }
-  },
-  {
-    "id": 35,
-    "category": "normal",
-    "memo": "理系",
-    "questionText": "一十百千万億兆京 の次の単位は？",
-    "timeLimitSec": 15,
-    "choices": [
-      "亥",
-      "劾",
-      "垓",
-      "該"
-    ],
-    "correctIndex": 2,
-    "explanation": "",
-    "point": {
-      "correct": 1,
-      "wrong": 0
-    }
-  },
-  {
-    "id": 36,
-    "category": "normal",
-    "memo": "理系",
-    "questionText": "一般的な６面サイコロを２つ振って合計が７になる確率は？",
-    "timeLimitSec": 15,
-    "choices": [
-      "３分の１",
-      "４分の１",
-      "５分の１",
-      "６分の１"
-    ],
-    "correctIndex": 3,
-    "explanation": "",
-    "point": {
-      "correct": 1,
-      "wrong": 0
-    }
-  },
-  {
-    "id": 37,
-    "category": "normal",
-    "memo": "理系　2倍　「２つの6面サイコロを２つ振って合計が７になる確率は1/6」 「１つは普通のサイコロで全ての数字が均等に出ますが、１つは重心の偏ったサイコロのため１～６が均等に出るとは限らずその振り分けも不明」",
-    "questionText": "普通のサイコロと重心偏りサイコロを振って合計が７になる確率は？",
-    "timeLimitSec": 45,
-    "choices": [
-      "1/6より低い",
-      "1/6ちょうど",
-      "1/6より高い"
-    ],
-    "correctIndex": 1,
-    "explanation": "どんなに偏ったサイコロでも、１～６のどれかは出る。仮に１が１００％出るサイコロだとして、普通のサイコロで６が出れば つまり６分の１で合計７、２が１００％に対して５、３が１００％に対して４などのように、偏ったサイコロの数字に応じて、合計が７になる確率なのでちょうど1/6",
-    "point": {
-      "correct": 2,
-      "wrong": 0
-    }
-  },
-  {
-    "id": 0,
-    "category": "normal",
-    "memo": "デバッグ",
-    "questionText": "デバッグ問題文",
-    "timeLimitSec": 10,
-    "choices": [
-      "デバッグ１",
-      "デバッグ２"
-    ],
-    "correctIndex": 1,
-    "explanation": "選択肢2択で1Pのようなもの",
+    "correctIndex": -1,
+    "explanation": "０→正解無しの意味。正解選択肢を後で設定する予想的中で1ポイント",
     "point": {
       "correct": 1,
       "wrong": 0
