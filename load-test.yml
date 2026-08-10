@@ -1,35 +1,12 @@
-# 全体設定的な意味
+#apiへの負荷テスト
 config:
-  # サーバー負荷をかける対象
-  # ローカル環境 →target: "http://localhost:3000"
-  # 本番環境 →target: "https://○○○.onrender.com"　など
   target: "http://localhost:3000"
 
-  # どんな負荷をかけるか？
   phases:
-    # 負荷をかける時間（単位:秒）
     - duration: 30
-    # 1秒間にアクセスする仮想ユーザー数
-      arrivalRate: 5
-    # - duration: 30　arrivalRate: 5　なら
-    # 30秒間に毎秒5人がアクセス
-  
-  # アクセスの内容
-  # 上記のどこに？のもの
-  # 参加者想定のアクセスが行う一連の操作
-  # このツールでいえば解答など
-  scenarios:
-    - flow:
-          # このツールでいえば localhost:3000/ までの取得
-        - get:
-            # 上記URLの続き
-            url: "/api/state"
-            # 解答データなどがあったとき
-            # ほぼ共通でアクセスするのがこのURLなので
-            # 解答なども含めてだいたいの負荷テストはこのURLで同義
-            # phases:　の設定で
-            # 30秒間 毎秒5人ずつ（データ量5→10→15）が同じタイミングでアクセス のイメージ
-            
+      arrivalRate: 1000
 
-# 実行方法
-# npx artillery run load-test.yml
+scenarios:
+  - flow:
+      - get:
+          url: "/api/state"

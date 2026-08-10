@@ -1,22 +1,5 @@
 [
   {
-    "id": 0,
-    "category": "normal",
-    "memo": "デバッグ",
-    "questionText": "デバッグ２択",
-    "timeLimitSec": 5,
-    "choices": [
-      "デバッグ選択１",
-      "デバッグ選択２"
-    ],
-    "correctIndex": 1,
-    "explanation": "選択肢２択で２Pのようなもの",
-    "point": {
-      "correct": 1,
-      "wrong": 0
-    }
-  },
-  {
     "id": 1,
     "category": "normal",
     "memo": "デバッグ",
@@ -101,6 +84,23 @@
     ],
     "correctIndex": -1,
     "explanation": "０→正解無しの意味。正解選択肢を後で設定する予想的中で1ポイント",
+    "point": {
+      "correct": 1,
+      "wrong": 0
+    }
+  },
+  {
+    "id": 0,
+    "category": "normal",
+    "memo": "負荷テスト用",
+    "questionText": "デバッグ２択",
+    "timeLimitSec": 15,
+    "choices": [
+      "デバッグ選択１",
+      "デバッグ選択２"
+    ],
+    "correctIndex": 1,
+    "explanation": "選択肢２択で２Pのようなもの",
     "point": {
       "correct": 1,
       "wrong": 0

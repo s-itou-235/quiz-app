@@ -1,0 +1,44 @@
+config:
+  target: "http://localhost:3000"
+
+  payload:
+    path: "test-users.csv"
+    fields:
+      - "clientId"
+      - "name"
+    order: sequence
+    skipHeader: true
+
+  phases:
+    - duration: 1
+      arrivalRate: 10
+
+scenarios:
+  - name: "10人の参加者"
+    engine: socketio
+
+    flow:
+      # 参加者登録
+      - emit:
+          channel: "registerClient"
+          data:
+            clientId: "{{ clientId }}"
+
+      # 名前登録
+      - emit:
+          channel: "client:setName"
+          data:
+            clientId: "{{ clientId }}"
+            name: "{{ name }}"
+
+      # 問題開始後に回答
+      - think: 2
+
+      # 回答
+      - emit:
+          channel: "client:answer"
+          data:
+            clientId: "{{ clientId }}"
+            answer: 1
+            clientSendTime: 0
+            rtt: 0
