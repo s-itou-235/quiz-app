@@ -494,7 +494,7 @@ function finalizeQuestionResult(qid) {
 
 // スコア計算
 function recomputeScoresFromQuestionResults() {
-  console.log("[DEBUG questionResults]", gameState.questionResults);
+  
   const newScores = {};
 
   for (const qid in gameState.questionResults) {
