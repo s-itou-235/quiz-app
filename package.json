@@ -7,11 +7,11 @@
   },
   "dependencies": {
     "cors": "^2.8.6",
-    "dotenv": "^17.4.0",
-    "express-rate-limit": "^8.3.2",
-    "socket.io": "^4.8.3"
+    "dotenv": "^18.0.9",
+    "express-rate-limit": "^8.7.2",
+    "socket.io": "^4.8.4"
   },
   "devDependencies": {
-    "artillery": "^2.0.33"
+    "artillery": "^2.0.34"
   }
 }
